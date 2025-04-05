@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18737cc0d5334c0fbb6c1c2bf5606711, type: 3}
   m_Name: ShotgunCooldown
   m_EditorClassIdentifier: 
-  StatName: 
+  StatName: Shotgun Cooldown
   Image: {fileID: 0}
   Label: {fileID: 0}
   NeedUnlock: 0
-  Upgrades: []
+  Upgrades:
+  - 5
+  - 4
+  - 3
