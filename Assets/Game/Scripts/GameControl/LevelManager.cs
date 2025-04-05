@@ -7,10 +7,16 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Button settingsButton;
 
     public CinemachineTarget cinemachineTarget;
+    public TileGrid tileGrid;
+    
     private void Start()
     {
         var player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
         cinemachineTarget.SetTargetForCinemachineCamera(player.transform);
+        
+        G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
+        G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
+        
         
         if (settingsButton != null)
         {

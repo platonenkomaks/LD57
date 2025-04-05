@@ -14,7 +14,11 @@ public static class G
     // Current level
     public static LevelManager LevelManager;
 
+    
+    // Mining
+    public static MiningSystem MiningSystem;
 
+    
     // Effects
     public static VisualEffectsManager VisualEffectsManager;
     

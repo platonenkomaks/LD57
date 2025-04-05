@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 8283241405181486291}
   - component: {fileID: 5381193579260481235}
   - component: {fileID: 7915782052569009830}
+  - component: {fileID: -7416123760535534678}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -427,3 +428,25 @@ MonoBehaviour:
     volume: 0.32
     pitchMin: 0
     pitchMax: 0
+--- !u!114 &-7416123760535534678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046405752741828329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f528dee9b64a16816d7ef00b3d4fdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  removableTilemap: {fileID: 0}
+  goldTilemap: {fileID: 0}
+  miningRange: 1
+  playerSpriteRenderer: {fileID: 5381193579260481235}
+  normalSprite: {fileID: 21300000, guid: 6b27e2831ee2dac45891c0685357c1f9, type: 3}
+  miningGoldSprite: {fileID: 968560148, guid: 437f96a0ea69a664f8ef3647e92e4374, type: 3}
+  miningCooldown: 0.5
+  goldMiningDuration: 1
+  miningEffectPrefab: {fileID: 0}
+  goldMiningEffectPrefab: {fileID: 0}
