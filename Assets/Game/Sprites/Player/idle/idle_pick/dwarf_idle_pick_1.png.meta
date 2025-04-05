@@ -1,10 +1,7 @@
 fileFormatVersion: 2
-guid: 39ab9ae1bce54774d91e1ff9bb7a132e
+guid: 6b27e2831ee2dac45891c0685357c1f9
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 1486174480520335349
-    second: image 8_0
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +48,7 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 262
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1

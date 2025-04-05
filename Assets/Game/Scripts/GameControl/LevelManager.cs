@@ -3,14 +3,16 @@ using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] private Vector2 playerSpawnPosition = new Vector2(0, 0);
+    [SerializeField] private Vector3 playerSpawnPosition = new Vector3(0, 0,-1);
 
 
     [SerializeField] private Button settingsButton;
 
+    public CinemachineTarget cinemachineTarget;
     private void Start()
     {
         var player = GameController.Instance.LoadPlayer(playerSpawnPosition);
+        cinemachineTarget.SetTargetForCinemachineCamera(player.transform);
         
         if (settingsButton != null)
         {

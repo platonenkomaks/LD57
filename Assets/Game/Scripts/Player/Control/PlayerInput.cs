@@ -1,54 +1,74 @@
 
 using UnityEngine;
-[DefaultExecutionOrder(400)]
 public class PlayerInput : MonoBehaviour
 {
-    private Vector2 _movementInput;
-    private Vector2 _aimDirection;
-    private bool _fireButtonPressed;
-    private bool _settingsButtonPressed;
     
-    public Camera MainCamera { get; private set; }
-
-
+        private Vector2 movementInput;
+        private Vector2 aimDirection;
+        private bool fireButtonPressed;
+        private bool settingsButtonPressed;
+        private bool jumpButtonPressed;
+        private bool jumpButtonReleased;
     
-    private void Awake()
-    {
-        G.PlayerInput = this;
-        MainCamera = Camera.main;
-    }
-
-    private void Update()
-    {
-        _movementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-
-        var mousePosition = MainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-        _aimDirection = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y)
-            .normalized;
-
-        // Получение ввода для стрельбы
-        _fireButtonPressed = Input.GetMouseButton(0);
-        _settingsButtonPressed = Input.GetKeyDown(KeyCode.P);
-    }
-
-    public Vector2 GetMovementInput()
-    {
-        return _movementInput;
-    }
-
-    public Vector2 GetAimDirection()
-    {
-        return _aimDirection;
-    }
-
-    public bool IsFireButtonPressed()
-    {
-        return _fireButtonPressed;
-    }
+        public Camera MainCamera { get; private set; }
     
-    public bool IsSettingsButtonPressed()
-    {
-        return _settingsButtonPressed;
+        private void Start()
+        {
+            G.PlayerInput = this;
+            MainCamera = Camera.main;
+        }
+
+        private void Update()
+        {
+            // Получение ввода для движения
+            movementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+
+            // Получение направления прицеливания
+            var mousePosition = MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            aimDirection = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y)
+                .normalized;
+
+            // Получение ввода для стрельбы и настроек
+            fireButtonPressed = Input.GetMouseButton(0);
+            settingsButtonPressed = Input.GetKeyDown(KeyCode.P);
+        
+            // Получение ввода для прыжка
+            jumpButtonPressed = Input.GetButtonDown("Jump");
+            jumpButtonReleased = Input.GetButtonUp("Jump");
+        }
+
+        public Vector2 GetMovementInput()
+        {
+            return movementInput;
+        }
+
+        public Vector2 GetAimDirection()
+        {
+            return aimDirection;
+        }
+
+        public bool IsFireButtonPressed()
+        {
+            return fireButtonPressed;
+        }
+    
+        public bool IsSettingsButtonPressed()
+        {
+            return settingsButtonPressed;
+        }
+    
+        public bool IsJumpButtonPressed()
+        {
+            return jumpButtonPressed;
+        }
+    
+        public bool IsJumpButtonReleased()
+        {
+            return jumpButtonReleased;
+        }
+    
+        public float GetHorizontalInput()
+        {
+            return movementInput.x;
+        }
     }
-}
