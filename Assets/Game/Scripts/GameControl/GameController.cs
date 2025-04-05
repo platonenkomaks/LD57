@@ -1,8 +1,8 @@
+using Game.Scripts.Events;
 using UnityEngine;
 
 public class GameController : Singleton<GameController>
 {
-
     private Player _player;
 
     private void Initialize()
@@ -18,7 +18,23 @@ public class GameController : Singleton<GameController>
     protected override void Awake()
     {
         base.Awake();
+        if (Instance != this) return;
+        
         Initialize();
+    }
+
+    // Sample use of the EventManager
+    private void Start()
+    {
+        G.EventManager.Register<TestEvent>(testEvent => Debug.Log("TestEvent triggered!"));
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            G.EventManager.Trigger(new TestEvent());
+        }
     }
 
     public Player LoadPlayer(Vector2 spawnPoint)

@@ -1,4 +1,4 @@
-using UnityEngine;
+using Game.Scripts.Events;
 
 public static class G
 {
@@ -9,6 +9,7 @@ public static class G
     public static PlayerInput PlayerInput;
     public static PlayerController PlayerController;
     public static SceneLoader SceneLoader;
+    public static readonly EventManager EventManager = new();
 
     // Current level
     public static LevelManager LevelManager;
