@@ -1,9 +1,12 @@
 using Game.Scripts.Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 public class GameController : Singleton<GameController>
 {
     private Player _player;
+    
+    private readonly GameLoopStateMachine _gameLoopStateMachine = new();
 
     private void Initialize()
     {
@@ -27,6 +30,7 @@ public class GameController : Singleton<GameController>
     private void Start()
     {
         G.EventManager.Register<TestEvent>(testEvent => Debug.Log("TestEvent triggered!"));
+        _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Tutorial);
     }
 
     private void Update()
