@@ -14,7 +14,12 @@ public class UIManager : Singleton<UIManager>
 
     private void Start()
     {
-        G.EventManager.Register<GameStateChangedEvent>(OnGameStateChange);
+        G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
+    }
+
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChange);
     }
 
     // UI Screens
@@ -78,7 +83,7 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-    private void OnGameStateChange(GameStateChangedEvent e)
+    private void OnGameStateChange(OnGameStateChangedEvent e)
     {
         switch (e.State)
         {

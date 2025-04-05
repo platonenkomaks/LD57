@@ -36,7 +36,7 @@ namespace Game.Scripts.StateMachine.GameLoop
           break;
       }
       
-      G.EventManager.Trigger(new GameStateChangedEvent
+      G.EventManager.Trigger(new OnGameStateChangedEvent
       {
         State = newState
       });

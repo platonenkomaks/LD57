@@ -1,3 +1,5 @@
+using Game.Scripts.Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 public class ElevatorPlatform : MonoBehaviour
@@ -66,7 +68,11 @@ public class ElevatorPlatform : MonoBehaviour
     private void Park()
     {
         Stop();
-       
+        
+        if (Mathf.Approximately(targetPosition.y, topY))
+            OnArriveSurface();
+        else
+            OnArriveMine();
     }
 
 
@@ -76,4 +82,14 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void SetTopY(float y) => topY = y;
     public void SetBottomY(float y) => bottomY = y;
+    
+    private void OnArriveMine()
+    {
+        G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Mining });
+    }
+    
+    private void OnArriveSurface()
+    {
+        G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
+    }
 }

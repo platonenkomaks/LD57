@@ -1,5 +1,6 @@
+using Game.Scripts.Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
-using TMPro;
 
 
 public class ElevatorLever : MonoBehaviour
@@ -15,9 +16,15 @@ public class ElevatorLever : MonoBehaviour
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
             if (isDescending)
+            {
                 platform.StartDescent();
+                OnDescend();
+            }
             else
+            {
                 platform.StartAscent();
+                OnAscend();
+            }
 
             isDescending = !isDescending;
         }
@@ -41,5 +48,15 @@ public class ElevatorLever : MonoBehaviour
             if (hintUI != null)
                 hintUI.SetActive(false);
         }
+    }
+
+    private void OnDescend()
+    {
+        G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Descend });
+    }
+    
+    private void OnAscend()
+    {
+        G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Ascend });
     }
 }

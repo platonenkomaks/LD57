@@ -1,3 +1,4 @@
+using System.Collections;
 using Game.Scripts.Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
@@ -27,34 +28,23 @@ public class GameController : Singleton<GameController>
     }
 
     // Sample use of the EventManager
-    private void Start()
+    private IEnumerator Start()
     {
-        _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Tutorial);
+        G.EventManager.Register<SetGameStateEvent>(ChangeGameState);
+        
+        // Skip a frame to let everything finish initializing
+        yield return null;
+        
+        ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Tutorial });
+    }
+
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<SetGameStateEvent>(ChangeGameState);
     }
 
     private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Tutorial);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Descend);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Mining);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Ascend);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Shopping);
-        }
-    }
+    {}
 
     public Player LoadPlayer(Vector3 spawnPoint)
     {
@@ -65,5 +55,10 @@ public class GameController : Singleton<GameController>
     {
         // Загрузка сцены GameOver
         G.SceneLoader.LoadScene("GameOver");
+    }
+
+    private void ChangeGameState(SetGameStateEvent e)
+    {
+        _gameLoopStateMachine.SetState(e.State);
     }
 }
