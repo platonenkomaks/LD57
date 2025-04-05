@@ -1,9 +1,13 @@
+using System.Collections;
 using Game.Scripts.Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 public class GameController : Singleton<GameController>
 {
     private Player _player;
+    
+    private readonly GameLoopStateMachine _gameLoopStateMachine = new();
 
     private void Initialize()
     {
@@ -24,18 +28,23 @@ public class GameController : Singleton<GameController>
     }
 
     // Sample use of the EventManager
-    private void Start()
+    private IEnumerator Start()
     {
-        G.EventManager.Register<TestEvent>(testEvent => Debug.Log("TestEvent triggered!"));
+        G.EventManager.Register<SetGameStateEvent>(ChangeGameState);
+        
+        // Skip a frame to let everything finish initializing
+        yield return null;
+        
+        ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Tutorial });
+    }
+
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<SetGameStateEvent>(ChangeGameState);
     }
 
     private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            G.EventManager.Trigger(new TestEvent());
-        }
-    }
+    {}
 
     public Player LoadPlayer(Vector3 spawnPoint)
     {
@@ -46,5 +55,10 @@ public class GameController : Singleton<GameController>
     {
         // Загрузка сцены GameOver
         G.SceneLoader.LoadScene("GameOver");
+    }
+
+    private void ChangeGameState(SetGameStateEvent e)
+    {
+        _gameLoopStateMachine.SetState(e.State);
     }
 }
