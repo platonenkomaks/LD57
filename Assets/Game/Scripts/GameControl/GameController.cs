@@ -36,6 +36,10 @@ public class GameController : Singleton<GameController>
         yield return null;
         
         ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Tutorial });
+        
+        // TEST
+        yield return null;
+        ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
     }
 
     private void OnDestroy()
