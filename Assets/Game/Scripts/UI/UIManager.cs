@@ -1,14 +1,20 @@
 using System.Collections.Generic;
+using Game.Scripts.Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager>
 {
     protected override void Awake()
-    
     {
         base.Awake();
         if (Instance != this) return;
         G.UIManager = this;
+    }
+
+    private void Start()
+    {
+        G.EventManager.Register<GameStateChangedEvent>(OnGameStateChange);
     }
 
     // UI Screens
@@ -69,6 +75,28 @@ public class UIManager : Singleton<UIManager>
         else
         {
             Debug.LogWarning("No screens in history to go back to!");
+        }
+    }
+
+    private void OnGameStateChange(GameStateChangedEvent e)
+    {
+        switch (e.State)
+        {
+            case GameLoopStateMachine.GameLoopState.Tutorial:
+                ShowScreen("Tutorial");
+                break;
+            case GameLoopStateMachine.GameLoopState.Shopping:
+                ShowScreen("Shopping");
+                break;
+            case GameLoopStateMachine.GameLoopState.Mining:
+                ShowScreen("Mining");
+                break;
+            case GameLoopStateMachine.GameLoopState.Descend:
+                ShowScreen("Descend");
+                break;
+            case GameLoopStateMachine.GameLoopState.Ascend:
+                ShowScreen("Ascend");
+                break;
         }
     }
 }

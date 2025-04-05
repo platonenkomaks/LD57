@@ -29,15 +29,30 @@ public class GameController : Singleton<GameController>
     // Sample use of the EventManager
     private void Start()
     {
-        G.EventManager.Register<TestEvent>(testEvent => Debug.Log("TestEvent triggered!"));
         _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Tutorial);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            G.EventManager.Trigger(new TestEvent());
+            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Tutorial);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Descend);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Mining);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Ascend);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            _gameLoopStateMachine.SetState(GameLoopStateMachine.GameLoopState.Shopping);
         }
     }
 

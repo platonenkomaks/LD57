@@ -2,19 +2,10 @@ namespace Game.Scripts.StateMachine.GameLoop
 {
   public class DescendState : IState
   {
-    public void Enter()
-    {
-      throw new System.NotImplementedException();
-    }
+    public void Enter() {}
 
-    public void Execute()
-    {
-      throw new System.NotImplementedException();
-    }
+    public void Execute() {}
 
-    public void Exit()
-    {
-      throw new System.NotImplementedException();
-    }
+    public void Exit() {}
   }
 }
