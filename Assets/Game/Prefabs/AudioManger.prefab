@@ -44,5 +44,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef89d01cdef24e4697de6213a447bb65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds: []
+  persistent: 1
+  sounds:
+  - name: ElevatorStart
+    clip: {fileID: 8300000, guid: 736b43f537916f24d8356cda7dc318e9, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: ElevatorMoving
+    clip: {fileID: 8300000, guid: 02bd14a62ed1afd48bfb59295d06392f, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 1
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: ElevatorStop
+    clip: {fileID: 8300000, guid: 9ad4eb236264c424da195b939ce5c5f0, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}

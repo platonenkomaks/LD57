@@ -10,7 +10,7 @@ public class PlayerInput : MonoBehaviour
         private bool jumpButtonPressed;
         private bool jumpButtonReleased;
     
-        public Camera MainCamera { get; private set; }
+        public Camera MainCamera { get; private set; } 
     
         private void Start()
         {

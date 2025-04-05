@@ -113,6 +113,7 @@ public class AudioManager : Singleton<AudioManager>
         if (_soundDictionary.TryGetValue(soundName, out Sound sound))
         {
             sound.source.Play();
+            Debug.Log("Playing sound: " + soundName);
         }
         else
         {

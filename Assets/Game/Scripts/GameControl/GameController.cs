@@ -37,7 +37,7 @@ public class GameController : Singleton<GameController>
         }
     }
 
-    public Player LoadPlayer(Vector2 spawnPoint)
+    public Player LoadPlayer(Vector3 spawnPoint)
     {
         return Instantiate(_player, spawnPoint, Quaternion.identity);
     }
