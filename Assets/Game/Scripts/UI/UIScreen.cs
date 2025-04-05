@@ -9,7 +9,7 @@ public abstract class UIScreen : MonoBehaviour
     public event Action OnScreenShown;
     public event Action OnScreenHidden;
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         G.UIManager.RegisterScreen(this);
     }

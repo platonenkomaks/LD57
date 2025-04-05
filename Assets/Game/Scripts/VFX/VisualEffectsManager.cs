@@ -1,13 +1,15 @@
 using UnityEngine;
 
-public class VisualEffectsManager : MonoBehaviour
+public class VisualEffectsManager : Singleton<VisualEffectsManager>
 {
     [SerializeField] private GameObject muzzleFlash;
     [SerializeField] private GameObject hitEffect;
     [SerializeField] private GameObject wallHitEffect;
     
-    private void Awake()
+   protected override void Awake()
     {
+        base.Awake();
+        if (Instance != this) return;
         G.VisualEffectsManager = this;
     }
 

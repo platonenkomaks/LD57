@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[DefaultExecutionOrder(100)]
+
 public class Bootstrap : MonoBehaviour
 {
-    [SerializeField] private string startScene = "MainMenu";
     [SerializeField] private GameObject[] requiredSystems;
     
     private void Awake()
@@ -16,14 +17,6 @@ public class Bootstrap : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
         
-        // Предотвращаем уничтожение этого объекта при загрузке новой сцены
-        DontDestroyOnLoad(gameObject);
-        
-        // Переход на стартовую сцену
-        if (SceneManager.GetActiveScene().name != startScene)
-        {
-            SceneManager.LoadScene(startScene);
-        }
     }
     
     private void InitializeRequiredSystems()

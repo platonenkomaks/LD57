@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
-    private void Awake()
+    protected override void Awake()
+    
     {
+        base.Awake();
+        if (Instance != this) return;
         G.UIManager = this;
     }
 
@@ -16,7 +19,7 @@ public class UIManager : MonoBehaviour
 
     // Current open screen
     private UIScreen _currentScreen;
-    
+
 
     public void RegisterScreen(UIScreen screen)
     {
@@ -69,6 +72,3 @@ public class UIManager : MonoBehaviour
         }
     }
 }
-        
-        
-   

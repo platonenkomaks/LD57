@@ -32,7 +32,8 @@ public class Sound
     [HideInInspector] public AudioSource source;
 }
 
-public class AudioManager : MonoBehaviour
+
+public class AudioManager : Singleton<AudioManager>
 {
     [Header("Звуковые настройки")] public Sound[] sounds;
 
@@ -47,8 +48,11 @@ public class AudioManager : MonoBehaviour
     // Громкости для категорий
     private Dictionary<SoundCategory, float> _categoryVolumes = new Dictionary<SoundCategory, float>();
 
-    private void Awake()
+    protected override  void Awake()
     {
+        base.Awake();
+        if (Instance != this) return;
+        
         G.AudioManager = this;
 
         // Инициализируем громкости категорий

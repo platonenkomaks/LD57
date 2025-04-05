@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+public class GameController : Singleton<GameController>
 {
-    public static GameController Instance { get; private set; }
 
     private Player _player;
 
@@ -16,17 +15,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
+        base.Awake();
         Initialize();
     }
 

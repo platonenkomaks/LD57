@@ -1,5 +1,5 @@
 using UnityEngine;
-
+[DefaultExecutionOrder(500)]
 public class PlayerController : MonoBehaviour
 {
     [Header("References")] 

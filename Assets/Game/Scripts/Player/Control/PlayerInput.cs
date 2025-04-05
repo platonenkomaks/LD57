@@ -1,6 +1,6 @@
 
 using UnityEngine;
-
+[DefaultExecutionOrder(400)]
 public class PlayerInput : MonoBehaviour
 {
     private Vector2 _movementInput;
