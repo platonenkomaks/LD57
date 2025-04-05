@@ -11,4 +11,9 @@ namespace Game.Scripts.Events
   {
     public GameLoopStateMachine.GameLoopState State;
   }
+  
+  public struct OnPlayerStateChangeEvent : IEvent
+  {
+    public PlayerStateMachine.PlayerState State;
+  }
 }

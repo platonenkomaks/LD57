@@ -155,11 +155,7 @@ public class MiningSystem : MonoBehaviour
         _isMiningGold = true;
         _canMine = false;
         
-        // Меняем спрайт гнома
-        if (playerSpriteRenderer != null && miningGoldSprite != null)
-        {
-            playerSpriteRenderer.sprite = miningGoldSprite;
-        }
+        
         
         // Устанавливаем время окончания копания золота
         _goldMiningEndTime = Time.time + goldMiningDuration;
@@ -170,15 +166,15 @@ public class MiningSystem : MonoBehaviour
     private void FinishGoldMining()
     {
         _isMiningGold = false;
-        _canMine = true;
+        _canMine = false;
         
-        // Меняем спрайт гнома обратно
-        if (playerSpriteRenderer != null && normalSprite != null)
+        // Меняем спрайт гнома
+        if (playerSpriteRenderer != null && miningGoldSprite != null)
         {
-            playerSpriteRenderer.sprite = normalSprite;
+            playerSpriteRenderer.sprite = miningGoldSprite;
         }
         
-        Debug.Log("Игрок закончил копать золото и может копать снова");
+        G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Carrying);
     }
     
    

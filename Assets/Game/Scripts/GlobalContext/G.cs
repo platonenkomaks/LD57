@@ -10,7 +10,9 @@ public static class G
     public static PlayerController PlayerController;
     public static SceneLoader SceneLoader;
     public static readonly EventManager EventManager = new();
-
+    public static PlayerStateMachine PlayerStateMachine;
+    
+    
     // Current level
     public static LevelManager LevelManager;
 
@@ -24,4 +26,5 @@ public static class G
     
     // Sound
     public static AudioManager AudioManager;
+    
 }

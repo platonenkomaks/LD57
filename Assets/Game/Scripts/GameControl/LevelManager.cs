@@ -11,6 +11,9 @@ public class LevelManager : MonoBehaviour
     
     private void Start()
     {
+        G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
+        
+        
         var player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
         cinemachineTarget.SetTargetForCinemachineCamera(player.transform);
         
