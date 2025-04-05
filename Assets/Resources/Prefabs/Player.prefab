@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: -2781374523353917032}
   - component: {fileID: 8283241405181486291}
   - component: {fileID: 5381193579260481235}
+  - component: {fileID: 7915782052569009830}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -302,3 +303,42 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7915782052569009830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046405752741828329}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 238f396c9f2b424cbd707626ee613c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomSounds:
+  - clips:
+    - {fileID: 8300000, guid: 1f431d6fd8fadf14ea5f69b72fd44efd, type: 3}
+    - {fileID: 8300000, guid: eee6e420aca1d564092ddd356d40841c, type: 3}
+    - {fileID: 8300000, guid: c7ad980734daeae4f943578cedaf620c, type: 3}
+    - {fileID: 8300000, guid: 3a61f0ac4ce07cd4085b39427aeb709c, type: 3}
+    - {fileID: 8300000, guid: 8f74b02143d02904aaa22d459fd1dee5, type: 3}
+    - {fileID: 8300000, guid: 8a2ba8b21819f5945bdefa91906b1e51, type: 3}
+    - {fileID: 8300000, guid: 1df63628181bfe740a03dfc068f86c4e, type: 3}
+    - {fileID: 8300000, guid: edebf16bfddd2e54fb3608f7827701b6, type: 3}
+    - {fileID: 8300000, guid: 903723d4598025044a1b60339c5dbafd, type: 3}
+    - {fileID: 8300000, guid: 58fa8e9b6feddfc408f90d06534a727f, type: 3}
+    - {fileID: 8300000, guid: 7472595de645d2345bcdc2be9e1b126e, type: 3}
+    - {fileID: 8300000, guid: b0477333cb6f91443b435ce00c5adb3b, type: 3}
+    - {fileID: 8300000, guid: 7365c14e4fe0f9446a312a3d5401e096, type: 3}
+    - {fileID: 8300000, guid: dd6bfce0194d080488c9bd83e154b91f, type: 3}
+    - {fileID: 8300000, guid: 7dee67b15938e4a4992e27e4e60f7253, type: 3}
+    - {fileID: 8300000, guid: 6860023df83b2404bb06328582caf912, type: 3}
+    - {fileID: 8300000, guid: 629d921a3e477d649a2b3383706ec103, type: 3}
+    - {fileID: 8300000, guid: 9b5f13e1e56197e4dafa8d0a7fe41a4f, type: 3}
+    - {fileID: 8300000, guid: 819138e279399a4499a9f26d4760b8eb, type: 3}
+    - {fileID: 8300000, guid: 5db792ebdaee73b4fbcec0ac80c04737, type: 3}
+    - {fileID: 8300000, guid: e1c7ab82cbe0dff46996db5edecdb7d5, type: 3}
+    category: 1
+    volume: 0.32
+    pitchMin: 0
+    pitchMax: 0

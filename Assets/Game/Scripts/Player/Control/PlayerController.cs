@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     private bool _isJumping;
     private Vector2 _velocity;
     
+    private RandomSoundPlayer _randomSoundPlayer;
+    
     // Input reference
     private PlayerInput _playerInput;
 
@@ -38,6 +40,7 @@ public class PlayerController : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
+        _randomSoundPlayer = GetComponent<RandomSoundPlayer>();
         
     }
 
@@ -105,11 +108,11 @@ public class PlayerController : MonoBehaviour
     {
         // Проверка наличия системы ввода
         if (_playerInput == null) return;
-        
+
         // Расчет целевой скорости
         var horizontalInput = _playerInput.GetHorizontalInput();
         var targetSpeed = horizontalInput * moveSpeed;
-        
+
         // Расчет скорости ускорения в зависимости от нахождения на земле или в воздухе
         var accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
         if (!_isGrounded)
@@ -120,9 +123,15 @@ public class PlayerController : MonoBehaviour
         // Расчет движения
         var speedDiff = targetSpeed - _rb.linearVelocity.x;
         var movement = speedDiff * accelRate * Time.fixedDeltaTime;
-        
+
         // Применение движения
         _rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
+
+        // Воспроизведение звука шага, если игрок движется по земле
+        if (_isGrounded && Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            // _randomSoundPlayer.PlayRandomSound(0);
+        }
 
         _rb.gravityScale = _rb.linearVelocity.y switch
         {
