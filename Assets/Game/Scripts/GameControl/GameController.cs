@@ -36,10 +36,6 @@ public class GameController : Singleton<GameController>
         yield return null;
         
         ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Tutorial });
-        
-        // TEST
-        yield return null;
-        ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
     }
 
     private void OnDestroy()
@@ -48,7 +44,28 @@ public class GameController : Singleton<GameController>
     }
 
     private void Update()
-    {}
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Tutorial });
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Descend });
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Mining });
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Ascend });
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
+        }
+    }
 
     public Player LoadPlayer(Vector3 spawnPoint)
     {
