@@ -24,6 +24,7 @@ namespace Game.Scripts.StateMachine.GameLoop
       {
         case GameLoopState.Shopping:
           ChangeState(_shoppingState);
+          G.Player.BatteryLight.FullRecharge();
           break;
         case GameLoopState.Mining:
           ChangeState(_miningState);
