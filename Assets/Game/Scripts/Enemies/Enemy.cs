@@ -1,0 +1,134 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.PlayerLoop;
+
+// Базовый абстрактный класс врага
+public abstract class Enemy : MonoBehaviour
+{
+    [Header("Базовые настройки")] [SerializeField]
+    public float health = 100f;
+
+    [SerializeField] public float moveSpeed = 2f;
+    [SerializeField] public float detectionRange = 5f;
+    [SerializeField] public float attackRange = 1.5f;
+    [SerializeField] public float attackDamage = 10f;
+    [SerializeField] public float attackCooldown = 1.5f;
+    [SerializeField] public float retreatDistance = 3f;
+    [SerializeField] public Transform player;
+
+    public EnemyStateMachine StateMachine;
+    public Rigidbody2D rb;
+    public SpriteRenderer spriteRenderer;
+    public Animator animator;
+    public bool canAttack = true;
+
+    public void Init(Transform targetPlayer)
+    {
+        player = targetPlayer.transform;
+    }
+
+
+    public virtual void Awake()
+    {
+        
+        rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+
+        // Инициализация машины состояний
+        InitializeStateMachine();
+    }
+
+
+    public virtual void Start()
+    {
+        player = G.Player.transform;
+        // Стартовое состояние (например, патруль)
+        StateMachine.ChangeState(EnemyStateID.Patrol);
+    }
+
+    public virtual void Update()
+    {
+        if (player == null) return;
+
+        // Обновляем состояние
+        StateMachine.Update();
+    }
+
+    public virtual void FixedUpdate()
+    {
+        // Физические обновления (движение и т.д.)
+        StateMachine.FixedUpdate();
+    }
+
+    protected abstract void InitializeStateMachine();
+
+    public virtual void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        // Если здоровье кончилось, умираем
+        if (health <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            // Иначе переходим в состояние получения урона
+            StateMachine.ChangeState(EnemyStateID.TakeDamage);
+        }
+    }
+
+    public virtual void Die()
+    {
+        // Проигрываем анимацию смерти
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+
+        // Убираем коллайдеры
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        foreach (Collider2D c in colliders)
+        {
+            c.enabled = false;
+        }
+
+        // Отключаем физику
+        rb.linearVelocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Static;
+
+        // Уничтожаем объект через некоторое время (после проигрывания анимации)
+        Destroy(gameObject, 2f);
+    }
+
+    public virtual IEnumerator AttackCooldown()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
+    public float DistanceToPlayer()
+    {
+        if (player == null) return Mathf.Infinity;
+        return Vector2.Distance(transform.position, player.position);
+    }
+
+    public Vector2 DirectionToPlayer()
+    {
+        if (player == null) return Vector2.zero;
+        return (player.position - transform.position).normalized;
+    }
+
+    // Функция для проверки зрения (line of sight)
+    public bool CanSeePlayer()
+    {
+        if (player == null) return false;
+
+        RaycastHit2D hit =
+            Physics2D.Linecast(transform.position, player.position, LayerMask.GetMask("Default", "Player"));
+        return hit.collider != null && hit.collider.CompareTag("Player");
+    }
+}

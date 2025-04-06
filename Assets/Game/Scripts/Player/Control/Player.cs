@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+       
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         
         G.PlayerStateMachine = new PlayerStateMachine(
@@ -26,7 +27,7 @@ public class Player : MonoBehaviour
     }
     private void Start ()
     {
-        G.Player = this;
+     
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
     }
     
