@@ -36,16 +36,18 @@ public class EnemyStateMachine
 {
     private Dictionary<EnemyStateID, EnemyState> states = new Dictionary<EnemyStateID, EnemyState>();
     private EnemyState currentState;
-    
+
+    public EnemyState CurrentState => currentState;
+
     public void RegisterState(EnemyState state)
     {
         states[state.ID] = state;
     }
-    
+
     public void ChangeState(EnemyStateID newStateID)
     {
         if (currentState != null && currentState.ID == newStateID) return;
-        
+
         if (states.TryGetValue(newStateID, out EnemyState newState))
         {
             currentState?.Exit();
@@ -53,12 +55,12 @@ public class EnemyStateMachine
             currentState.Enter();
         }
     }
-    
+
     public void Update()
     {
         currentState?.Update();
     }
-    
+
     public void FixedUpdate()
     {
         currentState?.FixedUpdate();

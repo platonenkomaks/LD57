@@ -127,8 +127,34 @@ public abstract class Enemy : MonoBehaviour
     {
         if (player == null) return false;
 
-        RaycastHit2D hit =
-            Physics2D.Linecast(transform.position, player.position, LayerMask.GetMask("Default", "Player"));
-        return hit.collider != null && hit.collider.CompareTag("Player");
+        // Проверяем, находится ли игрок в зоне обнаружения
+        return DistanceToPlayer() <= detectionRange;
+    }
+    
+    private void OnDrawGizmos()
+    {
+        if (StateMachine == null) return;
+
+        // Define colors for each state
+        Color stateColor = Color.white;
+        switch (StateMachine.CurrentState.ID)
+        {
+            case EnemyStateID.Patrol:
+                stateColor = Color.green;
+                break;
+            case EnemyStateID.Chase:
+                stateColor = Color.yellow;
+                break;
+            case EnemyStateID.Attack:
+                stateColor = Color.red;
+                break;
+            case EnemyStateID.TakeDamage:
+                stateColor = Color.blue;
+                break;
+        }
+
+        // Draw a sphere above the enemy with the color of the current state
+        Gizmos.color = stateColor;
+        Gizmos.DrawSphere(transform.position + Vector3.up * 2, 0.5f);
     }
 }
