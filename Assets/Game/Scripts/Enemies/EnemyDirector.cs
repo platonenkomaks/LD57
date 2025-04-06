@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Scripts.Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -48,11 +50,13 @@ public class EnemyDirector : MonoBehaviour
     private bool _isSpawning = false;
     private Coroutine _spawnCoroutine;
     private bool _waveActive = false;
-    private readonly Dictionary<int, int> _enemiesRemainingInWave = new Dictionary<int, int>();
+    private readonly Dictionary<int, int> _enemiesRemainingInWave = new();
 
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return null;
+        G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
         // Заполняем словарь для отслеживания оставшихся врагов в каждой волне
         for (int i = 0; i < waves.Count; i++)
         {
@@ -69,6 +73,11 @@ public class EnemyDirector : MonoBehaviour
         {
             StartCoroutine(DelayedStart());
         }
+    }
+    
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChange);
     }
 
     private IEnumerator DelayedStart()
@@ -181,6 +190,24 @@ public class EnemyDirector : MonoBehaviour
         }
 
         _spawnCoroutine = StartCoroutine(SpawnWave(currentWave));
+    }
+    
+    private void OnGameStateChange(OnGameStateChangedEvent e)
+    {
+        if (e.State == GameLoopStateMachine.GameLoopState.Ascend)
+        {
+            RestartWaves();
+        }
+        else if (e.State == GameLoopStateMachine.GameLoopState.Shopping)
+        {
+            StopAllWaves();
+            DestroyEnemies();
+        }
+    }
+
+    private void DestroyEnemies()
+    {
+        _activeEnemies.ForEach(Destroy);
     }
 
     // Корутина для спавна врагов в волне
