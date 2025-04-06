@@ -14,7 +14,6 @@ public class MeleeEnemy : Enemy
     private Vector2 _initialPosition;
     private Vector2 _patrolDirection = Vector2.right;
     private bool _isGrounded;
-    private bool _wasGrounded = false; // Отслеживаем предыдущее состояние заземления
     private bool _playingRiseAnimation = false; // Флаг для отслеживания анимации приземления
 
     public override void Awake()
@@ -152,7 +151,8 @@ public class MeleeEnemy : Enemy
         if (hitPlayer != null && hitPlayer.CompareTag("Player"))
         {
             Debug.Log("Attack hit player!");
-            PlayerHealth playerHealth = hitPlayer.GetComponent<PlayerHealth>();
+            
+            PlayerHealth playerHealth = G.PlayerHealth;
             if (playerHealth != null)
             {
                 StartCoroutine(AttackAnimation(hitPlayer.transform.position, playerHealth));

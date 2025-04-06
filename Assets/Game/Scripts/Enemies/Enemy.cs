@@ -12,7 +12,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] public float moveSpeed = 2f;
     [SerializeField] public float detectionRange = 5f;
     [SerializeField] public float attackRange = 1.5f;
-    [SerializeField] public float attackDamage = 10f;
+    [SerializeField] public int attackDamage = 10;
     [SerializeField] public float attackCooldown = 1.5f;
     [SerializeField] public float retreatDistance = 3f;
     [SerializeField] public Transform player;

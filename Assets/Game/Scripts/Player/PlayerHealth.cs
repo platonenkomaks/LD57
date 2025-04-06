@@ -1,36 +1,79 @@
-
+using System;
+using System.Collections;
 using UnityEngine;
-    public class PlayerHealth: MonoBehaviour
+
+public class PlayerHealth : MonoBehaviour
+{
+    public event Action OnHealthChanged;
+
+    [SerializeField] public int maxHealth = 5;
+    private int _currentHealth;
+    private bool _isInvincible = false;
+
+    public int currentHealth
     {
-        [SerializeField] private float maxHealth = 100f;
-        [SerializeField] private float currentHealth;
-        [SerializeField] private GameObject deathEffect;
-        
-        private void Start()
+        get => _currentHealth;
+        private set
         {
-            currentHealth = maxHealth;
-        }
-        
-        public void TakeDamage(float damage)
-        {
-            currentHealth -= damage;
-            
-            if (currentHealth <= 0)
-            {
-                Die();
-            }
-        }
-        
-        private void Die()
-        {
-            // Проигрываем анимацию смерти
-            if (deathEffect != null)
-            {
-                Instantiate(deathEffect, transform.position, Quaternion.identity);
-            }
-            
-            // Уничтожаем игрока
-            Destroy(gameObject);
+            _currentHealth = value;
+            OnHealthChanged?.Invoke();
         }
     }
-  
+
+    [SerializeField] private GameObject deathEffect;
+    [SerializeField] private float invincibilityDuration = 1f;
+    [SerializeField] private float flashInterval = 0.1f;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private void Awake()
+    {
+        G.PlayerHealth = this;
+    }
+
+    private void Start()
+    {
+        currentHealth = maxHealth;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (_isInvincible) return;
+
+        currentHealth -= damage;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            StartCoroutine(InvincibilityCoroutine());
+        }
+    }
+
+    private IEnumerator InvincibilityCoroutine()
+    {
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = G.Player.GetComponent<SpriteRenderer>();
+        }
+
+        _isInvincible = true;
+
+        float timer = 0f;
+        while (timer < invincibilityDuration)
+        {
+            spriteRenderer.enabled = !spriteRenderer.enabled;
+            yield return new WaitForSeconds(flashInterval);
+            timer += flashInterval;
+        }
+
+        spriteRenderer.enabled = true;
+        _isInvincible = false;
+    }
+
+    private void Die()
+    {
+        Destroy(G.Player.gameObject);
+    }
+}

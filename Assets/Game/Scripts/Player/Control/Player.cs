@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class Player : MonoBehaviour
@@ -9,7 +10,7 @@ public class Player : MonoBehaviour
     public Sprite fightingSprite;
 
     public SpriteRenderer playerSpriteRenderer;
-
+    
 
     private void Awake()
     {

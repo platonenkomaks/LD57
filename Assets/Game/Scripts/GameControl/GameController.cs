@@ -3,6 +3,8 @@ using Game.Scripts.Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
+
+
 public class GameController : Singleton<GameController>
 {
     private Player _player;

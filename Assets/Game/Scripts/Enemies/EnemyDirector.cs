@@ -33,7 +33,7 @@ public class EnemyDirector : MonoBehaviour
     [SerializeField] private float initialDelay = 3f;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float spawnCheckRadius = 1f;
-    [SerializeField] private float playerProximityCheckDistance = 5f;
+    
 
     [Header("События")] public UnityEvent onWaveStart;
     public UnityEvent onWaveComplete;

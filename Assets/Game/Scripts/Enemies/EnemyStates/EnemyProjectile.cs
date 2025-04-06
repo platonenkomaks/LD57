@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemyProjectile : MonoBehaviour
 {
-    [SerializeField] private float damage = 15f;
+    [SerializeField] private int damage = 15;
     [SerializeField] private GameObject impactEffect;
     
     private void OnTriggerEnter2D(Collider2D collision)

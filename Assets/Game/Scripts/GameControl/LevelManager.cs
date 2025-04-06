@@ -5,17 +5,12 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] private GameObject playerSpawnPosition;
     [SerializeField] private Button settingsButton;
-
-
+    
     public CinemachineTarget cinemachineTarget;
     public TileGrid tileGrid;
-
+    
     private Player _player;
     
-    private void Awake()
-    {
-      
-    }
 
     private void Start()
     {
@@ -26,12 +21,11 @@ public class LevelManager : MonoBehaviour
         {
             settingsButton.onClick.AddListener(OnSettingsButtonPressed);
         }
-
+        
         G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
         G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
     }
-
-
+    
     private void OnSettingsButtonPressed()
     {
         G.UIManager.ShowScreen("SettingsMenu");

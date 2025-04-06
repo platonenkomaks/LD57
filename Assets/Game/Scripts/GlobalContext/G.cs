@@ -30,4 +30,5 @@ public static class G
     // Sound
     public static AudioManager AudioManager;
     
+    public static PlayerHealth PlayerHealth;
 }
