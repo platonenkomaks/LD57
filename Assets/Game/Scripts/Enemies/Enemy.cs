@@ -87,6 +87,7 @@ public abstract class Enemy : MonoBehaviour
         {
             animator.SetTrigger("Die");
         }
+        
 
         // Убираем коллайдеры
         Collider2D[] colliders = GetComponents<Collider2D>();
@@ -100,7 +101,7 @@ public abstract class Enemy : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Static;
 
         // Уничтожаем объект через некоторое время (после проигрывания анимации)
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 1f);
     }
 
     public virtual IEnumerator AttackCooldown()

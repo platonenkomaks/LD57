@@ -20,7 +20,13 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Тут можно обработать попадание
+        other.gameObject.TryGetComponent(out Enemy enemy);
+        if (enemy != null)
+        {
+            enemy.TakeDamage(1);
+            
+            return;
+        }
         Destroy(gameObject);
     }
 }

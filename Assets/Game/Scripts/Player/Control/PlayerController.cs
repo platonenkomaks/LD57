@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private Sprite combatSprite;
 
+    private Animator _playerAnimator;
 
     [Header("Ground Check")] [SerializeField]
     private Transform groundCheck;
@@ -56,6 +58,11 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
         _randomSoundPlayer = GetComponent<RandomSoundPlayer>();
+    }
+
+    private void Start()
+    {
+        _playerAnimator = G.Player.GetComponent<Animator>();
     }
 
     private void Update()
@@ -123,6 +130,7 @@ public class PlayerController : MonoBehaviour
         {
             var cooldown = G.StatSystem.ShootgunCooldown;
             if (Time.time - _lastShootTime < cooldown) return;
+
             Shoot();
         }
     }
@@ -169,10 +177,18 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         G.AudioManager.Play("Shoot");
+        
         Vector2 direction = Vector2.right * (_spriteRenderer.flipX ? -1 : 1);
 
         if (_playerInput.GetVerticalInput() > 0.5f)
+        {
+            _playerAnimator.SetTrigger("ShootUP");
             direction = Vector2.up;
+        }
+        else
+        {
+            _playerAnimator.SetTrigger("ShootSide");
+        }
 
         var projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         projectile.GetComponent<Projectile>().Initialize(direction);

@@ -11,16 +11,19 @@ public class FightingPlayerState : IState
         _playerSpriteRenderer = playerSpriteRenderer;
         _playerController = playerController;
     }
- 
+
 
     public void Enter()
-    { G.Player.GetComponent<Animator>().SetInteger("State", 3);
+    {
+        G.Player.GetComponent<Animator>().SetInteger("State", 3);
         _playerController.EnableCombatMode();
         _playerSpriteRenderer.sprite = PlayerStateMachine.FightingSprite;
         Debug.Log("Fighting state entered");
     }
 
-    public void Execute() { }
+    public void Execute()
+    {
+    }
 
     public void Exit()
     {
