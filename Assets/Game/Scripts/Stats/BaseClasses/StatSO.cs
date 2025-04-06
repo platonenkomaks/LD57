@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Stats.BaseClasses;
+using UnityEngine;
 using Utilities;
 
 namespace Stats {
@@ -27,6 +28,11 @@ namespace Stats {
         return;
       }
       
+      if (!G.GoldManager.CanAfford(UpgradeCosts[NextUpgradeIndex])) {
+        return;
+      }
+      
+      G.GoldManager.ConsumeGold(UpgradeCosts[NextUpgradeIndex]);
       ApplyUpgrade(Upgrades[NextUpgradeIndex]);
       _nextUpgradeIndex++;
       OnUpgrade?.Invoke();

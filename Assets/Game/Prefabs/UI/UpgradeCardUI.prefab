@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7043121497736317708}
   - component: {fileID: 5689030843647649341}
   - component: {fileID: 5251442347327492964}
+  - component: {fileID: 27470939368585364}
   m_Layer: 0
   m_Name: UpgradeCardUI
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
   upgradeButton: {fileID: 5689030843647649341}
   upgradeInfoText: {fileID: 1660301872632117378}
   costText: {fileID: 1405887461802175488}
+--- !u!114 &27470939368585364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4643487931993092915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec105aa6c1a4d6a96843964e3d07128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8485718883143618490
 GameObject:
   m_ObjectHideFlags: 0

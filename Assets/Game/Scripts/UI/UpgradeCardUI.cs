@@ -1,20 +1,22 @@
-using DG.Tweening;
+using Game.Scripts.Events;
 using Stats.BaseClasses;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace UI
 {
-  public class UpgradeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+  public class UpgradeCardUI : MonoBehaviour
   {
     [SerializeField] private Button upgradeButton;
     [SerializeField] private TMP_Text upgradeInfoText;
     [SerializeField] private TMP_Text costText;
 
     private StatSOBase _upgradeStat;
+    private IntStat _intStat;
+    private FloatStat _floatStat;
     private int _upgradeIndex;
+    private int _cost;
     
     public void Initialize(StatSOBase upgradeStat, int upgradeIndex)
     {
@@ -24,38 +26,55 @@ namespace UI
       _upgradeStat.OnUpgrade.AddListener(UpdateButton);
       upgradeButton.onClick.AddListener(_upgradeStat.ApplyNextUpgrade);
       
-      IntStat intStat = _upgradeStat as IntStat;
-      if (intStat != null)
+      _intStat = _upgradeStat as IntStat;
+      if (_intStat != null)
       {
-        upgradeInfoText.text = intStat.Upgrades[_upgradeIndex].ToString();
+        upgradeInfoText.text = _intStat.Upgrades[_upgradeIndex].ToString();
+        _cost = _intStat.UpgradeCosts[_upgradeIndex];
+        costText.text = _cost + " gold";
         return;
       }
       
-      FloatStat floatStat = _upgradeStat as FloatStat;
-      if (floatStat != null)
+      _floatStat = _upgradeStat as FloatStat;
+      if (_floatStat != null)
       {
-        upgradeInfoText.text = floatStat.Upgrades[_upgradeIndex].ToString("F1");
+        upgradeInfoText.text = _floatStat.Upgrades[_upgradeIndex].ToString("F1");
+        _cost = _floatStat.UpgradeCosts[_upgradeIndex];
+        costText.text = _cost + " gold";
         return;
+      }
+    }
+
+    private void OnEnable()
+    {
+      G.EventManager.Register<OnGoldBalanceChange>(OnGoldBalanceChange);
+      
+      if (_upgradeStat != null)
+      {
+        UpdateButton();
       }
     }
     
-    public void OnPointerEnter(PointerEventData eventData)
+    private void OnDisable()
     {
-      transform.DOScale(Vector3.one * 1.1f, 0.2f);
+      G.EventManager.Unregister<OnGoldBalanceChange>(OnGoldBalanceChange);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    private void OnGoldBalanceChange(OnGoldBalanceChange e)
     {
-      transform.DOScale(Vector3.one, 0.2f);
+      UpdateButton();
     }
-
+    
     private void UpdateButton()
     {
       int nextUpgradeIndex = _upgradeStat.NextUpgradeIndex;
+      bool canAfford = G.GoldManager.CanAfford(_cost);
       
       upgradeButton.interactable = nextUpgradeIndex == _upgradeIndex;
-        
-      var block = upgradeButton.colors;
+      
+      ColorBlock block = upgradeButton.colors;
+      block.highlightedColor = canAfford ? Color.green : Color.red;
+      block.selectedColor = canAfford ? Color.green : Color.red;
       block.disabledColor = _upgradeIndex < nextUpgradeIndex ? Color.green : Color.gray;
       upgradeButton.colors = block;
     }
