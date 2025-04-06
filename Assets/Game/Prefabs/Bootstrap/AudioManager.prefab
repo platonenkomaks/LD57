@@ -118,4 +118,12 @@ MonoBehaviour:
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
+  - name: Impact
+    clip: {fileID: 8300000, guid: e627903b36b56274fabee6a305cbff95, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}
