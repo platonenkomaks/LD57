@@ -1,5 +1,5 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 
 public class Player : MonoBehaviour
@@ -14,7 +14,12 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-       
+        
+      
+    }
+    private IEnumerator Start ()
+    {
+        yield return null;
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         
         G.PlayerStateMachine = new PlayerStateMachine(
@@ -23,13 +28,16 @@ public class Player : MonoBehaviour
             carryingGoldSprite,
             fightingSprite
         );
-        
-      
-    }
-    private void Start ()
-    {
-     
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
+    }
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Fighting);
+        }
+        
     }
     
 }

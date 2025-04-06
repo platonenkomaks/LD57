@@ -14,8 +14,8 @@ TagManager:
   - UI
   - GroundLayer
   - Player
-  - 
-  - 
+  - Enemy
+  - PlayerBullet
   - 
   - 
   - 

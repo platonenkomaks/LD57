@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2288002041803625291}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5318745301979934633}
   - component: {fileID: 5078078383265795803}
   - component: {fileID: 7164533648015123212}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemySlime
   m_TagString: Untagged
   m_Icon: {fileID: 0}

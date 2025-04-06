@@ -35,8 +35,12 @@ public class PlayerInput : MonoBehaviour
             // Получение ввода для прыжка
             jumpButtonPressed = Input.GetButtonDown("Jump");
             jumpButtonReleased = Input.GetButtonUp("Jump");
+            
         }
-
+        public float GetVerticalInput()
+        {
+            return movementInput.y;
+        }
         public Vector2 GetMovementInput()
         {
             return movementInput;
