@@ -34,7 +34,6 @@ public class EnemyDirector : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float spawnCheckRadius = 1f;
     [SerializeField] private float playerProximityCheckDistance = 5f;
-    [SerializeField] private Transform player;
 
     [Header("События")] public UnityEvent onWaveStart;
     public UnityEvent onWaveComplete;
@@ -54,8 +53,6 @@ public class EnemyDirector : MonoBehaviour
 
     private void Start()
     {
-        player = G.Player.transform;
-
         // Заполняем словарь для отслеживания оставшихся врагов в каждой волне
         for (int i = 0; i < waves.Count; i++)
         {
@@ -207,7 +204,7 @@ public class EnemyDirector : MonoBehaviour
 
         _isSpawning = false;
     }
-    
+
     private void SpawnEnemy(Wave wave)
     {
         if (spawnPoints.Count == 0)
@@ -275,7 +272,7 @@ public class EnemyDirector : MonoBehaviour
         Enemy enemyComponent = enemy.GetComponent<Enemy>();
         if (enemyComponent != null)
         {
-            enemyComponent.player = player;
+            enemyComponent.Init(G.Player.transform);
         }
     }
 
@@ -288,15 +285,9 @@ public class EnemyDirector : MonoBehaviour
         {
             // Проверяем, нет ли препятствий
             bool hasObstacle = Physics2D.OverlapCircle(point.position, spawnCheckRadius, obstacleLayer);
+            
 
-            // Проверяем, не слишком ли близко к игроку
-            bool tooCloseToPlayer = false;
-            if (player != null)
-            {
-                tooCloseToPlayer = Vector2.Distance(point.position, player.position) < playerProximityCheckDistance;
-            }
-
-            if (!hasObstacle && !tooCloseToPlayer)
+            if (!hasObstacle)
             {
                 suitablePoints.Add(point);
             }
@@ -363,28 +354,5 @@ public class EnemyDirector : MonoBehaviour
     {
         return _activeEnemies.Count;
     }
-
-    // Визуализация в редакторе
-    private void OnDrawGizmosSelected()
-    {
-        if (spawnPoints != null)
-        {
-            foreach (var point in spawnPoints)
-            {
-                if (point != null)
-                {
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawWireSphere(point.position, spawnCheckRadius);
-
-                    if (player != null)
-                    {
-                        bool tooClose = Vector2.Distance(point.position, player.position) <
-                                        playerProximityCheckDistance;
-                        Gizmos.color = tooClose ? Color.red : Color.green;
-                        Gizmos.DrawLine(point.position, player.position);
-                    }
-                }
-            }
-        }
-    }
+    
 }
