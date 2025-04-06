@@ -340,6 +340,7 @@ GameObject:
   - component: {fileID: 7506674151195118713}
   - component: {fileID: 5264994343782649416}
   - component: {fileID: 7292556247741428190}
+  - component: {fileID: 4443617004396044341}
   m_Layer: 0
   m_Name: Gold Balance Text
   m_TagString: Untagged
@@ -479,6 +480,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &4443617004396044341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4704958429323168051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 799da989de444ff29d947c8942fe43ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 5264994343782649416}
 --- !u!1 &6188152069536244958
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,7 +680,6 @@ GameObject:
   - component: {fileID: 5854279885416824340}
   - component: {fileID: 5435440786901089338}
   - component: {fileID: 5127270392316441675}
-  - component: {fileID: 3017411725939866649}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -772,20 +785,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8653722452752228801}
   m_CullTransparentMesh: 1
---- !u!114 &3017411725939866649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8653722452752228801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58406a5ee2fa415e8133de462b6c237d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  goldRemainingText: {fileID: 4030937714811451819}
-  goldBalance: {fileID: 5264994343782649416}
 --- !u!1 &8964615398636043228
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,6 +797,7 @@ GameObject:
   - component: {fileID: 1226758676931442467}
   - component: {fileID: 4030937714811451819}
   - component: {fileID: 7391592824364846943}
+  - component: {fileID: 1583306329161781553}
   m_Layer: 0
   m_Name: Goal Remaining Text
   m_TagString: Untagged
@@ -937,6 +937,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &1583306329161781553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964615398636043228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42780c9f81384a72b3cd466fed94981f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 4030937714811451819}
 --- !u!1001 &112462398766939622
 PrefabInstance:
   m_ObjectHideFlags: 0

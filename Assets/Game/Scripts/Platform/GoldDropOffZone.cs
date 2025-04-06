@@ -1,4 +1,3 @@
-using Game.Scripts.Events;
 using UnityEngine;
 
 namespace Platform

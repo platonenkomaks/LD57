@@ -6,6 +6,7 @@ namespace Stats {
   public abstract class StatSO<T> : StatSOBase {
     public T StartValue;
     public List<T> Upgrades;
+    public List<int> UpgradeCosts;
     public Observable<T> Stat { get; private set; } = new();
 
     public override int NextUpgradeIndex => _nextUpgradeIndex;
@@ -29,6 +30,14 @@ namespace Stats {
       ApplyUpgrade(Upgrades[NextUpgradeIndex]);
       _nextUpgradeIndex++;
       OnUpgrade?.Invoke();
+    }
+    
+    public bool CanUpgrade() {
+      if (NextUpgradeIndex >= Upgrades.Count) {
+        return false;
+      }
+      
+      return G.GoldManager.CanAfford(UpgradeCosts[NextUpgradeIndex]);
     }
     
     protected abstract void ApplyUpgrade(T newValue);
