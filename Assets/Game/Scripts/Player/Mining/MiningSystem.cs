@@ -4,21 +4,16 @@ using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 public class MiningSystem : MonoBehaviour
 {
-  
-    public Tilemap removableTilemap; // Разрушаемый слой
-    public  Tilemap goldTilemap; // Слой с золотом
-    
-    [Header("Player")]
-    [SerializeField] private float miningRange = 2f; // Радиус копания
-    [SerializeField] private SpriteRenderer playerSpriteRenderer; // Компонент спрайта игрока
-    [SerializeField] private Sprite normalSprite; // Обычный спрайт гнома
-    [SerializeField] private Sprite miningGoldSprite; // Спрайт гнома, когда он копает золото
     
     [Header("Mining Settings")]
+    [SerializeField] private float miningRange = 2f; // Радиус копания
     [SerializeField] private float miningCooldown = 0.5f; // Задержка между копаниями
     [SerializeField] private float goldMiningDuration = 1f; // Время копания золота
     [SerializeField] private GameObject miningEffectPrefab; // Эффект копания препятствий
     [SerializeField] private GameObject goldMiningEffectPrefab; // Эффект копания золота
+    
+    public Tilemap removableTilemap; // Разрушаемый слой
+    public  Tilemap goldTilemap; // Слой с золотом
     
     
     private bool _canMine = true; // Может ли игрок копать
@@ -35,20 +30,6 @@ public class MiningSystem : MonoBehaviour
     private void Start()
     {
         _mainCamera = Camera.main;
-    
-        
-        // Проверяем наличие компонентов
-        if (playerSpriteRenderer == null)
-        {
-            playerSpriteRenderer = GetComponent<SpriteRenderer>();
-            Debug.LogWarning("PlayerSpriteRenderer не задан, используется компонент на текущем объекте");
-        }
-        
-        // Устанавливаем начальный спрайт
-        if (playerSpriteRenderer != null && normalSprite != null)
-        {
-            playerSpriteRenderer.sprite = normalSprite;
-        }
     }
     
     private void Update()
@@ -58,6 +39,9 @@ public class MiningSystem : MonoBehaviour
         {
             FinishGoldMining();
         }
+        
+        if (G.PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerState.Mining)
+            return;
         
         // Если игрок копает золото, то не может копать препятствия
         if (!_canMine || _isMiningGold)
@@ -73,57 +57,54 @@ public class MiningSystem : MonoBehaviour
     private void TryMine()
     {
         // Проверка кулдауна
-        if (Time.time - _lastMiningTime < miningCooldown)
-            return;
+        if (Time.time - _lastMiningTime < miningCooldown) return;
+        
+        G.AudioManager.Play("Axe");
         
         // Получаем позицию мыши в мировых координатах
         Vector2 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
         
         // Проверяем, находится ли позиция в пределах радиуса копания
-        if (Vector2.Distance(mouseWorldPos, transform.position) > miningRange)
-        {
-            Debug.Log("Слишком далеко для копания!");
-            return;
-        }
+        if (Vector2.Distance(mouseWorldPos, transform.position) > miningRange) return;
         
         // Получаем позицию клетки тайлмапа
-        Vector3Int obstaclesCellPosition = removableTilemap.WorldToCell(mouseWorldPos);
-        Vector3Int goldCellPosition = goldTilemap.WorldToCell(mouseWorldPos);
+        var obstaclesCellPosition = removableTilemap.WorldToCell(mouseWorldPos);
+        var goldCellPosition = goldTilemap.WorldToCell(mouseWorldPos);
         
         // Сначала проверяем наличие золота
-        TileBase goldTile = goldTilemap.GetTile(goldCellPosition);
-        if (goldTile != null)
+        var goldTile = goldTilemap.GetTile(goldCellPosition);
+        if (goldTile)
         {
             MineGold(goldCellPosition);
             return;
         }
         
         // Если золота нет, проверяем наличие препятствия
-        TileBase obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
-        if (obstacleTile != null)
-        {
-            MineObstacle(obstaclesCellPosition);
-            return;
-        }
+        var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
+        if (!obstacleTile) return;
+        MineObstacle(obstaclesCellPosition);
     }
     
     private void MineObstacle(Vector3Int cellPosition)
     {
+        
         // Удаляем тайл с карты препятствий
         removableTilemap.SetTile(cellPosition, null);
         
         // Создаем эффект копания
-        if (miningEffectPrefab != null)
+        if (miningEffectPrefab)
         {
-            Vector3 effectPosition = removableTilemap.GetCellCenterWorld(cellPosition);
+            var effectPosition = removableTilemap.GetCellCenterWorld(cellPosition);
             Instantiate(miningEffectPrefab, effectPosition, Quaternion.identity);
         }
+        // Проигрываем звук копания препятствия
+        G.AudioManager.Play("Impact");
          
         // Устанавливаем время последнего копания
         _lastMiningTime = Time.time;
         
-        Debug.Log("Препятствие уничтожено!");
     }
+    
     
     private void MineGold(Vector3Int cellPosition)
     {
@@ -137,15 +118,14 @@ public class MiningSystem : MonoBehaviour
             Instantiate(goldMiningEffectPrefab, effectPosition, Quaternion.identity);
         }
         
-        // Проигрываем звук
-       
+        // Проигрываем звук копания золота
+        G.AudioManager.Play("Impact");
         
         // Устанавливаем время последнего копания
         _lastMiningTime = Time.time;
         
         // Игрок переходит в состояние копания золота
         StartGoldMining();
-        
         
         Debug.Log("Золото добыто!");
     }
@@ -154,30 +134,18 @@ public class MiningSystem : MonoBehaviour
     {
         _isMiningGold = true;
         _canMine = false;
-        
-        
-        
         // Устанавливаем время окончания копания золота
         _goldMiningEndTime = Time.time + goldMiningDuration;
-        
-        Debug.Log($"Игрок начал копать золото, будет занят {goldMiningDuration} секунд");
+       
     }
     
     private void FinishGoldMining()
     {
         _isMiningGold = false;
         _canMine = false;
-        
-        // Меняем спрайт гнома
-        if (playerSpriteRenderer != null && miningGoldSprite != null)
-        {
-            playerSpriteRenderer.sprite = miningGoldSprite;
-        }
-        
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Carrying);
     }
     
-   
     
     // Для отображения радиуса копания в редакторе
     private void OnDrawGizmosSelected()

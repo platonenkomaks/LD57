@@ -2,17 +2,24 @@ using Game.Scripts.Events;
 
 public static class G
 {
+    
+    public static Player Player;
+    
+    
     public static UIManager UIManager;
 
+    
+    
     // Managers
     public static GameController GameController;
     public static PlayerInput PlayerInput;
     public static PlayerController PlayerController;
     public static SceneLoader SceneLoader;
     public static readonly EventManager EventManager = new();
+    
     public static PlayerStateMachine PlayerStateMachine;
     
-    
+     
     // Current level
     public static LevelManager LevelManager;
 

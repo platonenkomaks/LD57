@@ -1,3 +1,4 @@
+using System.Collections;
 using Game.Scripts.Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
@@ -16,7 +17,6 @@ public class ElevatorPlatform : MonoBehaviour
     private bool isMoving = false;
     private Vector2 targetPosition;
 
-    private bool isParking = false;
 
     void Update()
     {
@@ -24,15 +24,7 @@ public class ElevatorPlatform : MonoBehaviour
         {
             Vector2 currentPosition = transform.position;
             transform.position = Vector2.MoveTowards(currentPosition, targetPosition, currentSpeed * Time.deltaTime);
-
-            if (Vector2.Distance(transform.position, targetPosition) < 90f && !isParking)
-            {
-                isParking = true;
-
-                G.AudioManager.Stop("ElevatorStop");
-                G.AudioManager.Stop("ElevatorStart");
-                G.AudioManager.Play("ElevatorMoving");
-            }
+            
 
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
@@ -41,29 +33,48 @@ public class ElevatorPlatform : MonoBehaviour
         }
     }
 
+
     public void StartDescent()
     {
+        G.AudioManager.Stop("ElevatorStart");
+        G.AudioManager.Play("ElevatorStart");
+
+        StartCoroutine(DescentAfterDelay(2f));
+    }
+
+    public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
+    {
+        yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, bottomY);
         currentSpeed = baseSpeed;
         isMoving = true;
+        G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
-        G.AudioManager.Play("ElevatorStart");
+        G.AudioManager.Play("ElevatorMoving");
     }
-
 
     public void StartAscent()
     {
+        G.AudioManager.Stop("ElevatorStart");
+        G.AudioManager.Play("ElevatorStart");
+
+        StartCoroutine(AscentAfterDelay(2f));
+        G.AudioManager.Stop("ElevatorStop");
+        G.AudioManager.Stop("ElevatorStart");
+        G.AudioManager.Play("ElevatorMoving");
+    }
+
+    public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
+    {
+        yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, topY);
         currentSpeed = Mathf.Max(0.1f, baseSpeed - platformWeight * weightPenalty);
         isMoving = true;
-        G.AudioManager.Stop("ElevatorStart");
-        G.AudioManager.Play("ElevatorStart");
     }
 
     public void Stop()
     {
         isMoving = false;
-        isParking = false;
         currentSpeed = 0f;
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Stop("ElevatorMoving");
@@ -73,7 +84,7 @@ public class ElevatorPlatform : MonoBehaviour
     private void Park()
     {
         Stop();
-        
+
         if (Mathf.Approximately(targetPosition.y, topY))
             OnArriveSurface();
         else
@@ -87,12 +98,12 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void SetTopY(float y) => topY = y;
     public void SetBottomY(float y) => bottomY = y;
-    
+
     private void OnArriveMine()
     {
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Mining });
     }
-    
+
     private void OnArriveSurface()
     {
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });

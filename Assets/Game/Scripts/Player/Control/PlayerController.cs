@@ -79,6 +79,8 @@ public class PlayerController : MonoBehaviour
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpForce);
             _isJumping = true;
             _jumpBufferCounter = 0f;
+            G.AudioManager.Stop("PlayerJump");
+            G.AudioManager.Play("PlayerJump");
         }
 
         // Контроль высоты прыжка в зависимости от удержания кнопки

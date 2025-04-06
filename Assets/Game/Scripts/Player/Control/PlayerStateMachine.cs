@@ -1,47 +1,70 @@
 using Game.Scripts.Events;
+using Game.Scripts.StateMachine;
+using UnityEngine;
 
-using Game.Scripts.StateMachine ;
 
-
-    public class PlayerStateMachine : StateMachine
+public class PlayerStateMachine : StateMachine
+{
+    public enum PlayerState
     {
-        public enum PlayerState
-        {
-            Mining,
-            Carrying,
-            Fighting
-        }
-        
-        public PlayerStateMachine()
-        {
-            G.PlayerStateMachine = this;
-        }
-    
-        private readonly MiningPlayerState _miningPlayerState = new();
-        private readonly CarryingPlayerState _carryingPlayerState = new();
-        private readonly FightingPlayerState _fightingPlayerState = new();
-    
-
-        public void SetState(PlayerState newState)
-        {
-        
-            switch (newState)
-            {
-                case PlayerState.Mining:
-                    ChangeState(_miningPlayerState);
-                    break;
-                case PlayerState.Carrying:
-                    ChangeState(_carryingPlayerState);
-                    break;
-                case PlayerState.Fighting:
-                    ChangeState(_fightingPlayerState);
-                    break;
-          
-            }
-      
-            G.EventManager.Trigger(new OnPlayerStateChangeEvent()
-            {
-                State = newState
-            });
-        }
+        Mining,
+        Carrying,
+        Fighting
     }
+
+    public PlayerState CurrentState { get; private set; }
+
+    public static SpriteRenderer PlayerSpriteRenderer;
+    public static Sprite MiningGoldSprite;
+    public static Sprite CarryingGoldSprite;
+    public static Sprite FightingSprite;
+
+
+    private readonly MiningPlayerState _miningPlayerState;
+    private readonly CarryingPlayerState _carryingPlayerState;
+    private readonly FightingPlayerState _fightingPlayerState;
+
+    public PlayerStateMachine(
+        SpriteRenderer playerSpriteRenderer,
+        Sprite miningGoldSprite,
+        Sprite carryingGoldSprite,
+        Sprite fightingSprite
+    )
+    {
+        
+        G.PlayerStateMachine = this;
+        PlayerSpriteRenderer = playerSpriteRenderer;
+        MiningGoldSprite = miningGoldSprite;
+        CarryingGoldSprite = carryingGoldSprite;
+        FightingSprite = fightingSprite;
+        
+        _miningPlayerState = new(PlayerSpriteRenderer, MiningGoldSprite);
+        _carryingPlayerState = new();
+        _fightingPlayerState = new(PlayerSpriteRenderer);
+    }
+
+
+    public void SetState(PlayerState newState)
+    {
+        switch (newState)
+        {
+            case PlayerState.Mining:
+                ChangeState(_miningPlayerState);
+                CurrentState = PlayerState.Mining;
+                break;
+            case PlayerState.Carrying:
+                ChangeState(_carryingPlayerState);
+                CurrentState = PlayerState.Carrying;
+                break;
+            case PlayerState.Fighting:
+                ChangeState(_fightingPlayerState);
+                CurrentState = PlayerState.Fighting;
+                break;
+        }
+
+        G.EventManager.Trigger(new OnPlayerStateChangeEvent()
+        {
+            State = newState
+        });
+    }
+}
