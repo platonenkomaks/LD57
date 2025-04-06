@@ -94,11 +94,27 @@ MonoBehaviour:
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
-  - name: Lever
-    clip: {fileID: 8300000, guid: 9955eafb6f32cf440a31b0dab80b386f, type: 3}
+  - name: LightDysfunction
+    clip: {fileID: 8300000, guid: 358199662ecf4494f9dbca9c31bf46ce, type: 3}
     category: 1
     volume: 0.5
-    pitch: 1.03
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: lowBatteryBeep
+    clip: {fileID: 8300000, guid: 1115bf07c58970e41b2a5d6c2d4c8eef, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: LightSwitch
+    clip: {fileID: 8300000, guid: 1984ef66f8deb9349976c4173cc27379, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
