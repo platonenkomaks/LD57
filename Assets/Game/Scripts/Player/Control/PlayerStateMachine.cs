@@ -40,7 +40,7 @@ public class PlayerStateMachine : StateMachine
         
         _miningPlayerState = new(PlayerSpriteRenderer, MiningGoldSprite);
         _carryingPlayerState = new();
-        _fightingPlayerState = new(PlayerSpriteRenderer);
+        _fightingPlayerState = new(G.PlayerController,PlayerSpriteRenderer);
     }
 
 

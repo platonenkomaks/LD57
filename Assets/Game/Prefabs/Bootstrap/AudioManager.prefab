@@ -126,4 +126,12 @@ MonoBehaviour:
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
+  - name: Shoot
+    clip: {fileID: 8300000, guid: 6ff2d057b954d3245b01cd0552bab355, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}

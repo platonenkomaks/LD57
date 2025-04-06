@@ -1,5 +1,6 @@
-using Game.Scripts.StateMachine;
+using Unity.VisualScripting;
 using UnityEngine;
+using IState = Game.Scripts.StateMachine.IState;
 
 public class MiningPlayerState : IState
 {
@@ -19,6 +20,7 @@ public class MiningPlayerState : IState
 
     public void Enter()
     {
+        G.Player.GetComponent<Animator>().SetInteger("State",1);
         Debug.Log("Entering Mining State");
         
         if (_playerSpriteRenderer == null)

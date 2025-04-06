@@ -10,6 +10,8 @@ namespace GameControl
     [SerializeField] private FloatStat batteryPower;
     [SerializeField] private FloatStat shotgunCooldown;
 
+    public float ShootgunCooldown => shotgunCooldown.Stat.Value;
+    
     private void Start()
     {
       G.StatSystem = this;

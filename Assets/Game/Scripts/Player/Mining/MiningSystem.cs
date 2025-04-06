@@ -44,6 +44,8 @@ public class MiningSystem : MonoBehaviour
             FinishGoldMining();
         }
 
+        if (G.PlayerStateMachine == null)
+            return;
         if (G.PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerState.Mining)
             return;
 
