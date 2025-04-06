@@ -1,3 +1,4 @@
+using System;
 using Stats.BaseClasses;
 using UnityEngine;
 
@@ -15,6 +16,11 @@ namespace GameControl
       elevatorSpeed.Initialize();
       batteryPower.Initialize();
       shotgunCooldown.Initialize();
+    }
+
+    private void OnDestroy()
+    {
+      G.StatSystem = null;
     }
   }
 }

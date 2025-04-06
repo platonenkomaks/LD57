@@ -1,10 +1,10 @@
 using System;
+using Game.Scripts.Events;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 public class MiningSystem : MonoBehaviour
 {
-    
     [Header("Mining Settings")]
     [SerializeField] private float miningRange = 2f; // Радиус копания
     [SerializeField] private float miningCooldown = 0.5f; // Задержка между копаниями
@@ -13,7 +13,7 @@ public class MiningSystem : MonoBehaviour
     [SerializeField] private GameObject goldMiningEffectPrefab; // Эффект копания золота
     
     public Tilemap removableTilemap; // Разрушаемый слой
-    public  Tilemap goldTilemap; // Слой с золотом
+    public Tilemap goldTilemap; // Слой с золотом
     
     
     private bool _canMine = true; // Может ли игрок копать
@@ -30,6 +30,8 @@ public class MiningSystem : MonoBehaviour
     private void Start()
     {
         _mainCamera = Camera.main;
+        int goldCount = CountGold();
+        G.GoldManager.SetGoldRemaining(goldCount);
     }
     
     private void Update()
@@ -52,6 +54,20 @@ public class MiningSystem : MonoBehaviour
         {
             TryMine();
         }
+    }
+
+    private int CountGold()
+    {
+        int count = 0;
+        foreach (var pos in goldTilemap.cellBounds.allPositionsWithin)
+        {
+            if (goldTilemap.HasTile(pos))
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
     
     private void TryMine()

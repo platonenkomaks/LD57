@@ -11,6 +11,16 @@ namespace Game.Scripts.Events
   {
     public GameLoopStateMachine.GameLoopState State;
   }
+
+  public struct OnRemainingGoldCount : IEvent
+  {
+    public int RemainingGoldCount;
+  }
+
+  public struct OnGoldBalanceChange : IEvent
+  {
+    public int NewBalance;
+  }
   
   public struct OnPlayerStateChangeEvent : IEvent
   {
