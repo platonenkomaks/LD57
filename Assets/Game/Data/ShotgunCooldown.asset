@@ -15,8 +15,8 @@ MonoBehaviour:
   StatName: Shotgun Cooldown
   Image: {fileID: 0}
   Label: {fileID: 0}
-  NeedUnlock: 0
+  StartValue: 5
   Upgrades:
-  - 5
   - 4
+  - 3.5
   - 3

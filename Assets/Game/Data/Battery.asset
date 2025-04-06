@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18737cc0d5334c0fbb6c1c2bf5606711, type: 3}
   m_Name: Battery
   m_EditorClassIdentifier: 
-  StatName: 
+  StatName: Battery
   Image: {fileID: 0}
   Label: {fileID: 0}
-  NeedUnlock: 0
+  StartValue: 60
   Upgrades:
-  - 100
-  - 150
-  - 200
+  - 75
+  - 90
+  - 120

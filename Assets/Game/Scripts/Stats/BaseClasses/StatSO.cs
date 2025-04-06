@@ -4,32 +4,31 @@ using Utilities;
 
 namespace Stats {
   public abstract class StatSO<T> : StatSOBase {
+    public T StartValue;
     public List<T> Upgrades;
     public Observable<T> Stat { get; private set; } = new();
 
-    public override bool IsMaxedOut => CurrentUpgradeIndex >= Upgrades.Count;
+    public override int NextUpgradeIndex => _nextUpgradeIndex;
+    private int _nextUpgradeIndex;
 
-    public T NextUpgradeValue => Upgrades[CurrentUpgradeIndex];
-    protected int CurrentUpgradeIndex;
-
-    public override void Initialize(int startUpgradeIndex = 0) {
-      IsUnlocked.Value = !NeedUnlock || CurrentUpgradeIndex > 0;
+    public override void Initialize(int currentUpgradeIndex = -1) {
+      _nextUpgradeIndex = currentUpgradeIndex + 1;
+      ApplyUpgrade(StartValue);
       
-      CurrentUpgradeIndex = startUpgradeIndex;
-      Upgrade();
+      if (currentUpgradeIndex >= 0)
+      {
+        ApplyNextUpgrade();
+      }
     }
 
-    public override void Upgrade() {
-      if (NeedUnlock && !IsUnlocked) {
+    public override void ApplyNextUpgrade() {
+      if (NextUpgradeIndex >= Upgrades.Count) {
         return;
       }
       
-      if (CurrentUpgradeIndex >= Upgrades.Count) {
-        return;
-      }
-
-      ApplyUpgrade(Upgrades[CurrentUpgradeIndex]);
-      CurrentUpgradeIndex++;
+      ApplyUpgrade(Upgrades[NextUpgradeIndex]);
+      _nextUpgradeIndex++;
+      OnUpgrade?.Invoke();
     }
     
     protected abstract void ApplyUpgrade(T newValue);

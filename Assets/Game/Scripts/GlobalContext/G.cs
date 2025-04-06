@@ -1,4 +1,5 @@
 using Game.Scripts.Events;
+using GameControl;
 
 public static class G
 {
@@ -10,6 +11,7 @@ public static class G
     public static PlayerController PlayerController;
     public static SceneLoader SceneLoader;
     public static readonly EventManager EventManager = new();
+    public static StatSystem StatSystem;
 
     // Current level
     public static LevelManager LevelManager;

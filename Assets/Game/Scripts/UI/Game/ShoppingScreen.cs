@@ -1,15 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Scripts.UI.Game
+namespace UI.Game
 {
   public class ShoppingScreen : UIScreen
   {
     [SerializeField] private Button shopScreenButton;
-    
-    private void Awake()
+
+    protected override void Start()
     {
-       shopScreenButton.onClick.AddListener(() => G.UIManager.ShowScreen("ShopScreen"));
+      base.Start();
+      shopScreenButton.onClick.AddListener(() => G.UIManager.ShowScreen("ShopScreen"));
     }
   }
 }

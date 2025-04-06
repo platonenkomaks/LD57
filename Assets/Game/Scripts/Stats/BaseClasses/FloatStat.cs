@@ -6,6 +6,7 @@ namespace Stats.BaseClasses {
     
     protected override void ApplyUpgrade(float newValue) {
       Stat.Value = newValue;
+      OnUpgrade?.Invoke();
     }
   }
 }

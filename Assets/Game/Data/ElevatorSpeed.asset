@@ -15,8 +15,8 @@ MonoBehaviour:
   StatName: Elevator Speed
   Image: {fileID: 0}
   Label: {fileID: 0}
-  NeedUnlock: 0
+  StartValue: 2
   Upgrades:
-  - 2
   - 4
   - 6
+  - 8

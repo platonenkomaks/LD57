@@ -5,6 +5,7 @@ namespace Stats.BaseClasses {
   public class IntStat : StatSO<int> {
     protected override void ApplyUpgrade(int newValue) {
       Stat.Value = newValue;
+      OnUpgrade?.Invoke();
     }
   }
 }
