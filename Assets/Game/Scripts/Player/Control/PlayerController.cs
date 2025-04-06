@@ -79,6 +79,8 @@ public class PlayerController : MonoBehaviour
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpForce);
             _isJumping = true;
             _jumpBufferCounter = 0f;
+            G.AudioManager.Stop("PlayerJump");
+            G.AudioManager.Play("PlayerJump");
         }
 
         // Контроль высоты прыжка в зависимости от удержания кнопки
@@ -127,11 +129,7 @@ public class PlayerController : MonoBehaviour
         // Применение движения
         _rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
-        // Воспроизведение звука шага, если игрок движется по земле
-        if (_isGrounded && Mathf.Abs(horizontalInput) > 0.01f)
-        {
-            // _randomSoundPlayer.PlayRandomSound(0);
-        }
+       
 
         _rb.gravityScale = _rb.linearVelocity.y switch
         {

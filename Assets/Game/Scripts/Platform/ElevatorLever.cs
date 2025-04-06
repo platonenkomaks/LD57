@@ -1,3 +1,4 @@
+using System.Collections;
 using Game.Scripts.Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
@@ -15,20 +16,36 @@ public class ElevatorLever : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
+            G.AudioManager.Play("Lever");
+
+
             if (isDescending)
             {
-                platform.StartDescent();
-                OnDescend();
+                StartCoroutine(DescentAfterDelay(1f));
             }
             else
             {
-                platform.StartAscent();
-                OnAscend();
+                StartCoroutine(AscentAfterDelay(1f));
             }
 
             isDescending = !isDescending;
         }
     }
+
+    public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
+    {
+        yield return new WaitForSeconds(seconds);
+        platform.StartDescent();
+        OnDescend();
+    }
+
+    public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
+    {
+        yield return new WaitForSeconds(seconds);
+        platform.StartAscent();
+        OnAscend();
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -54,7 +71,7 @@ public class ElevatorLever : MonoBehaviour
     {
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Descend });
     }
-    
+
     private void OnAscend()
     {
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Ascend });

@@ -70,4 +70,52 @@ MonoBehaviour:
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
+  - name: PlayerJump
+    clip: {fileID: 8300000, guid: 88a726201ec48354a9c461c471dad8ff, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: Axe
+    clip: {fileID: 8300000, guid: dbf15689597863d4180dffb0c21628f8, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: Lever
+    clip: {fileID: 8300000, guid: 9955eafb6f32cf440a31b0dab80b386f, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: LightDysfunction
+    clip: {fileID: 8300000, guid: 358199662ecf4494f9dbca9c31bf46ce, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: lowBatteryBeep
+    clip: {fileID: 8300000, guid: 1115bf07c58970e41b2a5d6c2d4c8eef, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: LightSwitch
+    clip: {fileID: 8300000, guid: 1984ef66f8deb9349976c4173cc27379, type: 3}
+    category: 1
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}
