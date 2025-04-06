@@ -14,7 +14,7 @@ namespace Platform
         return;
       
       G.GoldManager.AddGold(1);
-      G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
+      G.MiningSystem.EnableMining();
     }
   }
 }

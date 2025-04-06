@@ -3,19 +3,21 @@ using Game.Scripts.Events;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
+
 public class MiningSystem : MonoBehaviour
 {
     [Header("Mining Settings")]
     [SerializeField] private float miningRange = 2f; // Радиус копания
+
     [SerializeField] private float miningCooldown = 0.5f; // Задержка между копаниями
     [SerializeField] private float goldMiningDuration = 1f; // Время копания золота
     [SerializeField] private GameObject miningEffectPrefab; // Эффект копания препятствий
     [SerializeField] private GameObject goldMiningEffectPrefab; // Эффект копания золота
-    
+
     public Tilemap removableTilemap; // Разрушаемый слой
     public Tilemap goldTilemap; // Слой с золотом
-    
-    
+
+
     private bool _canMine = true; // Может ли игрок копать
     private bool _isMiningGold = false; // Копает ли игрок золото
     private float _lastMiningTime; // Время последнего копания
@@ -33,7 +35,7 @@ public class MiningSystem : MonoBehaviour
         int goldCount = CountGold();
         G.GoldManager.SetGoldRemaining(goldCount);
     }
-    
+
     private void Update()
     {
         // Проверяем, закончилось ли время копания золота
@@ -41,19 +43,25 @@ public class MiningSystem : MonoBehaviour
         {
             FinishGoldMining();
         }
-        
+
         if (G.PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerState.Mining)
             return;
-        
+
         // Если игрок копает золото, то не может копать препятствия
         if (!_canMine || _isMiningGold)
             return;
-        
+
         // Проверяем, нажата ли левая кнопка мыши
         if (Input.GetMouseButtonDown(0))
         {
             TryMine();
         }
+    }
+
+    public void EnableMining()
+    {
+        _canMine = true;
+        G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
     }
 
     private int CountGold()
