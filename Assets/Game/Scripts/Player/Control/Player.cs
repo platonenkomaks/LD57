@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [field: SerializeField] public BatteryLight BatteryLight { get; private set; } 
+    
     [Header("Player States Sprites")] 
     public Sprite miningGoldSprite;
     public Sprite carryingGoldSprite;

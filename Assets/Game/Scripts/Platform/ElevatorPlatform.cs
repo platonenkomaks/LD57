@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ElevatorPlatform : MonoBehaviour
 {
+    [SerializeField] private ElevatorLever lever;
     public float baseSpeed = 2f;
     public float platformWeight = 1f;
     public float weightPenalty = 0.5f;
@@ -86,9 +87,9 @@ public class ElevatorPlatform : MonoBehaviour
         Stop();
 
         if (Mathf.Approximately(targetPosition.y, topY))
-            OnArriveSurface();
+            OnArriveToSurface();
         else
-            OnArriveMine();
+            OnArriveToMine();
     }
 
 
@@ -99,13 +100,15 @@ public class ElevatorPlatform : MonoBehaviour
     public void SetTopY(float y) => topY = y;
     public void SetBottomY(float y) => bottomY = y;
 
-    private void OnArriveMine()
+    private void OnArriveToMine()
     {
+        lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Mining });
     }
 
-    private void OnArriveSurface()
+    private void OnArriveToSurface()
     {
+        lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
     }
 }

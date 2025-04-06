@@ -12,13 +12,16 @@ public class ElevatorLever : MonoBehaviour
     private bool playerInRange = false;
     private bool isDescending = true;
 
+    public bool isLocked = false;
+
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (!isLocked && playerInRange && Input.GetKeyDown(KeyCode.S))
         {
             G.AudioManager.Play("Lever");
-
-
+            isLocked = true;
+            hintUI.SetActive(false);
+            
             if (isDescending)
             {
                 StartCoroutine(DescentAfterDelay(1f));
@@ -49,7 +52,7 @@ public class ElevatorLever : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (!isLocked && other.CompareTag("Player"))
         {
             playerInRange = true;
             if (hintUI != null)
@@ -59,7 +62,7 @@ public class ElevatorLever : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (!isLocked && other.CompareTag("Player"))
         {
             playerInRange = false;
             if (hintUI != null)

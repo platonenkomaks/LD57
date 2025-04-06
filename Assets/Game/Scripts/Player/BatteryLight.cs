@@ -17,7 +17,7 @@ public class BatteryLight : MonoBehaviour
     [Header("Battery Drain Settings")] [SerializeField]
     private AnimationCurve drainCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 
-    [SerializeField] private bool isDraining = true;
+    [HideInInspector] public bool isDraining = false;
 
     [Header("Battery Flicker")] [SerializeField]
     private bool enableFlicker = true;
@@ -75,7 +75,7 @@ public class BatteryLight : MonoBehaviour
     {
         if (!isDraining)
             return;
-
+        
         // Уменьшаем оставшееся время работы батареи
         remainingBatteryLife -= Time.deltaTime;
         remainingBatteryLife = Mathf.Max(0f, remainingBatteryLife);
@@ -237,8 +237,8 @@ public class BatteryLight : MonoBehaviour
 
         if (!targetLight.enabled && currentBatteryCharge > 0)
         {
+            targetLight.intensity = originalIntensity;
             targetLight.enabled = true;
-            isDraining = true;
             isInCriticalMode = false;
         }
     }

@@ -188,7 +188,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  isDraining: 1
+  isDraining: 0
   enableFlicker: 1
   flickerThreshold: 0.3
   flickerIntensity: 0.2
@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c40662f8389a4286ba97b83e36a1e08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <BatteryLight>k__BackingField: {fileID: 4657527056355586755}
   miningGoldSprite: {fileID: 21300000, guid: 6b27e2831ee2dac45891c0685357c1f9, type: 3}
   carryingGoldSprite: {fileID: 21300000, guid: 8a31b1f7231ef6946941038338e05503, type: 3}
   fightingSprite: {fileID: 21300000, guid: 8a31b1f7231ef6946941038338e05503, type: 3}
@@ -317,7 +318,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 0.1
   m_AngularDamping: 0.05
   m_GravityScale: 60
   m_Material: {fileID: 0}
@@ -327,9 +328,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_Interpolate: 1
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &-2781374523353917032
 BoxCollider2D:
