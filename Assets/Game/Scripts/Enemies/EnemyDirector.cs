@@ -104,6 +104,11 @@ public class EnemyDirector : MonoBehaviour
         }
     }
 
+    public void StopAllWaves()
+    {
+        StopAllCoroutines();
+    }
+
     // Перезапуск волн с самого начала
     public void RestartWaves()
     {
