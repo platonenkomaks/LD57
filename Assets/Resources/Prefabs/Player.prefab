@@ -507,6 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miningRange: 1
+  detectionRange: 3
   miningCooldown: 0.5
   goldMiningDuration: 1
   miningEffectPrefab: {fileID: 0}

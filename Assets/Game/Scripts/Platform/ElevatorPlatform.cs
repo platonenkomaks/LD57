@@ -9,7 +9,7 @@ public class ElevatorPlatform : MonoBehaviour
     public float baseSpeed = 2f;
     public float platformWeight = 1f;
     public float weightPenalty = 0.5f;
-
+    public Cog cog;
 
     public float topY = 100f; // Цель при подъеме
     public float bottomY = 0f; // Цель при спуске
@@ -25,12 +25,16 @@ public class ElevatorPlatform : MonoBehaviour
         {
             Vector2 currentPosition = transform.position;
             transform.position = Vector2.MoveTowards(currentPosition, targetPosition, currentSpeed * Time.deltaTime);
-            
+            cog.StartRotation();
 
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
                 Park();
             }
+        }
+        else
+        {
+            cog.StopRotation();
         }
     }
 
@@ -45,6 +49,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
+        
         yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, bottomY);
         currentSpeed = baseSpeed;
