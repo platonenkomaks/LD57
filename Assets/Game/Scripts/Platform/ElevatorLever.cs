@@ -4,16 +4,27 @@ using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 
+
 public class ElevatorLever : MonoBehaviour
 {
     public ElevatorPlatform platform;
     public GameObject hintUI; // UI-объект с текстом подсказки
 
+    public Sprite leverDownSprite;
+    public Sprite leverUpSprite;
+    
     private bool playerInRange = false;
     private bool isDescending = true;
-
+    private SpriteRenderer _spriteRenderer;
     public bool isLocked = false;
 
+    
+    private void Awake()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if (hintUI != null)
+            hintUI.SetActive(false);
+    }
     void Update()
     {
         if (!isLocked && playerInRange && Input.GetKeyDown(KeyCode.S))
@@ -21,7 +32,7 @@ public class ElevatorLever : MonoBehaviour
             G.AudioManager.Play("Lever");
             isLocked = true;
             hintUI.SetActive(false);
-            
+
             if (isDescending)
             {
                 StartCoroutine(DescentAfterDelay(1f));
@@ -39,12 +50,14 @@ public class ElevatorLever : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         platform.StartDescent();
+        _spriteRenderer.sprite = leverDownSprite;
         OnDescend();
     }
 
     public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
         yield return new WaitForSeconds(seconds);
+        _spriteRenderer.sprite = leverUpSprite;
         platform.StartAscent();
         OnAscend();
     }
