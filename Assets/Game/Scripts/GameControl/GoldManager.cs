@@ -11,7 +11,7 @@ namespace GameControl
     /// <summary>
     /// How much gold is needed for the Win.
     /// </summary>
-    public int GoldGoal { get; private set; } = 2;
+    public int GoldGoal { get; private set; } = 50;
 
     /// <summary>
     /// How much gold has been collected.
@@ -54,12 +54,6 @@ namespace GameControl
       {
         G.EventManager.Trigger(new OnGameStateChangedEvent { State = GameLoopStateMachine.GameLoopState.Win });
       }
-    }
-
-    private void Update()
-    {
-      if (Input.GetKeyDown(KeyCode.F))
-        G.EventManager.Trigger(new OnGameStateChangedEvent { State = GameLoopStateMachine.GameLoopState.Win });
     }
 
     public bool CanAfford(int amount) => GoldBalance >= amount;
