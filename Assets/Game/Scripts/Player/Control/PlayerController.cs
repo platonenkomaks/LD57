@@ -223,4 +223,17 @@ public class PlayerController : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
+        
+        public void Die()
+        {
+            _playerAnimator.SetTrigger("Dead");
+        }
+        
+        public void onDeadAnimationEnd()
+        {
+            Debug.Log("Death animation ended");
+           // Здесь можно добавить логику, которая будет выполняться после окончания анимации смерти
+            // Например, перезапуск уровня или переход на экран Game Over
+           // G.GameManager.RestartLevel();
+        }
     }
