@@ -168,7 +168,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 1.07
+  m_EdgeRadius: 0
 --- !u!95 &5318745301979934633
 Animator:
   serializedVersion: 7
@@ -238,7 +238,6 @@ MonoBehaviour:
   attackCooldown: 1
   retreatDistance: 3
   player: {fileID: 0}
-  rb: {fileID: 5078078383265795803}
   spriteRenderer: {fileID: 1909920800990191547}
   animator: {fileID: 5318745301979934633}
   canAttack: 1
