@@ -25,6 +25,7 @@ public class GoldView : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (G.GoldManager == null) return;
         G.GoldManager.OnGoldBalanceChange -= UpdateGoldBalance;
     }
 
