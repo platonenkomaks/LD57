@@ -25,7 +25,6 @@ public class MiningPlayerState : IState
     {
         _playerController.DisableCombatMode();
         G.Player.GetComponent<Animator>().SetInteger("State",1);
-        Debug.Log("Entering Mining State");
         
         if (_playerSpriteRenderer == null)
         {

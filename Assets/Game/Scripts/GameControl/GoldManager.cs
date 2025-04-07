@@ -1,5 +1,6 @@
 using System;
 using Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 using Utilities;
 
@@ -10,7 +11,7 @@ namespace GameControl
     /// <summary>
     /// How much gold is needed for the Win.
     /// </summary>
-    public int GoldGoal { get; private set; } = 50;
+    public int GoldGoal { get; private set; } = 2;
 
     /// <summary>
     /// How much gold has been collected.
@@ -48,6 +49,17 @@ namespace GameControl
       goldGoalProgress01.Value = (float)GoldGoalProgress / GoldGoal;
       
       OnGoldBalanceChange?.Invoke();
+      
+      if (GoldGoalProgress >= GoldGoal)
+      {
+        G.EventManager.Trigger(new OnGameStateChangedEvent { State = GameLoopStateMachine.GameLoopState.Win });
+      }
+    }
+
+    private void Update()
+    {
+      if (Input.GetKeyDown(KeyCode.F))
+        G.EventManager.Trigger(new OnGameStateChangedEvent { State = GameLoopStateMachine.GameLoopState.Win });
     }
 
     public bool CanAfford(int amount) => GoldBalance >= amount;
