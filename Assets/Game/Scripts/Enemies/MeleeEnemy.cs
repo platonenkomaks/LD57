@@ -10,7 +10,7 @@ public class MeleeEnemy : Enemy
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckDistance = 0.5f;
 
-
+    private Rigidbody2D rb;
     private Vector2 _initialPosition;
     private Vector2 _patrolDirection = Vector2.right;
     private bool _isGrounded;
@@ -18,6 +18,7 @@ public class MeleeEnemy : Enemy
 
     public override void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
         base.Awake();
         _initialPosition = transform.position;
     }
@@ -81,7 +82,7 @@ public class MeleeEnemy : Enemy
         _playingRiseAnimation = true;
         animator.SetBool("isGrounded", true);
         animator.SetTrigger("rise");
-        
+
         // Получаем длительность анимации rise
         float riseAnimationLength = 0;
         AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
@@ -96,7 +97,7 @@ public class MeleeEnemy : Enemy
 
         // Ждем окончания анимации
         yield return new WaitForSeconds(riseAnimationLength);
-        
+
         // По окончании переходим в idle
         _playingRiseAnimation = false;
         animator.SetTrigger("idle");
@@ -124,7 +125,6 @@ public class MeleeEnemy : Enemy
 
         // Двигаемся в текущем направлении
         rb.linearVelocity = new Vector2(_patrolDirection.x * moveSpeed, rb.linearVelocity.y);
-        
     }
 
     public void ChasePlayer()
@@ -140,18 +140,17 @@ public class MeleeEnemy : Enemy
 
         // Двигаемся к игроку
         rb.linearVelocity = new Vector2(direction.x * moveSpeed * 1.5f, rb.linearVelocity.y);
-        
     }
 
-   public void Attack()
+    public void Attack()
     {
         if (!canAttack) return;
-        
+
         Collider2D hitPlayer = Physics2D.OverlapCircle(transform.position, attackRange, LayerMask.GetMask("Player"));
         if (hitPlayer != null && hitPlayer.CompareTag("Player"))
         {
             Debug.Log("Attack hit player!");
-            
+
             PlayerHealth playerHealth = G.PlayerHealth;
             if (playerHealth != null)
             {
@@ -166,50 +165,48 @@ public class MeleeEnemy : Enemy
 
     private IEnumerator AttackAnimation(Vector3 playerPosition, PlayerHealth playerHealth)
     {
-       
-        Vector3 originalPosition = transform.position;
+        float originalPosition = transform.position.x;
         float attackSpeed = 10f;
-        Vector3 attackPosition = Vector3.Lerp(originalPosition, playerPosition, 0.8f);
-        
+        float attackPosition = Mathf.Lerp(originalPosition, playerPosition.x, 0.8f);
+
 
         float startTime = Time.time;
-        float journeyLength = Vector3.Distance(originalPosition, attackPosition);
+        float journeyLength = Mathf.Abs(originalPosition - attackPosition);
         float distanceCovered = 0f;
-        
+
         while (distanceCovered < journeyLength)
         {
             float fractionOfJourney = distanceCovered / journeyLength;
-            transform.position = Vector3.Lerp(originalPosition, attackPosition, fractionOfJourney);
-            
+            float x = Mathf.Lerp(originalPosition, attackPosition, fractionOfJourney);
+            rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
+
             distanceCovered = (Time.time - startTime) * attackSpeed;
             yield return null;
         }
-        
-        
+
+
         playerHealth.TakeDamage(attackDamage);
-        
-        
+
+
         yield return new WaitForSeconds(0.1f);
         startTime = Time.time;
-        journeyLength = Vector3.Distance(attackPosition, originalPosition);
+        journeyLength = Mathf.Abs(attackPosition - originalPosition);
         distanceCovered = 0f;
-        
+
         while (distanceCovered < journeyLength)
         {
             float fractionOfJourney = distanceCovered / journeyLength;
-            transform.position = Vector3.Lerp(attackPosition, originalPosition, fractionOfJourney);
-            
+            float x = Mathf.Lerp( attackPosition,originalPosition, fractionOfJourney);
+            rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
             distanceCovered = (Time.time - startTime) * attackSpeed;
             yield return null;
         }
         
-        
-        transform.position = originalPosition;
-        
+
         // Запускаем кулдаун после завершения анимации
         StartCoroutine(AttackCooldown());
     }
-    
+
     // Визуализация зоны атаки в редакторе
     private void OnDrawGizmosSelected()
     {

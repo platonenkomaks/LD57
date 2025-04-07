@@ -1,5 +1,7 @@
+using System;
 using Events;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GameControl
 {
@@ -8,13 +10,14 @@ namespace GameControl
     /// <summary>
     /// How much gold is available in the cave for mining.
     /// </summary>
-    public int GoldRemaining { get; private set; }
+    public int GoldGoal { get; private set; }
     
     /// <summary>
     /// How much gold does the player have.
     /// </summary>
     public int GoldBalance { get; private set; }
 
+    public Action OnGoldBalanceChange;
 
     private void Awake()
     {
@@ -28,17 +31,19 @@ namespace GameControl
 
     public void SetGoldRemaining(int gold)
     {
-      GoldRemaining = gold;
-      G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldRemaining });
+      GoldGoal = gold;
+      G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldGoal });
     }
 
     public void AddGold(int amount)
     {
+      
       GoldBalance += amount;
-      GoldRemaining -= amount;
+      GoldGoal -= amount;
       
       G.EventManager.Trigger(new OnGoldBalanceChange { NewBalance = GoldBalance });
-      G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldRemaining });
+      G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldGoal });
+      OnGoldBalanceChange?.Invoke();
     }
 
     public bool CanAfford(int amount) => GoldBalance >= amount;

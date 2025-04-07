@@ -9,6 +9,7 @@ public class PlatformCinemachineTarget : MonoBehaviour
         yield return null;
         G.EventManager.Register<OnPlatformEnter>(FocusOnPlatform);
         G.EventManager.Register<OnPlatformExit>(FocusOnPlayer);
+        gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -27,4 +28,3 @@ public class PlatformCinemachineTarget : MonoBehaviour
         gameObject.SetActive(false);
     }
 }
-    

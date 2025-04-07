@@ -18,7 +18,6 @@ public class PlayerCinemachineTarget : MonoBehaviour
         G.EventManager.Register<OnPlatformEnter>(FocusOnPlatform);
         G.EventManager.Register<OnPlatformExit>(FocusOnPlayer);
         
-        gameObject.SetActive(false);
     }
 
     private void OnDestroy()

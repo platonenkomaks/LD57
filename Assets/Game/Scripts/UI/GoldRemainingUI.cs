@@ -19,14 +19,14 @@ namespace UI
       if (G.GoldManager == null) 
         return;
       
-      _text.text = "Gold in the Mine: " + G.GoldManager.GoldRemaining;
+      _text.text = "Gold in the Mine: " + G.GoldManager.GoldGoal;
       G.EventManager.Register<OnRemainingGoldCount>(UpdateGoldBalance);
     }
 
     private IEnumerator Start()
     {
       yield return null;
-      _text.text = "Gold in the Mine: " + G.GoldManager.GoldRemaining;
+      _text.text = "Gold in the Mine: " + G.GoldManager.GoldGoal;
       G.EventManager.Register<OnRemainingGoldCount>(UpdateGoldBalance);
     }
     
