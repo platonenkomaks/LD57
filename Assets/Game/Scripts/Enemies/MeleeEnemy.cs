@@ -10,7 +10,7 @@ public class MeleeEnemy : Enemy
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckDistance = 0.5f;
 
-    private Rigidbody2D rb;
+    
     private Vector2 _initialPosition;
     private Vector2 _patrolDirection = Vector2.right;
     private bool _isGrounded;
@@ -18,7 +18,6 @@ public class MeleeEnemy : Enemy
 
     public override void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
         base.Awake();
         _initialPosition = transform.position;
     }
@@ -124,7 +123,7 @@ public class MeleeEnemy : Enemy
         }
 
         // Двигаемся в текущем направлении
-        rb.linearVelocity = new Vector2(_patrolDirection.x * moveSpeed, rb.linearVelocity.y);
+        _rb.linearVelocity = new Vector2(_patrolDirection.x * moveSpeed, _rb.linearVelocity.y);
     }
 
     public void ChasePlayer()
@@ -139,7 +138,7 @@ public class MeleeEnemy : Enemy
         spriteRenderer.flipX = direction.x < 0;
 
         // Двигаемся к игроку
-        rb.linearVelocity = new Vector2(direction.x * moveSpeed * 1.5f, rb.linearVelocity.y);
+        _rb.linearVelocity = new Vector2(direction.x * moveSpeed * 1.5f, _rb.linearVelocity.y);
     }
 
     public void Attack()
@@ -178,7 +177,7 @@ public class MeleeEnemy : Enemy
         {
             float fractionOfJourney = distanceCovered / journeyLength;
             float x = Mathf.Lerp(originalPosition, attackPosition, fractionOfJourney);
-            rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
+            _rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
 
             distanceCovered = (Time.time - startTime) * attackSpeed;
             yield return null;
@@ -197,7 +196,7 @@ public class MeleeEnemy : Enemy
         {
             float fractionOfJourney = distanceCovered / journeyLength;
             float x = Mathf.Lerp( attackPosition,originalPosition, fractionOfJourney);
-            rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
+            _rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
             distanceCovered = (Time.time - startTime) * attackSpeed;
             yield return null;
         }

@@ -18,7 +18,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] public Transform player;
 
     public EnemyStateMachine StateMachine;
-    public Rigidbody2D rb;
+    protected  Rigidbody2D _rb;
     public SpriteRenderer spriteRenderer;
     public Animator animator;
     public bool canAttack = true;
@@ -32,7 +32,7 @@ public abstract class Enemy : MonoBehaviour
     public virtual void Awake()
     {
         
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
@@ -96,8 +96,8 @@ public abstract class Enemy : MonoBehaviour
         }
 
         // Отключаем физику
-        rb.linearVelocity = Vector2.zero;
-        rb.bodyType = RigidbodyType2D.Static;
+        _rb.linearVelocity = Vector2.zero;
+        _rb.bodyType = RigidbodyType2D.Static;
         
     }
     

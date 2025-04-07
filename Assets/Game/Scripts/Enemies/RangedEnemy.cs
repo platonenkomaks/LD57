@@ -31,7 +31,7 @@ public class RangedEnemy : Enemy
     {
         base.Start();
         // Отличия для летающего врага
-        rb.gravityScale = 0;
+        _rb.gravityScale = 0;
         
         // Начальная точка для блуждания
         SetNewWanderPoint();
@@ -50,7 +50,7 @@ public class RangedEnemy : Enemy
         
         // Лениво летим к точке блуждания
         Vector2 direction = (_wanderPoint - (Vector2)transform.position).normalized;
-        rb.linearVelocity = direction * moveSpeed * 0.5f;
+        _rb.linearVelocity = direction * moveSpeed * 0.5f;
         
         // Поворачиваем спрайт
         spriteRenderer.flipX = direction.x < 0;
@@ -103,7 +103,7 @@ public class RangedEnemy : Enemy
         else
         {
             // Иначе приближаемся
-            rb.linearVelocity = direction * moveSpeed;
+            _rb.linearVelocity = direction * moveSpeed;
         }
         
         // Поворачиваем спрайт
@@ -124,7 +124,7 @@ public class RangedEnemy : Enemy
         Vector2 dirToPlayer = DirectionToPlayer();
         Vector2 perpendicular = new Vector2(-dirToPlayer.y, dirToPlayer.x); // Перпендикулярный вектор
         
-        rb.linearVelocity = perpendicular * circlingStrafeSpeed;
+        _rb.linearVelocity = perpendicular * circlingStrafeSpeed;
     }
 
     public void Retreat()
@@ -133,7 +133,7 @@ public class RangedEnemy : Enemy
         
         // Отходим от игрока
         Vector2 direction = -DirectionToPlayer();
-        rb.linearVelocity = direction * moveSpeed * 1.5f;
+        _rb.linearVelocity = direction * moveSpeed * 1.5f;
         
         // Поворачиваем спрайт
         spriteRenderer.flipX = direction.x < 0;
@@ -150,7 +150,7 @@ public class RangedEnemy : Enemy
         if (!canAttack || player == null) return;
         
         // Останавливаемся
-        rb.linearVelocity = Vector2.zero;
+        _rb.linearVelocity = Vector2.zero;
         
         // Анимация стрельбы
         if (animator != null)
