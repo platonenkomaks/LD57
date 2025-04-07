@@ -15,9 +15,9 @@ MonoBehaviour:
   StatName: Battery
   Image: {fileID: 0}
   Label: {fileID: 0}
-  StartValue: 60
+  StartValue: 120
   Upgrades:
-  - 75
-  - 90
-  - 120
+  - 150
+  - 180
+  - 210
   UpgradeCosts: 020000000200000002000000

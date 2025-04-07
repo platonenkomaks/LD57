@@ -77,10 +77,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waves:
-  - waveName: 
+  - waveName: "\u041F\u0435\u0440\u0432\u0430\u044F "
     enemies:
     - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 10
+      count: 4
       spawnChance: 1
     timeBetweenSpawns: 5
     timeBeforeNextWave: 10
