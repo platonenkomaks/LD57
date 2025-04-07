@@ -5,6 +5,7 @@ using Utilities;
 namespace Stats.BaseClasses {
   public abstract class StatSOBase : ScriptableObject {
     public string StatName;
+    public string Description;
     public Sprite Image;
     public Sprite Label;
     public readonly UnityEvent OnUpgrade = new();

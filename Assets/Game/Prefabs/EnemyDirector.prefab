@@ -79,7 +79,7 @@ MonoBehaviour:
   waves:
   - waveName: "\u041F\u0435\u0440\u0432\u0430\u044F "
     enemies:
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
+    - enemyPrefab: {fileID: 7164533648015123212, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
       count: 4
       spawnChance: 1
     timeBetweenSpawns: 5
