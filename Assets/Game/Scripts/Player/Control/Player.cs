@@ -1,4 +1,6 @@
 using System.Collections;
+using Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 
@@ -13,7 +15,7 @@ public class Player : MonoBehaviour
 
     public SpriteRenderer playerSpriteRenderer;
     
-    private IEnumerator Start ()
+    private IEnumerator Start()
     {
         yield return null;
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
@@ -24,16 +26,25 @@ public class Player : MonoBehaviour
             carryingGoldSprite,
             fightingSprite
         );
+        
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
+        G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
     }
     
-    private void Update()
+    private void OnDestroy()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChange);
+    }
+
+    private void OnGameStateChange(OnGameStateChangedEvent e)
+    {
+        if (e.State == GameLoopStateMachine.GameLoopState.Ascend)
         {
             G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Fighting);
         }
-        
+        else
+        {
+            G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
+        }
     }
-    
 }

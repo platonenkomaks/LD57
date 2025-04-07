@@ -174,7 +174,11 @@ public class PlayerController : MonoBehaviour
         public void EnableCombatMode()
         {
             _canShoot = true;
-            _spriteRenderer.sprite = combatSprite; // Добавь combatSprite в инспектор
+        }
+        
+        public void DisableCombatMode()
+        {
+            _canShoot = false;
         }
 
         private void Shoot()

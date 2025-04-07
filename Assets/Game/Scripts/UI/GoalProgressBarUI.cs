@@ -24,8 +24,6 @@ namespace UI
     {
       _goalProgress++;
       fill.fillAmount = newVal;
-      print("Progress: " + _goalProgress);
-      print("Fill: " + fill.fillAmount);
       text.text = _goalProgress + " / " + G.GoldManager.GoldGoal;
     }
   }
