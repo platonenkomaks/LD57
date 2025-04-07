@@ -8,7 +8,7 @@ public class MiningSystem : MonoBehaviour
 {
     [Header("Mining Settings")]
     [SerializeField] private float miningRange = 2f; // Радиус копания
-
+    [SerializeField] private float detectionRange = 3f; // Увеличенный радиус детекции мышью
     [SerializeField] private float miningCooldown = 0.5f; // Задержка между копаниями
     [SerializeField] private float goldMiningDuration = 1f; // Время копания золота
     [SerializeField] private GameObject miningEffectPrefab; // Эффект копания препятствий
@@ -84,19 +84,25 @@ public class MiningSystem : MonoBehaviour
     {
         // Проверка кулдауна
         if (Time.time - _lastMiningTime < miningCooldown) return;
-        
-        G.AudioManager.Play("Axe");
-        
+    
         // Получаем позицию мыши в мировых координатах
         Vector2 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        
-        // Проверяем, находится ли позиция в пределах радиуса копания
-        if (Vector2.Distance(mouseWorldPos, transform.position) > miningRange) return;
-        
+    
+        // Проверяем, находится ли позиция в пределах радиуса ДЕТЕКЦИИ (увеличенный радиус)
+        if (Vector2.Distance(mouseWorldPos, transform.position) > detectionRange) return;
+    
+        // Определяем направление атаки и воспроизводим соответствующую анимацию
+        PlayMiningAnimation(mouseWorldPos);
+    
+        G.AudioManager.Play("Axe");
+    
+        // Обновляем время последнего копания
+        _lastMiningTime = Time.time;
+    
         // Получаем позицию клетки тайлмапа
         var obstaclesCellPosition = removableTilemap.WorldToCell(mouseWorldPos);
         var goldCellPosition = goldTilemap.WorldToCell(mouseWorldPos);
-        
+    
         // Сначала проверяем наличие золота
         var goldTile = goldTilemap.GetTile(goldCellPosition);
         if (goldTile)
@@ -104,12 +110,48 @@ public class MiningSystem : MonoBehaviour
             MineGold(goldCellPosition);
             return;
         }
-        
+    
         // Если золота нет, проверяем наличие препятствия
         var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
         if (!obstacleTile) return;
         MineObstacle(obstaclesCellPosition);
     }
+
+private void PlayMiningAnimation(Vector2 targetPosition)
+{
+    // Вычисляем направление от игрока к позиции клика мыши
+    Vector2 direction = targetPosition - (Vector2)transform.position;
+    
+    // Предполагаем, что у вас есть аниматор
+    Animator animator = GetComponent<Animator>();
+    
+    // Определяем, в каком направлении нужно копать
+    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    
+    // Нормализуем угол в диапазоне от -180 до 180 градусов
+    if (angle < 0) angle += 360;
+    
+    // Воспроизводим соответствующую анимацию на основе угла
+    if (angle >= 45 && angle < 135)
+    {
+        // Верхнее направление (вверх)
+        animator.SetTrigger("StrikeUp");
+    }
+    else if (angle >= 225 && angle < 315)
+    {
+        // Нижнее направление (вниз)
+        animator.SetTrigger("StrikeDown");
+    }
+    else
+    {
+        // Боковые направления (влево или вправо)
+        animator.SetTrigger("StrikeSide");
+        
+        // Если нужно различать правое и левое направления для отражения спрайта
+        bool isFacingRight = direction.x > 0;
+        transform.localScale = new Vector3(isFacingRight ? 1 : -1, 1, 1);
+    }
+}
     
     private void MineObstacle(Vector3Int cellPosition)
     {
