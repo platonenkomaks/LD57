@@ -233,8 +233,6 @@ public class BatteryLight : MonoBehaviour
 
         if (!targetLight.enabled && currentBatteryCharge > 0)
         {
-            targetLight.intensity = originalIntensity;
-            targetLight.enabled = true;
             isInCriticalMode = false;
         }
     }

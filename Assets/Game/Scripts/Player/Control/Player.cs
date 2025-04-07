@@ -13,12 +13,6 @@ public class Player : MonoBehaviour
 
     public SpriteRenderer playerSpriteRenderer;
     
-
-    private void Awake()
-    {
-        
-      
-    }
     private IEnumerator Start ()
     {
         yield return null;

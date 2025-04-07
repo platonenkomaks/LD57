@@ -7,6 +7,7 @@ public class ElevatorPlatform : MonoBehaviour
 {
     [SerializeField] private ElevatorLever lever;
     public float baseSpeed = 2f;
+    public float descendSpeed = 10f;
     public float platformWeight = 1f;
     public float weightPenalty = 0.5f;
     public Cog cog;
@@ -49,10 +50,9 @@ public class ElevatorPlatform : MonoBehaviour
 
     public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
-        
         yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, bottomY);
-        currentSpeed = baseSpeed;
+        currentSpeed = descendSpeed;
         isMoving = true;
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
