@@ -8,8 +8,9 @@ namespace UI
 {
   public class UpgradeCardUI : MonoBehaviour
   {
+    [SerializeField] private Image background;
+    [SerializeField] private Image icon;
     [SerializeField] private Button upgradeButton;
-    [SerializeField] private TMP_Text upgradeInfoText;
     [SerializeField] private TMP_Text costText;
 
     private StatSOBase _upgradeStat;
@@ -17,19 +18,25 @@ namespace UI
     private FloatStat _floatStat;
     private int _upgradeIndex;
     private int _cost;
+
+    private Sprite _unpaid;
+    private Sprite _paid;
     
-    public void Initialize(StatSOBase upgradeStat, int upgradeIndex)
+    public void Initialize(StatSOBase upgradeStat, int upgradeIndex, Sprite unpaid, Sprite paid)
     {
       _upgradeStat = upgradeStat;
       _upgradeIndex = upgradeIndex;
       
+      _unpaid = unpaid;
+      _paid = paid;
+      
+      icon.sprite = upgradeStat.Image;
       _upgradeStat.OnUpgrade.AddListener(UpdateButton);
       upgradeButton.onClick.AddListener(_upgradeStat.ApplyNextUpgrade);
       
       _intStat = _upgradeStat as IntStat;
       if (_intStat != null)
       {
-        upgradeInfoText.text = _intStat.Upgrades[_upgradeIndex].ToString();
         _cost = _intStat.UpgradeCosts[_upgradeIndex];
         costText.text = _cost + " gold";
         return;
@@ -38,7 +45,6 @@ namespace UI
       _floatStat = _upgradeStat as FloatStat;
       if (_floatStat != null)
       {
-        upgradeInfoText.text = _floatStat.Upgrades[_upgradeIndex].ToString("F1");
         _cost = _floatStat.UpgradeCosts[_upgradeIndex];
         costText.text = _cost + " gold";
         return;
@@ -76,6 +82,7 @@ namespace UI
       block.highlightedColor = canAfford ? Color.green : Color.red;
       block.selectedColor = canAfford ? Color.green : Color.red;
       block.disabledColor = _upgradeIndex < nextUpgradeIndex ? Color.green : Color.gray;
+      background.sprite = _upgradeIndex < nextUpgradeIndex ? _paid : _unpaid;
       upgradeButton.colors = block;
     }
   }

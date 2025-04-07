@@ -9,6 +9,7 @@ namespace Platform
     {
       if (collision.CompareTag("Player"))
       {
+        G.AudioManager.Play("LightSwitch");
         G.Player.BatteryLight.isDraining = false;
         G.Player.BatteryLight.TurnOff();
         G.EventManager.Trigger(new OnPlatformEnter());
@@ -19,6 +20,7 @@ namespace Platform
     {
       if (collision.CompareTag("Player"))
       {
+        G.AudioManager.Play("LightSwitch");
         G.Player.BatteryLight.isDraining = true;
         G.Player.BatteryLight.TurnOn();
         G.EventManager.Trigger(new OnPlatformExit());
