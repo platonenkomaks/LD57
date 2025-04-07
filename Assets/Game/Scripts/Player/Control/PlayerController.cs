@@ -126,81 +126,97 @@ public class PlayerController : MonoBehaviour
         _animator.SetBool("IsGrounded", _isGrounded);
         _animator.SetFloat("VerticalVelocity", _rb.linearVelocity.y);
 
-        if (_canShoot && _playerInput.IsFireButtonPressed())
+        if (_canShoot && _playerInput.IsFireButtonPressed() && _isGrounded)
         {
-            var cooldown = G.StatSystem.ShootgunCooldown;
-            if (Time.time - _lastShootTime < cooldown) return;
+            {
+                G.AudioManager.Play("GunCLick");
+                var cooldown = G.StatSystem.ShootgunCooldown;
+                if (Time.time - _lastShootTime < cooldown) return;
 
-            Shoot();
+                Shoot();
+            }
         }
     }
 
     private void FixedUpdate()
-    {
-        // Проверка наличия системы ввода
-        if (_playerInput == null) return;
-
-        // Расчет целевой скорости
-        var horizontalInput = _playerInput.GetHorizontalInput();
-        var targetSpeed = horizontalInput * moveSpeed;
-
-        // Расчет скорости ускорения в зависимости от нахождения на земле или в воздухе
-        var accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
-        if (!_isGrounded)
         {
-            accelRate *= airControlFactor;
+            // Проверка наличия системы ввода
+            if (_playerInput == null) return;
+
+            // Расчет целевой скорости
+            var horizontalInput = _playerInput.GetHorizontalInput();
+            var targetSpeed = horizontalInput * moveSpeed;
+
+            // Расчет скорости ускорения в зависимости от нахождения на земле или в воздухе
+            var accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
+            if (!_isGrounded)
+            {
+                accelRate *= airControlFactor;
+            }
+
+            // Расчет движения
+            var speedDiff = targetSpeed - _rb.linearVelocity.x;
+            var movement = speedDiff * accelRate * Time.fixedDeltaTime;
+
+            // Применение движения
+            _rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
+
+
+            _rb.gravityScale = _rb.linearVelocity.y switch
+            {
+                // Улучшенная физика прыжка (более быстрое падение)
+                < 0 => fallMultiplier,
+                > 0 when !Input.GetButton("Jump") => lowJumpMultiplier,
+                _ => 1f
+            };
         }
 
-        // Расчет движения
-        var speedDiff = targetSpeed - _rb.linearVelocity.x;
-        var movement = speedDiff * accelRate * Time.fixedDeltaTime;
-
-        // Применение движения
-        _rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
-
-
-        _rb.gravityScale = _rb.linearVelocity.y switch
+        public void EnableCombatMode()
         {
-            // Улучшенная физика прыжка (более быстрое падение)
-            < 0 => fallMultiplier,
-            > 0 when !Input.GetButton("Jump") => lowJumpMultiplier,
-            _ => 1f
-        };
-    }
-
-    public void EnableCombatMode()
-    {
-        _canShoot = true;
-        _spriteRenderer.sprite = combatSprite; // Добавь combatSprite в инспектор
-    }
-
-    private void Shoot()
-    {
-        G.AudioManager.Play("Shoot");
-        
-        Vector2 direction = Vector2.right * (_spriteRenderer.flipX ? -1 : 1);
-
-        if (_playerInput.GetVerticalInput() > 0.5f)
-        {
-            _playerAnimator.SetTrigger("ShootUP");
-            direction = Vector2.up;
-        }
-        else
-        {
-            _playerAnimator.SetTrigger("ShootSide");
+            _canShoot = true;
+            _spriteRenderer.sprite = combatSprite; // Добавь combatSprite в инспектор
         }
 
-        var projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-        projectile.GetComponent<Projectile>().Initialize(direction);
+        private void Shoot()
+        {
+            G.AudioManager.Play("Shoot");
+    
+          
 
-        _lastShootTime = Time.time;
-    }
+            Vector2 direction = Vector2.right * (_spriteRenderer.flipX ? -1 : 1);
 
-    private void OnDrawGizmosSelected()
-    {
-        // Отрисовка радиуса проверки земли для отладки
-        if (groundCheck == null) return;
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            if (_playerInput.GetVerticalInput() > 0.5f)
+            {
+                _playerAnimator.SetTrigger("ShootUP");
+                direction = Vector2.up;
+                Debug.Log("Shooting UP");
+            }
+            else
+            {
+                _playerAnimator.SetTrigger("ShootSide");
+                Debug.Log("Shooting SIDE");
+            }
+
+            var projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+    
+            if (projectile != null)
+            {
+                
+                if (projectile.GetComponent<Projectile>() != null)
+                {
+                    projectile.GetComponent<Projectile>().Initialize(direction);
+                    
+                }
+            }
+            
+
+            _lastShootTime = Time.time;
+        }
+        private void OnDrawGizmosSelected()
+        {
+            // Отрисовка радиуса проверки земли для отладки
+            if (groundCheck == null) return;
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
-}

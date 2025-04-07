@@ -17,7 +17,6 @@ public class FightingPlayerState : IState
     {
         G.Player.GetComponent<Animator>().SetInteger("State", 3);
         _playerController.EnableCombatMode();
-        _playerSpriteRenderer.sprite = PlayerStateMachine.FightingSprite;
         Debug.Log("Fighting state entered");
     }
 
