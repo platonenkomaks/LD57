@@ -6,7 +6,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject playerSpawnPosition;
     [SerializeField] private Button settingsButton;
     
-    public CinemachineTarget cinemachineTarget;
+    public PlayerCinemachineTarget playerCinemachineTarget;
     public TileGrid tileGrid;
     
     private Player _player;
@@ -16,7 +16,7 @@ public class LevelManager : MonoBehaviour
     {
         _player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
         G.Player = _player;
-        cinemachineTarget.SetTargetForCinemachineCamera(_player.transform);
+        playerCinemachineTarget.SetTargetForCinemachineCamera(_player.transform);
         if (settingsButton != null)
         {
             settingsButton.onClick.AddListener(OnSettingsButtonPressed);

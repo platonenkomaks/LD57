@@ -1,4 +1,4 @@
-using Game.Scripts.Events;
+using Events;
 
 namespace Game.Scripts.StateMachine.GameLoop
 {

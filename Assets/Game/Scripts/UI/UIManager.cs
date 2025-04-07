@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Game.Scripts.Events;
+using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 

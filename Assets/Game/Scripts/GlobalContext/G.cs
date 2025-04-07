@@ -1,4 +1,4 @@
-using Game.Scripts.Events;
+using Events;
 using GameControl;
 
 public static class G

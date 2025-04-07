@@ -1,5 +1,4 @@
 using System;
-using Game.Scripts.Events;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;

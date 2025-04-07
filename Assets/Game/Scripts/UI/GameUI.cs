@@ -1,4 +1,4 @@
-using Game.Scripts.Events;
+using Events;
 using TMPro;
 using UnityEngine;
 

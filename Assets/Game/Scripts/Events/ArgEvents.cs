@@ -1,6 +1,6 @@
 using Game.Scripts.StateMachine.GameLoop;
 
-namespace Game.Scripts.Events
+namespace Events
 {
   public struct OnGameStateChangedEvent : IEvent
   {
@@ -21,6 +21,15 @@ namespace Game.Scripts.Events
   {
     public int NewBalance;
   }
+  
+  public struct OnBatteryLightChargeChange : IEvent
+  {
+    public float BatteryCharge;
+  }
+
+  public struct OnPlatformEnter : IEvent {}
+  
+  public struct OnPlatformExit : IEvent {}
   
   public struct OnPlayerStateChangeEvent : IEvent
   {

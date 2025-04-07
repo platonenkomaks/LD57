@@ -1,6 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using Events;
+using Random = UnityEngine.Random;
 
 public class BatteryLight : MonoBehaviour
 {
@@ -50,20 +53,13 @@ public class BatteryLight : MonoBehaviour
     private bool isInCriticalMode = false;
     private System.Random rand;
 
+    private void Awake()
+    {
+        targetLight = GetComponent<Light2D>();
+    }
+
     private void Start()
     {
-        if (targetLight == null)
-        {
-            targetLight = GetComponent<Light2D>();
-
-            if (targetLight == null)
-            {
-                Debug.LogError("Light2D component not found!");
-                enabled = false;
-                return;
-            }
-        }
-
         // Инициализируем начальные настройки
         remainingBatteryLife = maxBatteryLife * currentBatteryCharge;
         originalIntensity = targetLight.intensity;
@@ -252,11 +248,25 @@ public class BatteryLight : MonoBehaviour
     // Метод для включения/выключения фонарика
     public void ToggleLight()
     {
+        if (isDraining)
+            TurnOff();
+        else
+            TurnOn();
+    }
+
+    public void TurnOn()
+    {
         if (currentBatteryCharge <= 0)
             return;
 
-        isDraining = !isDraining;
-        targetLight.enabled = isDraining;
+        isDraining = true;
+        targetLight.enabled = true;
+    }
+    
+    public void TurnOff()
+    {
+        isDraining = false;
+        targetLight.enabled = false;
     }
 
     // Получить текущий процент заряда (0-100)
