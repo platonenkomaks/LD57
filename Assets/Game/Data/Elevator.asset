@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18737cc0d5334c0fbb6c1c2bf5606711, type: 3}
-  m_Name: Battery
+  m_Name: Elevator
   m_EditorClassIdentifier: 
-  StatName: Battery
-  Image: {fileID: 0}
+  StatName: Elevator Speed
+  Description: 'Elevator speed: '
+  Image: {fileID: 21300000, guid: 80bcda1a07d55406691a526cb335a7fa, type: 3}
   Label: {fileID: 0}
-  StartValue: 120
+  StartValue: 2
   Upgrades:
-  - 150
-  - 180
-  - 210
-  UpgradeCosts: 030000000400000005000000
+  - 4
+  - 6
+  - 8
+  UpgradeCosts: 070000000800000009000000

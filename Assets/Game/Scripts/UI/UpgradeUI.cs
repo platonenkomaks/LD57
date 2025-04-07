@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Stats.BaseClasses;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 namespace UI
 {
@@ -10,6 +10,8 @@ namespace UI
   {
     [SerializeField] private StatSOBase upgradeStat;
     [SerializeField] private List<UpgradeCardUI> upgradeButtons;
+    [SerializeField] private List<Sprite> upgradeIconsUnpaid;
+    [SerializeField] private List<Sprite> upgradeIconsPaid;
     [SerializeField] private TMP_Text statName;
     
     private void Awake()
@@ -18,7 +20,7 @@ namespace UI
       
       for (int i = 0; i < upgradeButtons.Count; i++)
       {
-        upgradeButtons[i].Initialize(upgradeStat, i);
+        upgradeButtons[i].Initialize(upgradeStat, i, upgradeIconsUnpaid[i], upgradeIconsPaid[i]);
       }
     }
   }

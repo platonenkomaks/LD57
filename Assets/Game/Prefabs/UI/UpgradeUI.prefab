@@ -220,6 +220,14 @@ MonoBehaviour:
   - {fileID: 3211726199667202431}
   - {fileID: 4531717026360835788}
   - {fileID: 8367548510851650886}
+  upgradeIconsUnpaid:
+  - {fileID: 21300000, guid: 4f9a2fd9e505f4c2898f071ee825e653, type: 3}
+  - {fileID: 21300000, guid: 06a49dda01ea9408e83a0956f1628ede, type: 3}
+  - {fileID: 21300000, guid: 37fe3a18d59f141a5adb644468e67fa2, type: 3}
+  upgradeIconsPaid:
+  - {fileID: 21300000, guid: 61ffc386ecca449549ff4dfd9b4c8695, type: 3}
+  - {fileID: 21300000, guid: af97ec64669c84f76a31a60a62f631ec, type: 3}
+  - {fileID: 21300000, guid: f8d44717357ec4d17b2bd5525ac4edf6, type: 3}
   statName: {fileID: 3955413855173764507}
 --- !u!1001 &4395337264000878114
 PrefabInstance:

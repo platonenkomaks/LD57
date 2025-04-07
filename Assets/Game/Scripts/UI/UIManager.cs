@@ -87,9 +87,6 @@ public class UIManager : Singleton<UIManager>
     {
         switch (e.State)
         {
-            case GameLoopStateMachine.GameLoopState.Tutorial:
-                ShowScreen("Tutorial");
-                break;
             case GameLoopStateMachine.GameLoopState.Shopping:
                 ShowScreen("Shopping");
                 break;
