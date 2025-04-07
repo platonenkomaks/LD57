@@ -21,7 +21,7 @@ public class EnemyDirector : MonoBehaviour
     [System.Serializable]
     public class EnemySpawnInfo
     {
-        public Enemy enemyPrefab;
+        public GameObject enemyPrefab;
         public int count;
         public float spawnChance = 1f; // Вероятность спавна от 0 до 1
     }
@@ -46,7 +46,7 @@ public class EnemyDirector : MonoBehaviour
     private int _currentWaveIndex = -1;
     private int _totalEnemiesSpawned = 0;
     private int _totalEnemiesRemaining = 0;
-    private readonly List<Enemy> _activeEnemies = new List<Enemy>();
+    private readonly List<GameObject> _activeEnemies = new List<GameObject>();
     private bool _isSpawning = false;
     private Coroutine _spawnCoroutine;
     private bool _waveActive = false;
@@ -207,7 +207,7 @@ public class EnemyDirector : MonoBehaviour
 
     private void DestroyEnemies()
     {
-        _activeEnemies.ForEach(enemy => enemy.Die());
+        _activeEnemies.ForEach(Destroy);
     }
 
     // Корутина для спавна врагов в волне
@@ -295,7 +295,7 @@ public class EnemyDirector : MonoBehaviour
         Transform spawnPoint = GetSuitableSpawnPoint();
 
         // Создаем врага
-        Enemy enemy = Instantiate(selectedEnemy.enemyPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject enemy = Instantiate(selectedEnemy.enemyPrefab, spawnPoint.position, Quaternion.identity);
         enemy.GetComponent<Enemy>().Init(enemy.transform); // Инициализация врага (если требуется)
         _activeEnemies.Add(enemy);
         _totalEnemiesSpawned++;
@@ -362,7 +362,7 @@ public class EnemyDirector : MonoBehaviour
     }
 
     // Добавление врага в учет (для врагов, созданных другими способами)
-    public void RegisterEnemy(Enemy enemy)
+    public void RegisterEnemy(GameObject enemy)
     {
         if (!_activeEnemies.Contains(enemy))
         {
