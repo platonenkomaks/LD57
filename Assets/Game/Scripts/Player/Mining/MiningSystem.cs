@@ -7,7 +7,7 @@ public class MiningSystem : MonoBehaviour
 {
     [Header("Mining Settings")]
     [SerializeField] private float miningRange = 2f; // Радиус копания
-    [SerializeField] private float detectionRange = 3f; // Увеличенный радиус детекции мышью
+    [SerializeField] private float detectionRange = 50f; // Увеличенный радиус детекции мышью
     [SerializeField] private float miningCooldown = 0.5f; // Задержка между копаниями
     [SerializeField] private float goldMiningDuration = 1f; // Время копания золота
     [SerializeField] private GameObject miningEffectPrefab; // Эффект копания препятствий

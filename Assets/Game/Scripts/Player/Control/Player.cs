@@ -33,7 +33,6 @@ public class Player : MonoBehaviour
         {
             G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Fighting);
         }
-        
     }
     
 }

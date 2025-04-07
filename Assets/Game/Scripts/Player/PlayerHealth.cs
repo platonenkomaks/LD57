@@ -74,6 +74,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Destroy(G.Player.gameObject);
+        G.PlayerController.Die();
     }
 }
