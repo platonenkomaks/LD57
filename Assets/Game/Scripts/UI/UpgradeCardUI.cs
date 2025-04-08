@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System.Collections;
 namespace UI
 {
   public class UpgradeCardUI : MonoBehaviour
@@ -51,8 +52,9 @@ namespace UI
       }
     }
 
-    private void OnEnable()
+    private IEnumerator Start()
     {
+      yield return null;
       G.EventManager.Register<OnGoldBalanceChange>(OnGoldBalanceChange);
       
       if (_upgradeStat != null)

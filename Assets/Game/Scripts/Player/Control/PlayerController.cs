@@ -67,9 +67,18 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // Поворот спрайта в зависимости от направления
+       
         // Проверка наличия системы ввода
         if (!_playerInput) return;
+        var horizontalInput = _playerInput.GetHorizontalInput();
 
+        _spriteRenderer.flipX = horizontalInput switch
+        {
+            > 0 => false,
+            < 0 => true,
+            _ => _spriteRenderer.flipX
+        };
         // Проверка соприкосновения с землей
         _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -110,15 +119,7 @@ public class PlayerController : MonoBehaviour
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.y * 0.5f);
         }
 
-        // Поворот спрайта в зависимости от направления
-        var horizontalInput = _playerInput.GetHorizontalInput();
-
-        _spriteRenderer.flipX = horizontalInput switch
-        {
-            > 0 => false,
-            < 0 => true,
-            _ => _spriteRenderer.flipX
-        };
+      
 
         // Обновление анимаций, если аниматор существует
         if (!_animator) return;

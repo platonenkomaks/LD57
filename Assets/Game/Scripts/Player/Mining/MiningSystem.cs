@@ -207,9 +207,6 @@ public class MiningSystem : MonoBehaviour
             // Боковые направления (влево или вправо)
             animator.SetTrigger("StrikeSide");
             
-            // Если нужно различать правое и левое направления для отражения спрайта
-            bool isFacingRight = direction.x > 0;
-            transform.localScale = new Vector3(isFacingRight ? 1 : -1, 1, 1);
         }
     }
     
