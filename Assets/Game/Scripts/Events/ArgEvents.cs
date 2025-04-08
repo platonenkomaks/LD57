@@ -35,4 +35,6 @@ namespace Events
   {
     public PlayerStateMachine.PlayerState State;
   }
+  
+  public struct OnPlayerDeath : IEvent {}
 }

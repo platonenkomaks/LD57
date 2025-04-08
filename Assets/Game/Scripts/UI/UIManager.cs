@@ -44,6 +44,18 @@ public class UIManager : Singleton<UIManager>
             Debug.LogWarning($"Screen with ID {screen.ScreenID} already registered!");
         }
     }
+    
+    public void DeregisterScreen(UIScreen screen) 
+    {
+        if (_screens.ContainsKey(screen.ScreenID))
+        {
+            _screens.Remove(screen.ScreenID);
+        }
+        else
+        {
+            Debug.LogWarning($"Screen with ID {screen.ScreenID} not found in registry!");
+        }
+    }
 
     public void ShowScreen(string screenID, bool addToHistory = true)
     {

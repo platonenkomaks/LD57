@@ -96,6 +96,7 @@ public class BatteryLight : MonoBehaviour
             isDraining = false;
             G.AudioManager.Stop("LightDysfunction");
             G.AudioManager.Play("LightSwitch");
+            G.PlayerController.Die();
         }
     }
 

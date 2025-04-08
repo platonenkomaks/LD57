@@ -13,6 +13,11 @@ public abstract class UIScreen : MonoBehaviour
     {
         G.UIManager.RegisterScreen(this);
     }
+    
+    protected virtual void OnDestroy()
+    {
+        G.UIManager.DeregisterScreen(this);
+    }
 
     public virtual void Show()
     {

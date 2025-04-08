@@ -1,4 +1,5 @@
 using System;
+using Events;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -236,5 +237,6 @@ public class PlayerController : MonoBehaviour
            // Здесь можно добавить логику, которая будет выполняться после окончания анимации смерти
             // Например, перезапуск уровня или переход на экран Game Over
            // G.GameManager.RestartLevel();
+           G.EventManager.Trigger(new OnPlayerDeath());
         }
     }
