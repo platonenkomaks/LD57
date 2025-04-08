@@ -1,4 +1,3 @@
-using System;
 using Events;
 using UnityEngine;
 
@@ -6,7 +5,7 @@ namespace Platform
 {
   public class PlatformArea : MonoBehaviour
   {
-    private bool isWorking = true;
+    private bool _isWorking = true;
     
     private void Start()
     {
@@ -20,12 +19,12 @@ namespace Platform
     
     private void OnGameOver(OnPlayerDeath e)
     {
-      this.gameObject.SetActive(false);
+      _isWorking = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-      if (collision.CompareTag("Player"))
+      if (collision.CompareTag("Player") && _isWorking)
       {
         G.AudioManager.Play("LightSwitch");
         G.Player.BatteryLight.isDraining = false;
@@ -36,7 +35,7 @@ namespace Platform
     
     private void OnTriggerExit2D(Collider2D collision)
     {
-      if (collision.CompareTag("Player"))
+      if (collision.CompareTag("Player") && _isWorking)
       {
         G.AudioManager.Play("LightSwitch");
         G.Player.BatteryLight.isDraining = true;

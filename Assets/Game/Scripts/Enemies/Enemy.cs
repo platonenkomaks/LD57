@@ -94,11 +94,6 @@ public abstract class Enemy : MonoBehaviour
         {
             c.enabled = false;
         }
-
-        // Отключаем физику
-        _rb.linearVelocity = Vector2.zero;
-        _rb.bodyType = RigidbodyType2D.Static;
-        
     }
     
     public void DestroyEnemy()
