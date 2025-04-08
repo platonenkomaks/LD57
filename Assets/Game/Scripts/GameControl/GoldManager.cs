@@ -1,16 +1,25 @@
 using System;
 using Events;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
-using UnityEngine.Events;
+using Utilities;
 
 namespace GameControl
 {
   public class GoldManager : MonoBehaviour
   {
     /// <summary>
-    /// How much gold is available in the cave for mining.
+    /// How much gold is needed for the Win.
     /// </summary>
-    public int GoldGoal { get; private set; }
+    public int GoldGoal { get; private set; } = 50;
+
+    /// <summary>
+    /// How much gold has been collected.
+    /// </summary>
+    public int GoldGoalProgress { get; private set; }
+
+    [HideInInspector]
+    public Observable<float> goldGoalProgress01 = new(0f);
     
     /// <summary>
     /// How much gold does the player have.
@@ -29,21 +38,22 @@ namespace GameControl
       G.GoldManager = null;
     }
 
-    public void SetGoldRemaining(int gold)
-    {
-      GoldGoal = gold;
-      G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldGoal });
-    }
-
     public void AddGold(int amount)
     {
-      
       GoldBalance += amount;
-      GoldGoal -= amount;
       
       G.EventManager.Trigger(new OnGoldBalanceChange { NewBalance = GoldBalance });
       G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldGoal });
+      
+      GoldGoalProgress++;
+      goldGoalProgress01.Value = (float)GoldGoalProgress / GoldGoal;
+      
       OnGoldBalanceChange?.Invoke();
+      
+      if (GoldGoalProgress >= GoldGoal)
+      {
+        G.EventManager.Trigger(new OnGameStateChangedEvent { State = GameLoopStateMachine.GameLoopState.Win });
+      }
     }
 
     public bool CanAfford(int amount) => GoldBalance >= amount;

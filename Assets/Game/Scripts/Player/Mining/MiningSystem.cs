@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class MiningSystem : MonoBehaviour
@@ -37,8 +35,6 @@ public class MiningSystem : MonoBehaviour
     private void Start()
     {
         _mainCamera = Camera.main;
-        int goldCount = CountGold();
-        G.GoldManager.SetGoldRemaining(goldCount);
     }
 
     private void Update()

@@ -10,7 +10,8 @@ namespace Game.Scripts.StateMachine.GameLoop
       Shopping,
       Mining,
       Descend,
-      Ascend
+      Ascend,
+      Win
     }
     
     private readonly ShoppingState _shoppingState = new();
