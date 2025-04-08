@@ -2,23 +2,18 @@ using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
-
+using UnityEngine.Serialization;
 
 
 public class GameController : Singleton<GameController>
 {
-    private Player _player;
+    [SerializeField] private Player player;
     
     private readonly GameLoopStateMachine _gameLoopStateMachine = new();
 
     private void Initialize()
     {
-        _player = Resources.Load<Player>("Prefabs/Player");
-
-        if (_player == null)
-        {
-            Debug.LogError("Player prefab not found");
-        }
+       
     }
 
     protected override void Awake()
@@ -47,7 +42,7 @@ public class GameController : Singleton<GameController>
 
     public Player LoadPlayer(Vector3 spawnPoint)
     {
-        return Instantiate(_player, spawnPoint, Quaternion.identity);
+        return Instantiate(player, spawnPoint, Quaternion.identity);
     }
 
     public static void PlayerDied()
