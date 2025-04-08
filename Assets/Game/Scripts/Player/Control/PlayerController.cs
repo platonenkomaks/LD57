@@ -236,5 +236,6 @@ public class PlayerController : MonoBehaviour
            // Здесь можно добавить логику, которая будет выполняться после окончания анимации смерти
             // Например, перезапуск уровня или переход на экран Game Over
            // G.GameManager.RestartLevel();
+           G.SceneLoader.LoadScene("Game");
         }
     }
