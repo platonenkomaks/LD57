@@ -11,7 +11,7 @@ namespace GameControl
     /// <summary>
     /// How much gold is needed for the Win.
     /// </summary>
-    public int GoldGoal { get; private set; } = 50;
+    public int GoldGoal { get; private set; } = 30;
 
     /// <summary>
     /// How much gold has been collected.

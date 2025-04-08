@@ -16,14 +16,27 @@ public class EnemyDirector : MonoBehaviour
         public float timeBeforeNextWave = 5f;
         public int maxEnemiesAtOnce = 5;
         public bool isBossWave = false;
+
+        public Wave DeepCopy()
+        {
+            return new Wave()
+            {
+                waveName = waveName,
+                enemies = new List<EnemySpawnInfo>(enemies),
+                timeBetweenSpawns = timeBetweenSpawns,
+                timeBeforeNextWave = timeBeforeNextWave,
+                maxEnemiesAtOnce = maxEnemiesAtOnce,
+                isBossWave = isBossWave
+            };
+        }
     }
 
     [System.Serializable]
-    public class EnemySpawnInfo
+    public struct EnemySpawnInfo
     {
         public GameObject enemyPrefab;
         public int count;
-        public float spawnChance = 1f; // Вероятность спавна от 0 до 1
+        public float spawnChance; // Вероятность спавна от 0 до 1
     }
 
     [Header("Настройки спавна")] [SerializeField]
@@ -121,6 +134,7 @@ public class EnemyDirector : MonoBehaviour
     // Перезапуск волн с самого начала
     public void RestartWaves()
     {
+        print("Restarting");
         StopAllCoroutines();
         _isSpawning = false;
         _waveActive = false;
@@ -152,7 +166,7 @@ public class EnemyDirector : MonoBehaviour
 
             _enemiesRemainingInWave[i] = waveTotal;
         }
-
+        
         StartCoroutine(DelayedStart());
     }
 
@@ -170,15 +184,13 @@ public class EnemyDirector : MonoBehaviour
             }
             else
             {
-                Debug.Log("Все волны завершены!");
                 onAllWavesComplete?.Invoke();
                 return;
             }
         }
 
         _waveActive = true;
-        Wave currentWave = waves[_currentWaveIndex];
-        Debug.Log($"Старт волны: {currentWave.waveName}");
+        Wave currentWave = waves[_currentWaveIndex].DeepCopy();
 
         onWaveNumberChanged?.Invoke(_currentWaveIndex + 1);
         onWaveStart?.Invoke();
@@ -233,7 +245,7 @@ public class EnemyDirector : MonoBehaviour
             // Ждем перед следующим спавном
             yield return new WaitForSeconds(wave.timeBetweenSpawns);
         }
-
+        
         _isSpawning = false;
     }
 
@@ -241,7 +253,6 @@ public class EnemyDirector : MonoBehaviour
     {
         if (spawnPoints.Count == 0)
         {
-            Debug.LogError("Нет точек спавна!");
             return;
         }
 
@@ -286,7 +297,7 @@ public class EnemyDirector : MonoBehaviour
         {
             if (wave.enemies[i].enemyPrefab == selectedEnemy.enemyPrefab)
             {
-                wave.enemies[i].count--;
+                //wave.enemies[i].count -= 1;
                 break;
             }
         }
@@ -338,7 +349,6 @@ public class EnemyDirector : MonoBehaviour
     private void CompleteCurrentWave()
     {
         _waveActive = false;
-        Debug.Log($"Волна {_currentWaveIndex + 1} завершена!");
         onWaveComplete?.Invoke();
 
         // Задержка перед следующей волной
@@ -348,7 +358,6 @@ public class EnemyDirector : MonoBehaviour
         }
         else
         {
-            Debug.Log("Все волны завершены!");
             onAllWavesComplete?.Invoke();
         }
     }
