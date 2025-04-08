@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Tilemaps;
 
 public class LevelManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public PlayerCinemachineTarget playerCinemachineTarget;
     public TileGrid tileGrid;
     
+    public Tilemap highlightTilemap;
     private Player _player;
     
 
@@ -24,6 +26,7 @@ public class LevelManager : MonoBehaviour
         
         G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
         G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
+        G.MiningSystem.highlightTilemap = highlightTilemap;
     }
     
     private void OnSettingsButtonPressed()

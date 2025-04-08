@@ -507,10 +507,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miningRange: 1
-  detectionRange: 1
+  detectionRange: 1.5
   miningCooldown: 0.5
   goldMiningDuration: 0.1
   miningEffectPrefab: {fileID: 0}
   goldMiningEffectPrefab: {fileID: 0}
   removableTilemap: {fileID: 0}
   goldTilemap: {fileID: 0}
+  highlightTilemap: {fileID: 0}
+  highlightTile: {fileID: 11400000, guid: a5627231ff3e28b4faebf397418fec51, type: 2}
+  highlightNormalColor: {r: 1, g: 1, b: 1, a: 0.5}
+  highlightGoldColor: {r: 1, g: 0.84, b: 0, a: 0.5}
