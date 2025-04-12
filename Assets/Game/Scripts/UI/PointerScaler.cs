@@ -8,7 +8,7 @@ namespace UI
   {
     public void OnPointerEnter(PointerEventData eventData)
     {
-      transform.DOScale(Vector3.one * 1.1f, 0.2f);
+      transform.DOScale(Vector3.one * 1.5f, 0.2f);
     }
 
     public void OnPointerExit(PointerEventData eventData)

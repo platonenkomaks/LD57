@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
         yield return null;
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         
+       
+        
         G.PlayerStateMachine = new PlayerStateMachine(
             playerSpriteRenderer,
             miningGoldSprite,

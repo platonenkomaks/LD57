@@ -35,6 +35,22 @@ public class ElevatorLever : MonoBehaviour
 
             if (isDescending)
             {
+                // Переводим игрока в idle анимацию и блокируем
+                if (G.Player != null)
+                {
+                    var playerController = G.Player.GetComponent<PlayerController>();
+                    var playerAnimator = G.Player.GetComponent<Animator>();
+                    
+                    if (playerAnimator != null)
+                    {
+                        playerAnimator.SetBool("IsIdle", true);
+                    }
+                    
+                    if (playerController != null)
+                    {
+                        playerController.enabled = false;
+                    }
+                }
                 StartCoroutine(DescentAfterDelay(1f));
             }
             else
