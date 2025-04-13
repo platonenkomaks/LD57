@@ -55,7 +55,7 @@ MonoBehaviour:
     spatialBlend: 0
     source: {fileID: 0}
   - name: ElevatorMoving
-    clip: {fileID: 8300000, guid: 02bd14a62ed1afd48bfb59295d06392f, type: 3}
+    clip: {fileID: 8300000, guid: 55958571024204248bd1b42bc977da13, type: 3}
     category: 1
     volume: 1
     pitch: 1

@@ -62,7 +62,7 @@ public class ElevatorPlatform : MonoBehaviour
             playerOffset = playerTransform.position - transform.position;
         }
 
-        StartCoroutine(DescentAfterDelay(2f));
+        StartCoroutine(DescentAfterDelay(1.5f));
     }
 
     public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
@@ -82,7 +82,7 @@ public class ElevatorPlatform : MonoBehaviour
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
 
-        StartCoroutine(AscentAfterDelay(2f));
+        StartCoroutine(AscentAfterDelay(1.5f));
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorMoving");

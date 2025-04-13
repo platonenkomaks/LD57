@@ -37,4 +37,6 @@ namespace Events
   }
   
   public struct OnPlayerDeath : IEvent {}
+  
+  public struct OnPlayerShoot : IEvent {}
 }

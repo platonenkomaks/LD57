@@ -131,6 +131,7 @@ public class PlayerController : MonoBehaviour
         if (_canShoot && _playerInput.IsFireButtonPressed() && _isGrounded)
         {
             {
+                
                 G.AudioManager.Play("GunCLick");
                 var cooldown = G.StatSystem.ShootgunCooldown;
                 if (Time.time - _lastShootTime < cooldown) return;
@@ -217,6 +218,9 @@ public class PlayerController : MonoBehaviour
             
 
             _lastShootTime = Time.time;
+            
+            // Вызываем событие выстрела
+            G.EventManager.Trigger(new OnPlayerShoot());
         }
         private void OnDrawGizmosSelected()
         {
