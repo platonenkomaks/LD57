@@ -24,7 +24,7 @@ namespace UI
     {
       _goalProgress++;
       fill.fillAmount = newVal;
-      text.text = _goalProgress + " / " + G.GoldManager.GoldGoal;
+      text.text = "Gold Left to Mine: "+_goalProgress + " / " + G.GoldManager.GoldGoal;
     }
   }
 }

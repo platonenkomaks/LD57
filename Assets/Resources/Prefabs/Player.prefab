@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetLight: {fileID: 0}
-  maxBatteryLife: 60
+  maxBatteryLife: 120
   initialLightRadius: 8
   minLightRadius: 0.5
   currentBatteryCharge: 1

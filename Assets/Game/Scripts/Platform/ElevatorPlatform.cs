@@ -155,5 +155,6 @@ public class ElevatorPlatform : MonoBehaviour
     {
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
+        G.UIManager.ShowScreen("ShopScreen");
     }
 }
