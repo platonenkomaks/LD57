@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
         
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
         G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
+        
     }
     
     private void OnDestroy()

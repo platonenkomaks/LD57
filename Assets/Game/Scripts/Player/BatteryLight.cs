@@ -5,26 +5,31 @@ using System.Collections;
 using Events;
 using Random = UnityEngine.Random;
 
+
+
 public class BatteryLight : MonoBehaviour
 {
-    [Header("Light Settings")] [SerializeField]
-    private Light2D targetLight;
+    #region Настройки света и батареи
 
-    [Header("Battery Settings")] [SerializeField]
-    private float maxBatteryLife = 60f; // время работы в секундах
+    [Header("Light Settings")]
+    [SerializeField] private Light2D targetLight;
 
+    [Header("Battery Settings")] 
+    [SerializeField] private float maxBatteryLife = 60f; // время работы в секундах
     [SerializeField] private float initialLightRadius = 5f;
     [SerializeField] private float minLightRadius = 0.5f;
     [SerializeField] [Range(0f, 1f)] private float currentBatteryCharge = 1f;
 
-    [Header("Battery Drain Settings")] [SerializeField]
-    private AnimationCurve drainCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-
+    [Header("Battery Drain Settings")]
+    [SerializeField] private AnimationCurve drainCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
     [HideInInspector] public bool isDraining = false;
 
-    [Header("Battery Flicker")] [SerializeField]
-    private bool enableFlicker = true;
+    #endregion
 
+    #region Настройки мерцания
+
+    [Header("Battery Flicker")] 
+    [SerializeField] private bool enableFlicker = true;
     [SerializeField] private float flickerThreshold = 0.3f; // начинает мерцать, когда заряд < 30%
     [SerializeField] private float flickerIntensity = 0.2f;
     [SerializeField] private float flickerSpeed = 5f;
@@ -33,18 +38,28 @@ public class BatteryLight : MonoBehaviour
     [SerializeField] private float severeFlickerSpeed = 8f;
     [SerializeField] private bool randomizeFlicker = true;
 
-    [Header("Sound Effects")] [SerializeField]
-    private float lowBatterySoundThreshold = 0.25f;
+    #endregion
 
+    #region Звуковые эффекты
+
+    [Header("Sound Effects")]
+    [SerializeField] private float lowBatterySoundThreshold = 0.25f;
     [SerializeField] private float criticalBatterySoundThreshold = 0.1f;
     [SerializeField] private float lowBatteryBeepInterval = 5f;
     [SerializeField] private float criticalBatteryBeepInterval = 2f;
 
-    [Header("Visual Effects")] [SerializeField]
-    private Color normalLightColor = Color.white;
+    #endregion
 
+    #region Визуальные эффекты
+
+    [Header("Visual Effects")]
+    [SerializeField] private Color normalLightColor = Color.white;
     [SerializeField] private Color lowBatteryColor = new Color(1f, 0.8f, 0.6f); // теплый желтоватый цвет
     [SerializeField] private ParticleSystem sparkParticleSystem;
+
+    #endregion
+
+    #region Приватные поля
 
     private float remainingBatteryLife;
     private float originalIntensity;
@@ -53,43 +68,58 @@ public class BatteryLight : MonoBehaviour
     private bool isInCriticalMode = false;
     private System.Random rand;
 
+    #endregion
+
+    #region Unity методы
+
     private void Awake()
     {
         targetLight = GetComponent<Light2D>();
+        G.BatteryLight = this;
     }
 
     private void Start()
     {
-        // Инициализируем начальные настройки
+        InitializeLight();
+    }
+
+    private void Update()
+    {
+        if (!isDraining) return;
+        
+        UpdateBatteryLife();
+        UpdateLightRadius();
+        HandleLowBatteryEffects();
+        CheckBatteryDepletion();
+    }
+
+    #endregion
+
+    #region Основные методы
+
+    private void InitializeLight()
+    {
         remainingBatteryLife = maxBatteryLife * currentBatteryCharge;
         originalIntensity = targetLight.intensity;
         targetLight.pointLightOuterRadius = initialLightRadius;
         rand = new System.Random();
     }
 
-    private void Update()
+    private void UpdateBatteryLife()
     {
-        if (!isDraining)
-            return;
-        
-        // Уменьшаем оставшееся время работы батареи
-        remainingBatteryLife -= Time.deltaTime;
-        remainingBatteryLife = Mathf.Max(0f, remainingBatteryLife);
-
-        // Обновляем текущий заряд батареи (от 0 до 1)
+        remainingBatteryLife = Mathf.Max(0f, remainingBatteryLife - Time.deltaTime);
         currentBatteryCharge = remainingBatteryLife / maxBatteryLife;
+    }
 
-        // Рассчитываем новый радиус света на основе кривой расхода
+    private void UpdateLightRadius()
+    {
         float drainFactor = drainCurve.Evaluate(1f - currentBatteryCharge);
         targetRadius = Mathf.Lerp(initialLightRadius, minLightRadius, drainFactor);
-
-        // Применяем новый радиус к свету
         targetLight.pointLightOuterRadius = targetRadius;
+    }
 
-        // Работа с эффектами при низком заряде
-        HandleLowBatteryEffects();
-
-        // Выключаем свет, если батарея полностью разряжена
+    private void CheckBatteryDepletion()
+    {
         if (remainingBatteryLife <= 0f)
         {
             targetLight.intensity = 0f;
@@ -100,12 +130,21 @@ public class BatteryLight : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Эффекты низкого заряда
+
     private void HandleLowBatteryEffects()
     {
-        // Изменение цвета при низком заряде
+        UpdateLightColor();
+        HandleFlickerEffect();
+        HandleSoundEffects();
+    }
+
+    private void UpdateLightColor()
+    {
         if (currentBatteryCharge < lowBatterySoundThreshold)
         {
-            // Плавно меняем цвет от нормального к "разряженному"
             float colorBlend = 1 - (currentBatteryCharge / lowBatterySoundThreshold);
             targetLight.color = Color.Lerp(normalLightColor, lowBatteryColor, colorBlend);
         }
@@ -113,120 +152,104 @@ public class BatteryLight : MonoBehaviour
         {
             targetLight.color = normalLightColor;
         }
+    }
 
-        // Обработка мерцания
-        if (enableFlicker)
+    private void HandleFlickerEffect()
+    {
+        if (!enableFlicker)
         {
-            float flickerValue = 0;
+            targetLight.intensity = originalIntensity;
+            return;
+        }
 
-            if (currentBatteryCharge < severeFlickerThreshold)
-            {
-                // Очень сильное мерцание при критическом заряде
-                if (randomizeFlicker)
-                {
-                    // Случайное мерцание
-                    flickerValue = (float)rand.NextDouble() * severeFlickerIntensity;
-                }
-                else
-                {
-                    // Синусоидальное мерцание с возможностью "выпадений"
-                    flickerValue = Mathf.Abs(Mathf.Sin(Time.time * severeFlickerSpeed)) * severeFlickerIntensity;
-                    if (Random.value < 0.05f) // 5% шанс "выпадения" света
-                    {
-                        flickerValue = severeFlickerIntensity;
-                    }
-                }
+        float flickerValue = CalculateFlickerValue();
+        targetLight.intensity = originalIntensity * (1f - flickerValue);
+    }
 
-                // Запускаем искры при критическом заряде
-                if (sparkParticleSystem != null && Random.value < 0.01f)
-                {
-                    sparkParticleSystem.Emit(1);
-                }
-            }
-            else if (currentBatteryCharge < flickerThreshold)
-            {
-                // Стандартное мерцание при низком заряде
-                if (randomizeFlicker)
-                {
-                    flickerValue = (float)rand.NextDouble() * flickerIntensity *
-                                   (1f - currentBatteryCharge / flickerThreshold);
-                }
-                else
-                {
-                    flickerValue = Mathf.Sin(Time.time * flickerSpeed) * flickerIntensity *
-                                   (1f - currentBatteryCharge / flickerThreshold);
-                }
-            }
+    private float CalculateFlickerValue()
+    {
+        if (currentBatteryCharge < severeFlickerThreshold)
+        {
+            return CalculateSevereFlicker();
+        }
+        else if (currentBatteryCharge < flickerThreshold)
+        {
+            return CalculateNormalFlicker();
+        }
+        return 0f;
+    }
 
-            targetLight.intensity = originalIntensity * (1f - flickerValue);
+    private float CalculateSevereFlicker()
+    {
+        float flickerValue;
+        if (randomizeFlicker)
+        {
+            flickerValue = (float)rand.NextDouble() * severeFlickerIntensity;
         }
         else
         {
-            targetLight.intensity = originalIntensity;
+            flickerValue = Mathf.Abs(Mathf.Sin(Time.time * severeFlickerSpeed)) * severeFlickerIntensity;
+            if (Random.value < 0.05f)
+            {
+                flickerValue = severeFlickerIntensity;
+            }
         }
 
-        // Звуковые эффекты
-        if (Time.time > nextSoundTime)
+        if (sparkParticleSystem != null && Random.value < 0.01f)
         {
-            if (currentBatteryCharge < criticalBatterySoundThreshold)
-            {
-                G.AudioManager.Play("LightDysfunction");
-                nextSoundTime = Time.time + criticalBatteryBeepInterval;
-
-                // Если только что вошли в критический режим
-                if (!isInCriticalMode)
-                {
-                    isInCriticalMode = true;
-                    StartCoroutine(PulsateLight());
-                }
-            }
-            else if (currentBatteryCharge < lowBatterySoundThreshold)
-            {
-                // Низкий уровень заряда
-                isInCriticalMode = false;
-
-                G.AudioManager.Play("lowBatteryBeep");
-                nextSoundTime = Time.time + lowBatteryBeepInterval;
-            }
+            sparkParticleSystem.Emit(1);
         }
+
+        return flickerValue;
     }
 
-    // Корутина для пульсации света при критическом заряде
-    private IEnumerator PulsateLight()
+    private float CalculateNormalFlicker()
     {
-        float originalRadius = targetLight.pointLightOuterRadius;
-        float pulseFactor = 1.2f;
-
-        while (isInCriticalMode && currentBatteryCharge > 0)
+        float intensityFactor = 1f - currentBatteryCharge / flickerThreshold;
+        if (randomizeFlicker)
         {
-            // Увеличиваем радиус
-            float startTime = Time.time;
-            float duration = 0.2f;
+            return (float)rand.NextDouble() * flickerIntensity * intensityFactor;
+        }
+        return Mathf.Sin(Time.time * flickerSpeed) * flickerIntensity * intensityFactor;
+    }
 
-            while (Time.time - startTime < duration)
-            {
-                float progress = (Time.time - startTime) / duration;
-                targetLight.pointLightOuterRadius = originalRadius * Mathf.Lerp(1f, pulseFactor, progress);
-                yield return null;
-            }
+    private void HandleSoundEffects()
+    {
+        if (Time.time <= nextSoundTime) return;
 
-            // Уменьшаем радиус
-            startTime = Time.time;
-            while (Time.time - startTime < duration)
-            {
-                float progress = (Time.time - startTime) / duration;
-                targetLight.pointLightOuterRadius = originalRadius * Mathf.Lerp(pulseFactor, 1f, progress);
-                yield return null;
-            }
-
-            yield return new WaitForSeconds(0.5f);
-
-            // Обновляем оригинальный радиус, так как он может измениться из-за разряда
-            originalRadius = targetRadius;
+        if (currentBatteryCharge < criticalBatterySoundThreshold)
+        {
+            HandleCriticalBatterySound();
+        }
+        else if (currentBatteryCharge < lowBatterySoundThreshold)
+        {
+            HandleLowBatterySound();
         }
     }
 
-    // Метод для подбора батареек
+    private void HandleCriticalBatterySound()
+    {
+        G.AudioManager.Play("LightDysfunction");
+        nextSoundTime = Time.time + criticalBatteryBeepInterval;
+
+        if (!isInCriticalMode)
+        {
+            isInCriticalMode = true;
+            StartCoroutine(PulsateLight());
+        }
+    }
+
+    private void HandleLowBatterySound()
+    {
+        isInCriticalMode = false;
+        G.AudioManager.Play("lowBatteryBeep");
+        nextSoundTime = Time.time + lowBatteryBeepInterval;
+    }
+
+    #endregion
+
+    #region Публичные методы
+
     public void RechargeBattery(float chargeAmount)
     {
         currentBatteryCharge = Mathf.Clamp01(currentBatteryCharge + chargeAmount);
@@ -238,13 +261,11 @@ public class BatteryLight : MonoBehaviour
         }
     }
 
-    // Метод для полной зарядки батареи
     public void FullRecharge()
     {
         RechargeBattery(1f);
     }
 
-    // Метод для включения/выключения фонарика
     public void ToggleLight()
     {
         if (isDraining)
@@ -255,9 +276,8 @@ public class BatteryLight : MonoBehaviour
 
     public void TurnOn()
     {
-        if (currentBatteryCharge <= 0)
-            return;
-
+        if (currentBatteryCharge <= 0) return;
+        
         isDraining = true;
         targetLight.enabled = true;
     }
@@ -268,13 +288,54 @@ public class BatteryLight : MonoBehaviour
         targetLight.enabled = false;
     }
 
-    // Получить текущий процент заряда (0-100)
     public int GetBatteryPercentage()
     {
         return Mathf.RoundToInt(currentBatteryCharge * 100f);
     }
 
-    // Для отладки в редакторе
+    #endregion
+
+    #region Корутины
+
+    private IEnumerator PulsateLight()
+    {
+        float originalRadius = targetLight.pointLightOuterRadius;
+        float pulseFactor = 1.2f;
+
+        while (isInCriticalMode && currentBatteryCharge > 0)
+        {
+            yield return StartCoroutine(PulseCycle(originalRadius, pulseFactor));
+            yield return new WaitForSeconds(0.5f);
+            originalRadius = targetRadius;
+        }
+    }
+
+    private IEnumerator PulseCycle(float originalRadius, float pulseFactor)
+    {
+        float duration = 0.2f;
+        
+        // Увеличение радиуса
+        yield return StartCoroutine(LerpLightRadius(originalRadius, originalRadius * pulseFactor, duration));
+        
+        // Уменьшение радиуса
+        yield return StartCoroutine(LerpLightRadius(originalRadius * pulseFactor, originalRadius, duration));
+    }
+
+    private IEnumerator LerpLightRadius(float startRadius, float endRadius, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float progress = (Time.time - startTime) / duration;
+            targetLight.pointLightOuterRadius = Mathf.Lerp(startRadius, endRadius, progress);
+            yield return null;
+        }
+    }
+
+    #endregion
+
+    #region Отладка
+
     private void OnDrawGizmos()
     {
         if (targetLight != null)
@@ -283,4 +344,6 @@ public class BatteryLight : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position, targetLight.pointLightOuterRadius);
         }
     }
+
+    #endregion
 }

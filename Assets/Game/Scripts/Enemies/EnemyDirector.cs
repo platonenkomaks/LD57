@@ -4,9 +4,12 @@ using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public class EnemyDirector : MonoBehaviour
 {
+    #region Структуры данных
+
     [System.Serializable]
     public class Wave
     {
@@ -39,22 +42,29 @@ public class EnemyDirector : MonoBehaviour
         public float spawnChance; // Вероятность спавна от 0 до 1
     }
 
-    [Header("Настройки спавна")] [SerializeField]
-    private List<Wave> waves = new List<Wave>();
+    #endregion
 
+    #region Настройки в инспекторе
+
+    [Header("Настройки спавна")]
+    [SerializeField] private List<Wave> waves = new List<Wave>();
     [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
     [SerializeField] private bool autoStartWaves = true;
     [SerializeField] private bool loopWaves = false;
     [SerializeField] private float initialDelay = 3f;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float spawnCheckRadius = 1f;
-    
 
-    [Header("События")] public UnityEvent onWaveStart;
+    [Header("События")] 
+    public UnityEvent onWaveStart;
     public UnityEvent onWaveComplete;
     public UnityEvent onAllWavesComplete;
     public UnityEvent<int> onWaveNumberChanged;
     public UnityEvent<int, int> onEnemyCountChanged; // текущее количество, максимальное количество
+
+    #endregion
+
+    #region Приватные поля
 
     private int _currentWaveIndex = -1;
     private int _totalEnemiesSpawned = 0;
@@ -65,22 +75,15 @@ public class EnemyDirector : MonoBehaviour
     private bool _waveActive = false;
     private readonly Dictionary<int, int> _enemiesRemainingInWave = new();
 
+    #endregion
+
+    #region Unity методы
 
     private IEnumerator Start()
     {
         yield return null;
         G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
-        // Заполняем словарь для отслеживания оставшихся врагов в каждой волне
-        for (int i = 0; i < waves.Count; i++)
-        {
-            int waveTotal = 0;
-            foreach (var enemyInfo in waves[i].enemies)
-            {
-                waveTotal += enemyInfo.count;
-            }
-
-            _enemiesRemainingInWave[i] = waveTotal;
-        }
+        InitializeWaveEnemyCounts();
 
         if (autoStartWaves)
         {
@@ -93,31 +96,17 @@ public class EnemyDirector : MonoBehaviour
         G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChange);
     }
 
-    private IEnumerator DelayedStart()
-    {
-        yield return new WaitForSeconds(initialDelay);
-        StartNextWave();
-    }
-
     private void Update()
     {
-        // Очищаем список от уничтоженных врагов
-        _activeEnemies.RemoveAll(enemy => !enemy);
-
-        // Обновляем счетчик
-        if (_waveActive)
-        {
-            onEnemyCountChanged?.Invoke(_activeEnemies.Count, _totalEnemiesRemaining);
-        }
-
-        // Проверяем, завершена ли текущая волна
-        if (_waveActive && !_isSpawning && _activeEnemies.Count == 0)
-        {
-            CompleteCurrentWave();
-        }
+        CleanupDestroyedEnemies();
+        UpdateEnemyCounter();
+        CheckWaveCompletion();
     }
 
-    // Публичный метод для запуска волн
+    #endregion
+
+    #region Публичные методы
+
     public void StartWaves()
     {
         if (_currentWaveIndex < 0)
@@ -131,16 +120,86 @@ public class EnemyDirector : MonoBehaviour
         StopAllCoroutines();
     }
 
-    // Перезапуск волн с самого начала
     public void RestartWaves()
+    {
+        ResetWaveState();
+        ResetEnemies();
+        ResetEnemyCounts();
+        StartCoroutine(DelayedStart());
+    }
+
+    public void StartNextWave()
+    {
+        _currentWaveIndex++;
+
+        if (!CheckWaveAvailability())
+        {
+            return;
+        }
+
+        InitializeNewWave();
+    }
+
+    public void RegisterEnemy(GameObject enemy)
+    {
+        if (!_activeEnemies.Contains(enemy))
+        {
+            _activeEnemies.Add(enemy);
+            _totalEnemiesRemaining++;
+        }
+    }
+
+    #endregion
+
+    #region Приватные методы
+
+    private void InitializeWaveEnemyCounts()
+    {
+        for (int i = 0; i < waves.Count; i++)
+        {
+            int waveTotal = waves[i].enemies.Sum(enemyInfo => enemyInfo.count);
+            _enemiesRemainingInWave[i] = waveTotal;
+        }
+    }
+
+    private IEnumerator DelayedStart()
+    {
+        yield return new WaitForSeconds(initialDelay);
+        StartNextWave();
+    }
+
+    private void CleanupDestroyedEnemies()
+    {
+        _activeEnemies.RemoveAll(enemy => !enemy);
+    }
+
+    private void UpdateEnemyCounter()
+    {
+        if (_waveActive)
+        {
+            onEnemyCountChanged?.Invoke(_activeEnemies.Count, _totalEnemiesRemaining);
+        }
+    }
+
+    private void CheckWaveCompletion()
+    {
+        if (_waveActive && !_isSpawning && _activeEnemies.Count == 0)
+        {
+            CompleteCurrentWave();
+        }
+    }
+
+    private void ResetWaveState()
     {
         print("Restarting");
         StopAllCoroutines();
         _isSpawning = false;
         _waveActive = false;
         _currentWaveIndex = -1;
+    }
 
-        // Уничтожаем всех активных врагов
+    private void ResetEnemies()
+    {
         foreach (var enemy in _activeEnemies)
         {
             if (enemy != null)
@@ -148,34 +207,22 @@ public class EnemyDirector : MonoBehaviour
                 Destroy(enemy);
             }
         }
-
         _activeEnemies.Clear();
-
-        // Сбрасываем счетчики
         _totalEnemiesSpawned = 0;
         _totalEnemiesRemaining = 0;
-
-        // Рестарт словаря оставшихся врагов
-        for (int i = 0; i < waves.Count; i++)
-        {
-            int waveTotal = 0;
-            foreach (var enemyInfo in waves[i].enemies)
-            {
-                waveTotal += enemyInfo.count;
-            }
-
-            _enemiesRemainingInWave[i] = waveTotal;
-        }
-        
-        StartCoroutine(DelayedStart());
     }
 
-    // Запуск следующей волны
-    public void StartNextWave()
+    private void ResetEnemyCounts()
     {
-        _currentWaveIndex++;
+        for (int i = 0; i < waves.Count; i++)
+        {
+            int waveTotal = waves[i].enemies.Sum(enemyInfo => enemyInfo.count);
+            _enemiesRemainingInWave[i] = waveTotal;
+        }
+    }
 
-        // Проверяем, есть ли еще волны
+    private bool CheckWaveAvailability()
+    {
         if (_currentWaveIndex >= waves.Count)
         {
             if (loopWaves)
@@ -185,17 +232,20 @@ public class EnemyDirector : MonoBehaviour
             else
             {
                 onAllWavesComplete?.Invoke();
-                return;
+                return false;
             }
         }
+        return true;
+    }
 
+    private void InitializeNewWave()
+    {
         _waveActive = true;
         Wave currentWave = waves[_currentWaveIndex].DeepCopy();
 
         onWaveNumberChanged?.Invoke(_currentWaveIndex + 1);
         onWaveStart?.Invoke();
 
-        // Запускаем спавн врагов
         if (_spawnCoroutine != null)
         {
             StopCoroutine(_spawnCoroutine);
@@ -203,7 +253,7 @@ public class EnemyDirector : MonoBehaviour
 
         _spawnCoroutine = StartCoroutine(SpawnWave(currentWave));
     }
-    
+
     private void OnGameStateChange(OnGameStateChangedEvent e)
     {
         if (e.State == GameLoopStateMachine.GameLoopState.Ascend)
@@ -222,7 +272,6 @@ public class EnemyDirector : MonoBehaviour
         _activeEnemies.ForEach(Destroy);
     }
 
-    // Корутина для спавна врагов в волне
     private IEnumerator SpawnWave(Wave wave)
     {
         _isSpawning = true;
@@ -231,18 +280,14 @@ public class EnemyDirector : MonoBehaviour
 
         while (enemiesLeftToSpawn > 0)
         {
-            // Если достигнут лимит одновременных врагов, ждем
             if (_activeEnemies.Count >= wave.maxEnemiesAtOnce)
             {
                 yield return new WaitForSeconds(0.5f);
                 continue;
             }
 
-            // Спавним одного врага из доступных типов
             SpawnEnemy(wave);
             enemiesLeftToSpawn--;
-
-            // Ждем перед следующим спавном
             yield return new WaitForSeconds(wave.timeBetweenSpawns);
         }
         
@@ -251,107 +296,65 @@ public class EnemyDirector : MonoBehaviour
 
     private void SpawnEnemy(Wave wave)
     {
-        if (spawnPoints.Count == 0)
-        {
-            return;
-        }
+        if (spawnPoints.Count == 0) return;
 
-        // Выбираем тип врага на основе вероятностей
-        List<EnemySpawnInfo> availableEnemies = new List<EnemySpawnInfo>();
-        foreach (var enemyInfo in wave.enemies)
-        {
-            if (enemyInfo.count > 0)
-            {
-                availableEnemies.Add(enemyInfo);
-            }
-        }
+        EnemySpawnInfo selectedEnemy = SelectEnemyToSpawn(wave);
+        if (selectedEnemy.enemyPrefab == null) return;
 
-        if (availableEnemies.Count == 0)
-        {
-            return;
-        }
+        Transform spawnPoint = GetSuitableSpawnPoint();
+        CreateEnemy(selectedEnemy, spawnPoint);
+    }
 
-        // Выбираем врага с учетом вероятности
-        float totalChance = 0;
-        foreach (var enemyInfo in availableEnemies)
-        {
-            totalChance += enemyInfo.spawnChance;
-        }
+    private EnemySpawnInfo SelectEnemyToSpawn(Wave wave)
+    {
+        var availableEnemies = wave.enemies.Where(e => e.count > 0).ToList();
+        if (!availableEnemies.Any()) return new EnemySpawnInfo();
 
+        float totalChance = availableEnemies.Sum(e => e.spawnChance);
         float randomValue = Random.Range(0, totalChance);
         float currentChance = 0;
-        EnemySpawnInfo selectedEnemy = availableEnemies[0];
 
-        for (int i = 0; i < availableEnemies.Count; i++)
+        foreach (var enemy in availableEnemies)
         {
-            currentChance += availableEnemies[i].spawnChance;
+            currentChance += enemy.spawnChance;
             if (randomValue <= currentChance)
             {
-                selectedEnemy = availableEnemies[i];
-                break;
+                return enemy;
             }
         }
 
-        // Уменьшаем счетчик этого типа врагов
-        for (int i = 0; i < wave.enemies.Count; i++)
-        {
-            if (wave.enemies[i].enemyPrefab == selectedEnemy.enemyPrefab)
-            {
-                //wave.enemies[i].count -= 1;
-                break;
-            }
-        }
+        return availableEnemies[0];
+    }
 
-        // Выбираем точку спавна
-        Transform spawnPoint = GetSuitableSpawnPoint();
+    private Transform GetSuitableSpawnPoint()
+    {
+        var suitablePoints = spawnPoints
+            .Where(point => !Physics2D.OverlapCircle(point.position, spawnCheckRadius, obstacleLayer))
+            .ToList();
 
-        // Создаем врага
-        GameObject enemy = Instantiate(selectedEnemy.enemyPrefab, spawnPoint.position, Quaternion.identity);
-        enemy.GetComponent<Enemy>().Init(enemy.transform); // Инициализация врага (если требуется)
-        _activeEnemies.Add(enemy);
-        _totalEnemiesSpawned++;
+        return suitablePoints.Any() 
+            ? suitablePoints[Random.Range(0, suitablePoints.Count)]
+            : spawnPoints[Random.Range(0, spawnPoints.Count)];
+    }
 
-        // Настраиваем компонент врага
-        Enemy enemyComponent = enemy.GetComponent<Enemy>();
-        if (enemyComponent != null)
+    private void CreateEnemy(EnemySpawnInfo enemyInfo, Transform spawnPoint)
+    {
+        GameObject enemy = Instantiate(enemyInfo.enemyPrefab, spawnPoint.position, Quaternion.identity);
+        
+        if (enemy.TryGetComponent<Enemy>(out var enemyComponent))
         {
             enemyComponent.Init(G.Player.transform);
         }
+
+        _activeEnemies.Add(enemy);
+        _totalEnemiesSpawned++;
     }
 
-    // Поиск подходящей точки спавна
-    private Transform GetSuitableSpawnPoint()
-    {
-        List<Transform> suitablePoints = new List<Transform>();
-
-        foreach (var point in spawnPoints)
-        {
-            // Проверяем, нет ли препятствий
-            bool hasObstacle = Physics2D.OverlapCircle(point.position, spawnCheckRadius, obstacleLayer);
-            
-
-            if (!hasObstacle)
-            {
-                suitablePoints.Add(point);
-            }
-        }
-
-        // Если нет подходящих точек, используем любую
-        if (suitablePoints.Count == 0)
-        {
-            return spawnPoints[Random.Range(0, spawnPoints.Count)];
-        }
-
-        return suitablePoints[Random.Range(0, suitablePoints.Count)];
-    }
-
-    // Завершение текущей волны
     private void CompleteCurrentWave()
     {
         _waveActive = false;
         onWaveComplete?.Invoke();
 
-        // Задержка перед следующей волной
         if (_currentWaveIndex < waves.Count - 1 || loopWaves)
         {
             StartCoroutine(WaitForNextWave());
@@ -362,7 +365,6 @@ public class EnemyDirector : MonoBehaviour
         }
     }
 
-    // Задержка между волнами
     private IEnumerator WaitForNextWave()
     {
         float delay = waves[_currentWaveIndex].timeBeforeNextWave;
@@ -370,30 +372,13 @@ public class EnemyDirector : MonoBehaviour
         StartNextWave();
     }
 
-    // Добавление врага в учет (для врагов, созданных другими способами)
-    public void RegisterEnemy(GameObject enemy)
-    {
-        if (!_activeEnemies.Contains(enemy))
-        {
-            _activeEnemies.Add(enemy);
-            _totalEnemiesRemaining++;
-        }
-    }
+    #endregion
 
-    // Методы для редактора и отладки
-    public int GetCurrentWaveIndex()
-    {
-        return _currentWaveIndex;
-    }
+    #region Методы для отладки
 
-    public int GetTotalEnemiesSpawned()
-    {
-        return _totalEnemiesSpawned;
-    }
+    public int GetCurrentWaveIndex() => _currentWaveIndex;
+    public int GetTotalEnemiesSpawned() => _totalEnemiesSpawned;
+    public int GetActiveEnemiesCount() => _activeEnemies.Count;
 
-    public int GetActiveEnemiesCount()
-    {
-        return _activeEnemies.Count;
-    }
-    
+    #endregion
 }

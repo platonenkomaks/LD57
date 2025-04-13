@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public PlayerCinemachineTarget playerCinemachineTarget;
     public TileGrid tileGrid;
     
+    public BatteryLightUI batteryLightUI;
     public Tilemap highlightTilemap;
     private Player _player;
     
@@ -19,6 +20,7 @@ public class LevelManager : MonoBehaviour
         _player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
         G.Player = _player;
         playerCinemachineTarget.SetTargetForCinemachineCamera(_player.transform);
+
         if (settingsButton != null)
         {
             settingsButton.onClick.AddListener(OnSettingsButtonPressed);
@@ -27,6 +29,9 @@ public class LevelManager : MonoBehaviour
         G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
         G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
         G.MiningSystem.highlightTilemap = highlightTilemap;
+
+       batteryLightUI.Init();
+
     }
     
     private void OnSettingsButtonPressed()

@@ -20,7 +20,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    [SerializeField] private GameObject deathEffect;
+   
     [SerializeField] private float invincibilityDuration = 1f;
     [SerializeField] private float flashInterval = 0.1f;
     [SerializeField] private SpriteRenderer spriteRenderer;

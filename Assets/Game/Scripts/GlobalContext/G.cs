@@ -25,6 +25,7 @@ public static class G
     public static MiningSystem MiningSystem;
     
     // Effects
+    public static BatteryLight BatteryLight;
     public static VisualEffectsManager VisualEffectsManager;
     
     // Sound
