@@ -12,6 +12,7 @@ public class GoldView : MonoBehaviour
 
     private void Awake()
     {
+        G.GoldPilesView = this;
         _goldPiles = new GameObject[] { goldPile1, goldPile2, goldPile3, goldPile4, goldPile5 };
     }
 
@@ -50,4 +51,5 @@ public class GoldView : MonoBehaviour
             _goldPiles[i].SetActive(enabled);
         }
     }
+    
 }

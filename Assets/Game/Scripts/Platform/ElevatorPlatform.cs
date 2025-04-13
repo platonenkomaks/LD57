@@ -152,9 +152,10 @@ public class ElevatorPlatform : MonoBehaviour
     }
 
     private void OnArriveToSurface()
-    {
+    {   G.GoldPilesView.SetEnabled(false);
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
         G.UIManager.ShowScreen("ShopScreen");
+       
     }
 }

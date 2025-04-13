@@ -14,6 +14,7 @@ namespace Platform
         return;
       
       G.GoldManager.AddGold(1);
+      G.AudioManager.Play("DropGold");
       G.MiningSystem.EnableMining();
     }
   }

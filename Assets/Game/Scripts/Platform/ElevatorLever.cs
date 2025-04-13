@@ -1,6 +1,7 @@
 using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
+using Platform;
 using UnityEngine;
 
 
@@ -13,6 +14,8 @@ public class ElevatorLever : MonoBehaviour
     public Sprite leverDownSprite;
     public Sprite leverUpSprite;
     
+    public Credits credits;
+
     private bool playerInRange = false;
     private bool isDescending = true;
     private SpriteRenderer _spriteRenderer;
@@ -54,6 +57,8 @@ public class ElevatorLever : MonoBehaviour
                     }
                 }
                 StartCoroutine(DescentAfterDelay(1f));
+                
+                credits.StartCredits();
             }
             else
             {

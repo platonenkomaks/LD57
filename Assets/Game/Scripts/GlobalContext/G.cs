@@ -22,6 +22,7 @@ public static class G
     
     // Mining
     public static GoldManager GoldManager;
+    public static GoldView GoldPilesView;
     public static MiningSystem MiningSystem;
     
     // Effects
