@@ -38,6 +38,8 @@ public class EnemyStateMachine
     private EnemyState currentState;
 
     public EnemyState CurrentState => currentState;
+    
+    public int GetStatesCount() => states.Count;
 
     public void RegisterState(EnemyState state)
     {
@@ -46,13 +48,22 @@ public class EnemyStateMachine
 
     public void ChangeState(EnemyStateID newStateID)
     {
-        if (currentState != null && currentState.ID == newStateID) return;
+        if (currentState != null && currentState.ID == newStateID)
+        {
+            Debug.Log($"EnemyStateMachine: already in state {newStateID}");
+            return;
+        }
 
         if (states.TryGetValue(newStateID, out EnemyState newState))
         {
+            Debug.Log($"EnemyStateMachine: changing state from {currentState?.ID} to {newStateID}");
             currentState?.Exit();
             currentState = newState;
             currentState.Enter();
+        }
+        else
+        {
+            Debug.LogError($"EnemyStateMachine: state {newStateID} not found in registered states");
         }
     }
 

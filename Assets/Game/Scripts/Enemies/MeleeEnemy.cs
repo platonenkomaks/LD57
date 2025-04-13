@@ -185,6 +185,7 @@ public class MeleeEnemy : Enemy
 
 
         playerHealth.TakeDamage(attackDamage);
+        G.AudioManager.Play("SlimeAttack");
 
 
         yield return new WaitForSeconds(0.1f);

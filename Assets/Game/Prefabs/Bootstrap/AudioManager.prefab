@@ -81,8 +81,8 @@ MonoBehaviour:
   - name: Axe
     clip: {fileID: 8300000, guid: dbf15689597863d4180dffb0c21628f8, type: 3}
     category: 1
-    volume: 0.5
-    pitch: 1
+    volume: 0.129
+    pitch: 0.88
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
@@ -121,8 +121,8 @@ MonoBehaviour:
   - name: Impact
     clip: {fileID: 8300000, guid: e627903b36b56274fabee6a305cbff95, type: 3}
     category: 1
-    volume: 0.5
-    pitch: 1
+    volume: 0.179
+    pitch: 1.61
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
@@ -136,6 +136,30 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GunCLick
     clip: {fileID: 8300000, guid: 8286f0e407e56d14fa0dbde409cbb702, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: FireBall
+    clip: {fileID: 8300000, guid: 2af56977e9f3b7549b45d96db8bebf63, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: FireBallHit
+    clip: {fileID: 8300000, guid: 424da19cf6cf3a043a44b9499009d575, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: SlimeAttack
+    clip: {fileID: 8300000, guid: 5bde418c8c2043542b120dbc236fecc3, type: 3}
     category: 1
     volume: 1
     pitch: 1

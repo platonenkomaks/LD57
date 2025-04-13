@@ -176,12 +176,15 @@ MonoBehaviour:
   waves:
   - waveName: "\u041F\u0435\u0440\u0432\u0430\u044F "
     enemies:
+    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
+      count: 50
+      spawnChance: 30
     - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
       count: 50
-      spawnChance: 1
-    timeBetweenSpawns: 3
+      spawnChance: 70
+    timeBetweenSpawns: 1
     timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 5
+    maxEnemiesAtOnce: 1
     isBossWave: 0
   spawnPoints:
   - {fileID: 1023805819529358367}

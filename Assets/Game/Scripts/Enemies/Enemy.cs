@@ -7,7 +7,8 @@ using UnityEngine.PlayerLoop;
 public abstract class Enemy : MonoBehaviour
 {
     [Header("Базовые настройки")] [SerializeField]
-    public float health = 100f;
+    public float maxHealth = 100f;
+    [SerializeField] public float health = 100f;
 
     [SerializeField] public float moveSpeed = 2f;
     [SerializeField] public float detectionRange = 5f;
@@ -43,23 +44,41 @@ public abstract class Enemy : MonoBehaviour
 
     public virtual void Start()
     {
+        if (G.Player == null)
+        {
+            Debug.LogError("G.Player is null in Enemy.Start()");
+            return;
+        }
+        
         player = G.Player.transform;
+        Debug.Log($"Enemy {gameObject.name} initialized with player at position: {player.position}");
+        
         // Стартовое состояние (например, патруль)
+        if (StateMachine == null)
+        {
+            Debug.LogError($"StateMachine is null in Enemy {gameObject.name}");
+            return;
+        }
+        
         StateMachine.ChangeState(EnemyStateID.Patrol);
     }
 
     public virtual void Update()
     {
-        if (player == null) return;
-
         // Обновляем состояние
-        StateMachine.Update();
+        if (StateMachine != null)
+        {
+            StateMachine.Update();
+        }
     }
 
     public virtual void FixedUpdate()
     {
         // Физические обновления (движение и т.д.)
-        StateMachine.FixedUpdate();
+        if (StateMachine != null)
+        {
+            StateMachine.FixedUpdate();
+        }
     }
 
     protected abstract void InitializeStateMachine();
@@ -111,8 +130,15 @@ public abstract class Enemy : MonoBehaviour
 
     public float DistanceToPlayer()
     {
-        if (player == null) return Mathf.Infinity;
-        return Vector2.Distance(transform.position, player.position);
+        if (player == null)
+        {
+            Debug.LogWarning($"DistanceToPlayer: player is null in {gameObject.name}");
+            return Mathf.Infinity;
+        }
+        
+        float distance = Vector2.Distance(transform.position, player.position);
+        Debug.Log($"DistanceToPlayer: distance={distance} in {gameObject.name}");
+        return distance;
     }
 
     public Vector2 DirectionToPlayer()
@@ -125,14 +151,14 @@ public abstract class Enemy : MonoBehaviour
     public bool CanSeePlayer()
     {
         if (player == null) return false;
-
+        
         // Проверяем, находится ли игрок в зоне обнаружения
         return DistanceToPlayer() <= detectionRange;
     }
     
     private void OnDrawGizmos()
     {
-        if (StateMachine == null) return;
+        if (StateMachine == null || StateMachine.CurrentState == null) return;
 
         // Define colors for each state
         Color stateColor = Color.white;
@@ -140,6 +166,9 @@ public abstract class Enemy : MonoBehaviour
         {
             case EnemyStateID.Patrol:
                 stateColor = Color.green;
+                break;
+            case EnemyStateID.Wander:
+                stateColor = Color.cyan;
                 break;
             case EnemyStateID.Chase:
                 stateColor = Color.yellow;
@@ -149,6 +178,9 @@ public abstract class Enemy : MonoBehaviour
                 break;
             case EnemyStateID.TakeDamage:
                 stateColor = Color.blue;
+                break;
+            case EnemyStateID.Retreat:
+                stateColor = Color.magenta;
                 break;
         }
 

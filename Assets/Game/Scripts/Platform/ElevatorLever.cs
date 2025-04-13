@@ -26,7 +26,9 @@ public class ElevatorLever : MonoBehaviour
             hintUI.SetActive(false);
     }
     void Update()
-    {
+
+    {   
+        
         if (!isLocked && playerInRange && Input.GetKeyDown(KeyCode.S))
         {
             G.AudioManager.Play("Lever");
