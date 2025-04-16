@@ -216,7 +216,7 @@ public class MiningSystem : MonoBehaviour
             Instantiate(miningEffectPrefab, effectPosition, Quaternion.identity);
         }
         
-        G.AudioManager.Play("Impact");
+        G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
     }
     
@@ -236,7 +236,7 @@ public class MiningSystem : MonoBehaviour
             Instantiate(goldMiningEffectPrefab, effectPosition, Quaternion.identity);
         }
         
-        G.AudioManager.Play("Impact");
+        G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
         StartGoldMining();
         

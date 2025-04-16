@@ -126,7 +126,7 @@ public class RangedEnemy : Enemy
         // Если здоровье кончилось, умираем
         if (health <= 0)
         {
-            Die();
+            DestroyEnemy();
         }
     }
 

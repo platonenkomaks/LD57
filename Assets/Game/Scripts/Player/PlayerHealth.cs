@@ -32,7 +32,15 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
+        ResetHealt();
+        
+    }
+
+    public void ResetHealt()
+    {
+        Debug.Log("ResetHealt вызван");
         currentHealth = maxHealth;
+        Debug.Log($"ResetHealt: установлено здоровье {currentHealth}");
     }
 
     public void TakeDamage(int damage)
@@ -41,6 +49,7 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
 
+        G.AudioManager.Play("PlayerHit");
         if (currentHealth <= 0)
         {
             Die();

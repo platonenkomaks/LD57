@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class PlayerHealthUI : MonoBehaviour
 {
-    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private GameObject heartPrefab;
     [SerializeField] private Transform heartsContainer;
     [SerializeField] private float heartSpacing = 40f;
@@ -11,11 +10,18 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private int healthPerHeart = 1;
 
     private Image[] _heartImages;
+    private PlayerHealth _playerHealth;
 
     private void Start()
     {
+        _playerHealth = G.PlayerHealth;
+        if (_playerHealth == null)
+        {
+            Debug.LogError("PlayerHealth не найден в глобальном контексте");
+            return;
+        }
         
-        int totalHearts = Mathf.CeilToInt(playerHealth.maxHealth / healthPerHeart);
+        int totalHearts = Mathf.CeilToInt(_playerHealth.maxHealth / healthPerHeart);
         
         _heartImages = new Image[totalHearts];
         
@@ -23,15 +29,16 @@ public class PlayerHealthUI : MonoBehaviour
         
         UpdateHeartsDisplay();
         
-        playerHealth.OnHealthChanged += UpdateHeartsDisplay;
+        _playerHealth.OnHealthChanged += UpdateHeartsDisplay;
     }
+    
 
     private void OnDestroy()
     {
         // Отписываемся, чтобы предотвратить утечки памяти
-        if (playerHealth != null)
+        if (_playerHealth != null)
         {
-            playerHealth.OnHealthChanged -= UpdateHeartsDisplay;
+            _playerHealth.OnHealthChanged -= UpdateHeartsDisplay;
         }
     }
 
@@ -59,44 +66,36 @@ public class PlayerHealthUI : MonoBehaviour
         }
     }
 
-    private void UpdateHeartsDisplay()
+    public void UpdateHeartsDisplay()
     {
-        if (playerHealth == null || _heartImages == null)
+        if (_playerHealth == null)
             return;
-        
-        float currentHealth = playerHealth.currentHealth;
-        int totalHearts = _heartImages.Length;
-    
-        // Рассчитываем, сколько должно быть активных сердец
-        int activeHearts = Mathf.CeilToInt(currentHealth / healthPerHeart);
-    
-        // Ограничиваем количество активных сердец максимальным количеством сердец
-        activeHearts = Mathf.Min(activeHearts, totalHearts);
-    
-        // Обрабатываем все сердца
-        for (int i = 0; i < totalHearts; i++)
+
+        int currentHealth = _playerHealth.currentHealth;
+
+        // Убедимся, что количество сердец соответствует текущему здоровью
+        int currentHeartCount = heartsContainer.childCount;
+
+        if (currentHeartCount < currentHealth)
         {
-            if (_heartImages[i] != null)
+            // Добавляем недостающие сердца
+            for (int i = currentHeartCount; i < currentHealth; i++)
             {
-                if (i < activeHearts - 1)
-                {
-                    // Полное сердце
-                    _heartImages[i].fillAmount = 1f;
-                }
-                else if (i == activeHearts - 1)
-                {
-                    // Последнее активное сердце может быть частично заполненным
-                    float lastHeartFill = (currentHealth % healthPerHeart) / healthPerHeart;
-                    if (lastHeartFill == 0) lastHeartFill = 1f; // Если кратно healthPerHeart, то полное сердце
-                
-                    _heartImages[i].fillAmount = lastHeartFill;
-                }
-                else
-                {
-                    // Физически удаляем лишние сердца
-                    Destroy(_heartImages[i].gameObject);
-                    _heartImages[i] = null;
-                }
+                GameObject newHeart = Instantiate(heartPrefab, heartsContainer);
+                RectTransform heartRect = newHeart.GetComponent<RectTransform>();
+
+                // Размещаем сердце в сетке
+                int row = i / heartsPerRow;
+                int col = i % heartsPerRow;
+                heartRect.anchoredPosition = new Vector2(col * heartSpacing, -row * heartSpacing);
+            }
+        }
+        else if (currentHeartCount > currentHealth)
+        {
+            // Удаляем лишние сердца
+            for (int i = currentHeartCount - 1; i >= currentHealth; i--)
+            {
+                Destroy(heartsContainer.GetChild(i).gameObject);
             }
         }
     }

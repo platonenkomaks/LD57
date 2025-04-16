@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15c26a9636248a7a6159c46b5e5d6f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 100
   health: 1
   moveSpeed: 2
   detectionRange: 20
@@ -247,3 +248,5 @@ MonoBehaviour:
     m_Bits: 64
   groundCheck: {fileID: 2288002041803625291}
   groundCheckDistance: 0.5
+  _isGrounded: 0
+  fallCooldown: 1

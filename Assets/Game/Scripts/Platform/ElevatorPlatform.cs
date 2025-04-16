@@ -2,6 +2,7 @@ using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class ElevatorPlatform : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartDescent()
     {
+        G.AudioManager.Stop("Intro");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
 
@@ -79,13 +81,14 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartAscent()
     {
+        
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
 
-        StartCoroutine(AscentAfterDelay(1.5f));
+        StartCoroutine(AscentAfterDelay(2.5f));
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
-        G.AudioManager.Play("ElevatorMoving");
+        G.AudioManager.Play("Fight");
     }
 
     public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
@@ -152,10 +155,30 @@ public class ElevatorPlatform : MonoBehaviour
     }
 
     private void OnArriveToSurface()
-    {   G.GoldPilesView.SetEnabled(false);
+    {   G.AudioManager.Stop("Fight");
+        Debug.Log("OnArriveToSurface вызван");
+        G.GoldPilesView.SetEnabled(false);
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
         G.UIManager.ShowScreen("ShopScreen");
-       
+        
+        // Восстанавливаем здоровье игрока до максимального значения
+        if (G.PlayerHealth != null)
+        {
+            Debug.Log($"Восстанавливаем здоровье. Текущее здоровье: {G.PlayerHealth.currentHealth}, Максимальное: {G.PlayerHealth.maxHealth}");
+            G.PlayerHealth.ResetHealt();
+            Debug.Log($"Здоровье после восстановления: {G.PlayerHealth.currentHealth}");
+            
+            // Находим и обновляем UI здоровья
+            var healthUI = FindObjectOfType<PlayerHealthUI>();
+            if (healthUI != null)
+            {
+                healthUI.UpdateHeartsDisplay();
+            }
+        }
+        else
+        {
+            Debug.LogError("G.PlayerHealth is null!");
+        }
     }
 }

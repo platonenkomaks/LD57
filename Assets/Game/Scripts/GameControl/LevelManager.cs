@@ -17,6 +17,8 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        G.AudioManager.Play("Intro");
+        
         _player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
         G.Player = _player;
         playerCinemachineTarget.SetTargetForCinemachineCamera(_player.transform);
@@ -29,13 +31,14 @@ public class LevelManager : MonoBehaviour
         G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
         G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
         G.MiningSystem.highlightTilemap = highlightTilemap;
-
+        G.PlayerHealth.ResetHealt();
        batteryLightUI.Init();
 
     }
     
     private void OnSettingsButtonPressed()
     {
+        Time.timeScale = 0;
         G.UIManager.ShowScreen("SettingsMenu");
     }
 }

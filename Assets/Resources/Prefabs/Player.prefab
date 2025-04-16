@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 5381193579260481235}
   - component: {fileID: 7915782052569009830}
   - component: {fileID: -7416123760535534678}
+  - component: {fileID: 8033316785703176191}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -280,7 +281,7 @@ MonoBehaviour:
   acceleration: 40
   deceleration: 50
   airControlFactor: 0.5
-  jumpForce: 10
+  jumpForce: 12
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   coyoteTime: 0.1
@@ -516,5 +517,22 @@ MonoBehaviour:
   goldTilemap: {fileID: 0}
   highlightTilemap: {fileID: 0}
   highlightTile: {fileID: 11400000, guid: a5627231ff3e28b4faebf397418fec51, type: 2}
-  highlightNormalColor: {r: 1, g: 1, b: 1, a: 0.5}
-  highlightGoldColor: {r: 1, g: 0.84, b: 0, a: 0.5}
+  highlightNormalColor: {r: 1, g: 1, b: 1, a: 1}
+  highlightGoldColor: {r: 1, g: 0.84, b: 0, a: 1}
+--- !u!114 &8033316785703176191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046405752741828329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba50ffedf2f8be409c43f2b862964f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eyePrefab: {fileID: 4973693961739892067, guid: af905eed8d27a344a86feb099e02e2c5, type: 3}
+  eyeCount: 6
+  minRadius: -203.6
+  maxRadius: 15
+  blinkDuration: 0.1

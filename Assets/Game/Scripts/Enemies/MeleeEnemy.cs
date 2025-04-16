@@ -3,18 +3,18 @@ using System.Collections;
 
 public class MeleeEnemy : Enemy
 {
-    [Header("Настройки милиш врага")] [SerializeField]
-    private float patrolDistance = 3f;
-
+    [Header("Настройки милиш врага")]
+    [SerializeField] private float patrolDistance = 3f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckDistance = 0.5f;
 
-    
     private Vector2 _initialPosition;
     private Vector2 _patrolDirection = Vector2.right;
-    private bool _isGrounded;
+    public bool _isGrounded;
     private bool _playingRiseAnimation = false; // Флаг для отслеживания анимации приземления
+    private float _lastGroundedTime;
+    [SerializeField] private float fallCooldown = 3f; // Задержка атаки после приземления
 
     public override void Awake()
     {
@@ -60,6 +60,7 @@ public class MeleeEnemy : Enemy
         // Если персонаж только что приземлился
         if (!wasGroundedBefore && _isGrounded)
         {
+            _lastGroundedTime = Time.time; // Обновляем время последнего приземления
             StartCoroutine(PlayRiseAnimation());
         }
         // Если персонаж в воздухе, запускаем анимацию падения
@@ -145,6 +146,9 @@ public class MeleeEnemy : Enemy
     {
         if (!canAttack) return;
 
+        // Prevent attacking if the enemy is in the air or within the cooldown period after landing
+        if (!_isGrounded || Time.time - _lastGroundedTime < fallCooldown) return;
+
         Collider2D hitPlayer = Physics2D.OverlapCircle(transform.position, attackRange, LayerMask.GetMask("Player"));
         if (hitPlayer != null && hitPlayer.CompareTag("Player"))
         {
@@ -168,7 +172,6 @@ public class MeleeEnemy : Enemy
         float attackSpeed = 10f;
         float attackPosition = Mathf.Lerp(originalPosition, playerPosition.x, 0.8f);
 
-
         float startTime = Time.time;
         float journeyLength = Mathf.Abs(originalPosition - attackPosition);
         float distanceCovered = 0f;
@@ -183,10 +186,8 @@ public class MeleeEnemy : Enemy
             yield return null;
         }
 
-
         playerHealth.TakeDamage(attackDamage);
         G.AudioManager.Play("SlimeAttack");
-
 
         yield return new WaitForSeconds(0.1f);
         startTime = Time.time;
@@ -196,12 +197,11 @@ public class MeleeEnemy : Enemy
         while (distanceCovered < journeyLength)
         {
             float fractionOfJourney = distanceCovered / journeyLength;
-            float x = Mathf.Lerp( attackPosition,originalPosition, fractionOfJourney);
+            float x = Mathf.Lerp(attackPosition, originalPosition, fractionOfJourney);
             _rb.MovePosition(new Vector3(x, transform.position.y, transform.position.z));
             distanceCovered = (Time.time - startTime) * attackSpeed;
             yield return null;
         }
-        
 
         // Запускаем кулдаун после завершения анимации
         StartCoroutine(AttackCooldown());
