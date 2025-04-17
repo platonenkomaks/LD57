@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 public class BatEyesSwarm : MonoBehaviour
 {
     public GameObject eyePrefab;
-    public int eyeCount = 8;
+    public int eyeCount = 4;
     public float minRadius = 2f;
     public float maxRadius = 5f;
     public float blinkDuration = 0.1f;
@@ -15,10 +15,13 @@ public class BatEyesSwarm : MonoBehaviour
     private List<GameObject> eyes = new List<GameObject>();
     private bool isSpawning = false;
 
+    private PlayerController _playerController;
+    
+    
     void Start()
     {
         _player = G.Player.transform;
-
+        _playerController = _player.GetComponent<PlayerController>();
         if (eyePrefab == null || _player == null) return;
         
     }
@@ -29,11 +32,21 @@ public class BatEyesSwarm : MonoBehaviour
         {
             minRadius = G.BatteryLight.GetComponent<Light2D>().pointLightOuterRadius;
         }
+
+        if (_playerController != null)
+        {
+            if (_playerController.isGrounded == false)
+            {
+                DestroyEyes();
+            }
+        }
+       
+        
     }
 
     void SpawnEye()
     {
-        if (!isSpawning) return;
+        if (!isSpawning || eyes.Count >= eyeCount) return; // Check if the limit is reached
 
         Vector2 randomDir = Random.insideUnitCircle.normalized;
         float radius = Random.Range(minRadius + 0.1f, maxRadius);
@@ -49,17 +62,18 @@ public class BatEyesSwarm : MonoBehaviour
     IEnumerator EyeLifecycle(GameObject eye)
     {
         SpriteRenderer renderer = eye.GetComponent<SpriteRenderer>();
-    
+
         if (eye != null && renderer != null)
         {
             renderer.enabled = false;
-            yield return new WaitForSeconds(blinkDuration);
+            yield return new WaitForSeconds(blinkDuration); // Время до появления глаза
 
             if (eye != null && renderer != null)
                 renderer.enabled = true;
         }
 
-        yield return new WaitForSeconds(Random.Range(1f, 3f));
+        // Время жизни глаза
+        yield return new WaitForSeconds(Random.Range(2f, 5f)); // Увеличьте или уменьшите диапазон
 
         if (eyes.Contains(eye))
         {
@@ -73,12 +87,28 @@ public class BatEyesSwarm : MonoBehaviour
     public void StartSpawning()
     {
         if (isSpawning) return;
+
         isSpawning = true;
 
-        for (int i = 0; i < eyeCount; i++)
+        StartCoroutine(SpawnEyesWithDelay());
+    }
+
+    IEnumerator SpawnEyesWithDelay()
+    {
+        while (isSpawning)
         {
             SpawnEye();
+            yield return new WaitForSeconds(1f); // Задержка между появлениями глаз
         }
+    }
+
+    public void DestroyEyes()
+    {
+        foreach (var eye in eyes)
+        {
+            if (eye != null) Destroy(eye);
+        }
+        eyes.Clear();
     }
 
     public void StopSpawning()

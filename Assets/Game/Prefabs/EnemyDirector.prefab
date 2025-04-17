@@ -373,7 +373,7 @@ MonoBehaviour:
       count: 1
       spawnChance: 7
     timeBetweenSpawns: 1
-    timeBeforeNextWave: 2
+    timeBeforeNextWave: 0.1
     maxEnemiesAtOnce: 1
     isBossWave: 0
   - waveName: 2
@@ -382,7 +382,7 @@ MonoBehaviour:
       count: 3
       spawnChance: 1
     timeBetweenSpawns: 0.1
-    timeBeforeNextWave: 1
+    timeBeforeNextWave: 0.1
     maxEnemiesAtOnce: 3
     isBossWave: 0
   - waveName: 3
@@ -394,104 +394,32 @@ MonoBehaviour:
       count: 3
       spawnChance: 1
     timeBetweenSpawns: 0.1
-    timeBeforeNextWave: 1
-    maxEnemiesAtOnce: 10
+    timeBeforeNextWave: 0.1
+    maxEnemiesAtOnce: 4
     isBossWave: 0
-  - waveName: 2
+  - waveName: 4
     enemies:
     - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
+      count: 3
+      spawnChance: 1
     - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
+      count: 3
+      spawnChance: 1
+    timeBetweenSpawns: 0.1
+    timeBeforeNextWave: 0.1
+    maxEnemiesAtOnce: 6
     isBossWave: 0
-  - waveName: 2
+  - waveName: 5
     enemies:
     - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
+      count: 3
+      spawnChance: 1
     - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
+      count: 5
+      spawnChance: 1
     timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
-    isBossWave: 0
-  - waveName: 2
-    enemies:
-    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
-    isBossWave: 0
-  - waveName: 2
-    enemies:
-    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
-    isBossWave: 0
-  - waveName: 2
-    enemies:
-    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
-    isBossWave: 0
-  - waveName: 2
-    enemies:
-    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
-    isBossWave: 0
-  - waveName: 2
-    enemies:
-    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
-    isBossWave: 0
-  - waveName: 2
-    enemies:
-    - enemyPrefab: {fileID: 6638786195941389931, guid: 6f9d28398da65a3458e91230d98fc8a4, type: 3}
-      count: 100
-      spawnChance: 3
-    - enemyPrefab: {fileID: 9174049886823195609, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
-      count: 100
-      spawnChance: 7
-    timeBetweenSpawns: 2
-    timeBeforeNextWave: 10
-    maxEnemiesAtOnce: 10
+    timeBeforeNextWave: 0.1
+    maxEnemiesAtOnce: 8
     isBossWave: 0
   spawnPoints:
   - {fileID: 1023805819529358367}

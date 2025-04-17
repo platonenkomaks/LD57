@@ -1,6 +1,7 @@
 using System;
 using Events;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
@@ -39,8 +40,8 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
     private float _coyoteTimeCounter;
-    private float _jumpBufferCounter;
-    private bool _isGrounded;
+    private float _jumpBufferCounter; 
+    public bool isGrounded;
     private bool _isJumping;
     private bool _canShoot = false;
     private Vector2 _velocity;
@@ -81,10 +82,10 @@ public class PlayerController : MonoBehaviour
             _ => _spriteRenderer.flipX
         };
         // Проверка соприкосновения с землей
-        _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         // Обработка времени "койота"
-        if (_isGrounded)
+        if (isGrounded)
         {
             _coyoteTimeCounter = coyoteTime;
             _isJumping = false;
@@ -125,10 +126,10 @@ public class PlayerController : MonoBehaviour
         // Обновление анимаций, если аниматор существует
         if (!_animator) return;
         _animator.SetFloat("HorizontalSpeed", Mathf.Abs(_rb.linearVelocity.x));
-        _animator.SetBool("IsGrounded", _isGrounded);
+        _animator.SetBool("IsGrounded", isGrounded);
         _animator.SetFloat("VerticalVelocity", _rb.linearVelocity.y);
 
-        if (_canShoot && _playerInput.IsFireButtonPressed() && _isGrounded)
+        if (_canShoot && _playerInput.IsFireButtonPressed() && isGrounded)
         {
             {
                 
@@ -152,7 +153,7 @@ public class PlayerController : MonoBehaviour
 
             // Расчет скорости ускорения в зависимости от нахождения на земле или в воздухе
             var accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
-            if (!_isGrounded)
+            if (!isGrounded)
             {
                 accelRate *= airControlFactor;
             }

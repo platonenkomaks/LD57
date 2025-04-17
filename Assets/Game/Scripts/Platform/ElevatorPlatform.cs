@@ -8,7 +8,7 @@ public class ElevatorPlatform : MonoBehaviour
 {
     [SerializeField] private ElevatorLever lever;
     public float baseSpeed = 2f;
-    public float descendSpeed = 10f;
+    public float descendSpeed = 8f;
     public float platformWeight = 1f;
     public float weightPenalty = 0.5f;
     public Cog cog;
@@ -39,7 +39,8 @@ public class ElevatorPlatform : MonoBehaviour
             
             transform.position = newPosition;
             cog.StartRotation();
-
+            
+            
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
                 Park();
@@ -156,7 +157,6 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToSurface()
     {   G.AudioManager.Stop("Fight");
-        Debug.Log("OnArriveToSurface вызван");
         G.GoldPilesView.SetEnabled(false);
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
@@ -165,11 +165,7 @@ public class ElevatorPlatform : MonoBehaviour
         // Восстанавливаем здоровье игрока до максимального значения
         if (G.PlayerHealth != null)
         {
-            Debug.Log($"Восстанавливаем здоровье. Текущее здоровье: {G.PlayerHealth.currentHealth}, Максимальное: {G.PlayerHealth.maxHealth}");
             G.PlayerHealth.ResetHealt();
-            Debug.Log($"Здоровье после восстановления: {G.PlayerHealth.currentHealth}");
-            
-            // Находим и обновляем UI здоровья
             var healthUI = FindObjectOfType<PlayerHealthUI>();
             if (healthUI != null)
             {

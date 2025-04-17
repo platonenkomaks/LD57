@@ -281,7 +281,7 @@ MonoBehaviour:
   acceleration: 40
   deceleration: 50
   airControlFactor: 0.5
-  jumpForce: 12
+  jumpForce: 10
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   coyoteTime: 0.1
@@ -290,10 +290,11 @@ MonoBehaviour:
   firePoint: {fileID: 906874438449155226}
   combatSprite: {fileID: 21300000, guid: f045a3c2f8409a24ca135cbd29df32ec, type: 3}
   groundCheck: {fileID: 4429967871626764452}
-  groundCheckRadius: 0.5
+  groundCheckRadius: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  isGrounded: 0
 --- !u!114 &1634218767354475830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,7 +533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyePrefab: {fileID: 4973693961739892067, guid: af905eed8d27a344a86feb099e02e2c5, type: 3}
-  eyeCount: 6
+  eyeCount: 4
   minRadius: -203.6
-  maxRadius: 15
+  maxRadius: 12
   blinkDuration: 0.1
