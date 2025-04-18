@@ -43,7 +43,7 @@ public class FogOfWarSystem : MonoBehaviour
     #endregion
 
     #region Public Methods
-    // Публичный метод, который будет вызываться из MiningSystem
+   
     public void OnBlockMined(Vector3Int position)
     {
         RevealAdjacentTiles(position);
@@ -55,7 +55,6 @@ public class FogOfWarSystem : MonoBehaviour
     {
         if (_initialized) return;
         
-        // Покрываем туманом всю область, основываясь на размерах основного тайлмапа
         BoundsInt bounds = mainTilemap.cellBounds;
         
         for (int x = bounds.min.x - 10; x < bounds.max.x + 10; x++)
@@ -67,8 +66,7 @@ public class FogOfWarSystem : MonoBehaviour
                 fogTilemap.SetColor(cellPosition, fogColor);
             }
         }
-
-        // Открываем начальную область вокруг игрока
+        
         if (_playerTransform != null)
         {
             Vector3Int playerCell = mainTilemap.WorldToCell(_playerTransform.position);
@@ -128,8 +126,6 @@ public class FogOfWarSystem : MonoBehaviour
     // Проверяет, видна ли клетка из указанной позиции
     private bool IsTileVisible(Vector3Int fromPosition, Vector3Int toPosition)
     {
-        // Простая реализация проверки видимости по линии
-        // Можно улучшить использованием алгоритма Брезенхема для линии
         
         Vector3 from = mainTilemap.GetCellCenterWorld(fromPosition);
         Vector3 to = mainTilemap.GetCellCenterWorld(toPosition);
