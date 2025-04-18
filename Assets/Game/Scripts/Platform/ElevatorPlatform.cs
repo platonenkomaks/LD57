@@ -7,28 +7,36 @@ using UnityEngine.Rendering.Universal;
 public class ElevatorPlatform : MonoBehaviour
 {
     [SerializeField] private ElevatorLever lever;
-    public float baseSpeed = 2f;
     public float descendSpeed = 8f;
     public float platformWeight = 1f;
-    public float weightPenalty = 0.5f;
+    public float baseAscendTime = 60f; // Базовое время подъема (в секундах)
+    public float weightTimeAddition = 10f; // Дополнительное время на единицу веса (в секундах)
     public Cog cog;
 
     public float topY = 100f; // Цель при подъеме
     public float bottomY = 0f; // Цель при спуске
 
+    
+    
     private float currentSpeed = 0f;
     private bool isMoving = false;
     private Vector2 targetPosition;
-    
+
+    private void Awake()
+    {
+        G.ElevatorPlatform = this;
+    }
+
     void Update()
     {
         if (isMoving)
         {
-            Vector2 newPosition = Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
-            
+            Vector2 newPosition =
+                Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
+
             transform.position = newPosition;
             cog.StartRotation();
-            
+
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
                 Park();
@@ -63,7 +71,6 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartAscent()
     {
-        
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
 
@@ -78,7 +85,12 @@ public class ElevatorPlatform : MonoBehaviour
         G.Player.GetComponent<PlayerController>().SetJumpForce(15f);
         yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, topY);
-        currentSpeed = Mathf.Max(0.1f, baseSpeed - platformWeight * weightPenalty);
+
+        // Расчет скорости на основе требуемого времени подъема
+        float totalAscentTime = baseAscendTime + (platformWeight - 1) * weightTimeAddition;
+        float distance = Mathf.Abs(topY - transform.position.y);
+        currentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
+
         isMoving = true;
     }
 
@@ -86,7 +98,7 @@ public class ElevatorPlatform : MonoBehaviour
     {
         isMoving = false;
         currentSpeed = 0f;
-        
+
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Stop("ElevatorMoving");
         G.AudioManager.Play("ElevatorStop");
@@ -104,7 +116,8 @@ public class ElevatorPlatform : MonoBehaviour
 
     // Для изменения параметров
     public void SetWeight(float newWeight) => platformWeight = newWeight;
-    public void SetBaseSpeed(float newSpeed) => baseSpeed = newSpeed;
+    public void SetBaseAscendTime(float newTime) => baseAscendTime = newTime;
+    public void SetWeightTimeAddition(float addition) => weightTimeAddition = addition;
 
     public void SetTopY(float y) => topY = y;
     public void SetBottomY(float y) => bottomY = y;
@@ -117,13 +130,14 @@ public class ElevatorPlatform : MonoBehaviour
     }
 
     private void OnArriveToSurface()
-    {   G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
+    {
+        G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
         G.AudioManager.Stop("Fight");
         G.GoldPilesView.SetEnabled(false);
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
         G.UIManager.ShowScreen("ShopScreen");
-        
+
         // Восстанавливаем здоровье игрока до максимального значения
         if (G.PlayerHealth != null)
         {

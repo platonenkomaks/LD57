@@ -33,4 +33,5 @@ public static class G
     public static AudioManager AudioManager;
     
     public static PlayerHealth PlayerHealth;
+    public static ElevatorPlatform ElevatorPlatform;
 }

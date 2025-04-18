@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6200f56b9774043adb14ef3ab7883f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 5901878436802781593}
+  Renderer: {fileID: 5901878436802781593}
   openEye: {fileID: 21300000, guid: 280a70e7f4e6bc8459b5638966b72cc2, type: 3}
   closedEye: {fileID: 21300000, guid: 1678b2334e21e664a9420bab693714ba, type: 3}
   blinkIntervalMin: 2
