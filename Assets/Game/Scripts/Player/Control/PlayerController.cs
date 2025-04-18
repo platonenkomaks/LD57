@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
     private bool _canShoot = false;
     private Vector2 _velocity;
 
+    public bool disableJump;
+
     private float _lastShootTime;
     private RandomSoundPlayer _randomSoundPlayer;
 
@@ -104,7 +106,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Логика прыжка
-        if (_jumpBufferCounter > 0f && _coyoteTimeCounter > 0f && !_isJumping && this.transform.parent == null)
+        if (_jumpBufferCounter > 0f && _coyoteTimeCounter > 0f && !_isJumping && !disableJump)
         {
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpForce);
             _isJumping = true;

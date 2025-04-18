@@ -42,6 +42,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartDescent()
     {
+        G.PlayerController.disableJump = true;
         G.AudioManager.Stop("Intro");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
@@ -109,6 +110,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToMine()
     {
+        G.PlayerController.disableJump = false;
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Mining });
     }
