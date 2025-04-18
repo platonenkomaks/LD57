@@ -106,13 +106,6 @@ public abstract class Enemy : MonoBehaviour
         {
             animator.SetTrigger("Die");
         }
-        
-        // Убираем коллайдеры
-        Collider2D[] colliders = GetComponents<Collider2D>();
-        foreach (Collider2D c in colliders)
-        {
-            c.enabled = false;
-        }
     }
     
     public void DestroyEnemy()

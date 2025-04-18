@@ -41,6 +41,14 @@ public class MeleeEnemy : Enemy
         CheckGrounded();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            this.transform.parent = collision.gameObject.transform;
+        }
+    }
+
     private void CheckGrounded()
     {
         if (groundCheck == null) return;

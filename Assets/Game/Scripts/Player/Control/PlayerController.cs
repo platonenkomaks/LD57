@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Обработка буфера прыжка
-        if (_playerInput.IsJumpButtonPressed())
+        if (_playerInput.IsJumpButtonPressed() && !disableJump)
         {
             this.transform.SetParent(null);
             _jumpBufferCounter = jumpBufferTime;
