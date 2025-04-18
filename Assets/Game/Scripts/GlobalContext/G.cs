@@ -34,4 +34,5 @@ public static class G
     
     public static PlayerHealth PlayerHealth;
     public static ElevatorPlatform ElevatorPlatform;
+    public static FogOfWarSystem FogOfWarSystem;
 }

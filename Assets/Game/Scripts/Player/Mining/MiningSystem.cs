@@ -204,45 +204,57 @@ public class MiningSystem : MonoBehaviour
     {
         removableTilemap.SetTile(cellPosition, null);
         highlightTilemap.SetTile(cellPosition, null);
-        
+    
         if (_currentHighlightPosition == cellPosition)
         {
             _currentHighlightPosition = Vector3Int.one * int.MinValue;
         }
-        
+    
         if (miningEffectPrefab)
         {
             var effectPosition = removableTilemap.GetCellCenterWorld(cellPosition);
             Instantiate(miningEffectPrefab, effectPosition, Quaternion.identity);
         }
-        
+    
+        // Обновляем туман войны после удаления блока
+        if (G.FogOfWarSystem != null)
+        {
+            G.FogOfWarSystem.OnBlockMined(cellPosition);
+        }
+    
         G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
     }
-    
+
+
     private void MineGold(Vector3Int cellPosition)
     {
         goldTilemap.SetTile(cellPosition, null);
         highlightTilemap.SetTile(cellPosition, null);
-        
+    
         if (_currentHighlightPosition == cellPosition)
         {
             _currentHighlightPosition = Vector3Int.one * int.MinValue;
         }
-        
+    
         if (goldMiningEffectPrefab != null)
         {
             Vector3 effectPosition = goldTilemap.GetCellCenterWorld(cellPosition);
             Instantiate(goldMiningEffectPrefab, effectPosition, Quaternion.identity);
         }
-        
+    
+        // Обновляем туман войны после добычи золота
+        if (G.FogOfWarSystem != null)
+        {
+            G.FogOfWarSystem.OnBlockMined(cellPosition);
+        }
+    
         G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
         StartGoldMining();
-        
+    
         Debug.Log("Золото добыто!");
     }
-    
     private void StartGoldMining()
     {
         _isMiningGold = true;
