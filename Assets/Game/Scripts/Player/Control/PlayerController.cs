@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour
     private bool _canShoot = false;
     private Vector2 _velocity;
 
+    public bool disableJump;
+
     private float _lastShootTime;
     private RandomSoundPlayer _randomSoundPlayer;
 
@@ -76,9 +78,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // Поворот спрайта в зависимости от направления
-       
-        // Проверка наличия системы ввода
-        if (!_playerInput) return;
         var horizontalInput = _playerInput.GetHorizontalInput();
 
         _spriteRenderer.flipX = horizontalInput switch
@@ -102,8 +101,9 @@ public class PlayerController : MonoBehaviour
         }
 
         // Обработка буфера прыжка
-        if (_playerInput.IsJumpButtonPressed())
+        if (_playerInput.IsJumpButtonPressed() && !disableJump)
         {
+            this.transform.SetParent(null);
             _jumpBufferCounter = jumpBufferTime;
         }
         else
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Логика прыжка
-        if (_jumpBufferCounter > 0f && _coyoteTimeCounter > 0f && !_isJumping)
+        if (_jumpBufferCounter > 0f && _coyoteTimeCounter > 0f && !_isJumping && !disableJump)
         {
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpForce);
             _isJumping = true;
@@ -127,14 +127,6 @@ public class PlayerController : MonoBehaviour
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.y * 0.5f);
         }
 
-      
-
-        // Обновление анимаций, если аниматор существует
-        if (!_animator) return;
-        _animator.SetFloat("HorizontalSpeed", Mathf.Abs(_rb.linearVelocity.x));
-        _animator.SetBool("IsGrounded", isGrounded);
-        _animator.SetFloat("VerticalVelocity", _rb.linearVelocity.y);
-
         if (_canShoot && _playerInput.IsFireButtonPressed() && isGrounded)
         {
             {
@@ -146,13 +138,16 @@ public class PlayerController : MonoBehaviour
                 Shoot();
             }
         }
+
+        // Обновление анимаций, если аниматор существует
+        if (!_animator) return;
+        _animator.SetFloat("HorizontalSpeed", Mathf.Abs(_rb.linearVelocity.x));
+        _animator.SetBool("IsGrounded", isGrounded);
+        _animator.SetFloat("VerticalVelocity", _rb.linearVelocity.y);
     }
 
     private void FixedUpdate()
         {
-            // Проверка наличия системы ввода
-            if (_playerInput == null) return;
-
             // Расчет целевой скорости
             var horizontalInput = _playerInput.GetHorizontalInput();
             var targetSpeed = horizontalInput * moveSpeed;
@@ -179,6 +174,22 @@ public class PlayerController : MonoBehaviour
                 > 0 when !Input.GetButton("Jump") => lowJumpMultiplier,
                 _ => 1f
             };
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("Platform"))
+            {
+                transform.SetParent(collision.transform);
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("Platform"))
+            {
+                transform.SetParent(null);
+            }
         }
 
         public void EnableCombatMode()

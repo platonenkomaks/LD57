@@ -221,7 +221,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   canAttack: 1
   flyHeight: 4.5
-  projectilePrefab: {fileID: 1738142754336229211, guid: 643e89220ace9c34386ddc240acb4546, type: 3}
+  projectilePrefab: {fileID: -1094002419409662740, guid: 643e89220ace9c34386ddc240acb4546, type: 3}
   firePoint: {fileID: 1704695368444077330}
   projectileSpeed: 6
   attackInterval: 2

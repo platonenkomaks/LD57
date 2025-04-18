@@ -37,7 +37,11 @@ namespace Platform
     {
       if (collision.CompareTag("Player") && _isWorking)
       {
-        G.AudioManager.Play("LightSwitch");
+        if (G.AudioManager != null)
+        {
+          G.AudioManager.Play("LightSwitch");
+        }
+        
         G.Player.BatteryLight.isDraining = true;
         G.Player.BatteryLight.TurnOn();
         G.EventManager.Trigger(new OnPlatformExit());

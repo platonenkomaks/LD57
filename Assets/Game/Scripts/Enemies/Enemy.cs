@@ -106,13 +106,6 @@ public abstract class Enemy : MonoBehaviour
         {
             animator.SetTrigger("Die");
         }
-        
-        // Убираем коллайдеры
-        Collider2D[] colliders = GetComponents<Collider2D>();
-        foreach (Collider2D c in colliders)
-        {
-            c.enabled = false;
-        }
     }
     
     public void DestroyEnemy()
@@ -136,9 +129,7 @@ public abstract class Enemy : MonoBehaviour
             return Mathf.Infinity;
         }
         
-        float distance = Vector2.Distance(transform.position, player.position);
-        Debug.Log($"DistanceToPlayer: distance={distance} in {gameObject.name}");
-        return distance;
+        return Vector2.Distance(transform.position, player.position);
     }
 
     public Vector2 DirectionToPlayer()

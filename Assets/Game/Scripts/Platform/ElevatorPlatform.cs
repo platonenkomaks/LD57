@@ -18,28 +18,16 @@ public class ElevatorPlatform : MonoBehaviour
 
     private float currentSpeed = 0f;
     private bool isMoving = false;
-    private bool isDescending = false; // Флаг для определения направления движения
     private Vector2 targetPosition;
-    private Transform playerTransform; // Ссылка на трансформ игрока
-    private Vector2 playerOffset; // Смещение игрока относительно платформы
-
+    
     void Update()
     {
         if (isMoving)
         {
-            Vector2 currentPosition = transform.position;
-            Vector2 newPosition = Vector2.MoveTowards(currentPosition, targetPosition, currentSpeed * Time.deltaTime);
-            
-            // Если платформа движется вниз и игрок зафиксирован
-            if (isDescending && playerTransform != null)
-            {
-                // Перемещаем игрока вместе с платформой
-                playerTransform.position = newPosition + playerOffset;
-            }
+            Vector2 newPosition = Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
             
             transform.position = newPosition;
             cog.StartRotation();
-            
             
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
@@ -54,16 +42,10 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartDescent()
     {
+        G.PlayerController.disableJump = true;
         G.AudioManager.Stop("Intro");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
-
-        // Фиксируем позицию игрока относительно платформы
-        if (G.Player != null)
-        {
-            playerTransform = G.Player.transform;
-            playerOffset = playerTransform.position - transform.position;
-        }
 
         StartCoroutine(DescentAfterDelay(1.5f));
     }
@@ -74,7 +56,6 @@ public class ElevatorPlatform : MonoBehaviour
         targetPosition = new Vector2(transform.position.x, bottomY);
         currentSpeed = descendSpeed;
         isMoving = true;
-        isDescending = true; // Устанавливаем флаг движения вниз
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorMoving");
@@ -99,34 +80,12 @@ public class ElevatorPlatform : MonoBehaviour
         targetPosition = new Vector2(transform.position.x, topY);
         currentSpeed = Mathf.Max(0.1f, baseSpeed - platformWeight * weightPenalty);
         isMoving = true;
-        isDescending = false; // Сбрасываем флаг движения вниз
     }
 
     public void Stop()
     {
         isMoving = false;
-        isDescending = false; // Сбрасываем флаг движения вниз
         currentSpeed = 0f;
-        
-        // Разблокируем управление игроком и анимации
-        if (G.Player != null)
-        {
-            var playerController = G.Player.GetComponent<PlayerController>();
-            var playerAnimator = G.Player.GetComponent<Animator>();
-            
-            if (playerController != null)
-            {
-                playerController.enabled = true;
-            }
-            
-            if (playerAnimator != null)
-            {
-                playerAnimator.SetBool("IsIdle", false);
-                // Возвращаем анимацию в нормальное состояние
-                playerAnimator.SetBool("IsMoving", false);
-            }
-        }
-        playerTransform = null;
         
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Stop("ElevatorMoving");
@@ -152,6 +111,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToMine()
     {
+        G.PlayerController.disableJump = false;
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Mining });
     }
@@ -168,7 +128,7 @@ public class ElevatorPlatform : MonoBehaviour
         if (G.PlayerHealth != null)
         {
             G.PlayerHealth.ResetHealt();
-            var healthUI = FindObjectOfType<PlayerHealthUI>();
+            var healthUI = FindAnyObjectByType<PlayerHealthUI>();
             if (healthUI != null)
             {
                 healthUI.UpdateHeartsDisplay();

@@ -41,21 +41,21 @@ public class ElevatorLever : MonoBehaviour
             if (isDescending)
             {
                 // Переводим игрока в idle анимацию и блокируем
-                if (G.Player != null)
-                {
-                    var playerController = G.Player.GetComponent<PlayerController>();
-                    var playerAnimator = G.Player.GetComponent<Animator>();
+                // if (G.Player != null)
+                // {
+                //     var playerController = G.Player.GetComponent<PlayerController>();
+                //     var playerAnimator = G.Player.GetComponent<Animator>();
                     
-                    if (playerAnimator != null)
-                    {
-                        playerAnimator.SetBool("IsIdle", true);
-                    }
+                //     if (playerAnimator != null)
+                //     {
+                //         playerAnimator.SetBool("IsIdle", true);
+                //     }
                     
-                    if (playerController != null)
-                    {
-                        playerController.enabled = false;
-                    }
-                }
+                //     if (playerController != null)
+                //     {
+                //         playerController.enabled = false;
+                //     }
+                // }
                 StartCoroutine(DescentAfterDelay(1f));
                 
                 credits.StartCredits();
@@ -71,16 +71,16 @@ public class ElevatorLever : MonoBehaviour
 
     public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
+        _spriteRenderer.sprite = leverDownSprite;
         yield return new WaitForSeconds(seconds);
         platform.StartDescent();
-        _spriteRenderer.sprite = leverDownSprite;
         OnDescend();
     }
 
     public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
-        yield return new WaitForSeconds(seconds);
         _spriteRenderer.sprite = leverUpSprite;
+        yield return new WaitForSeconds(seconds);
         platform.StartAscent();
         OnAscend();
     }
