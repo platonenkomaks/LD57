@@ -94,6 +94,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
+        G.Player.GetComponent<PlayerController>().SetJumpForce(15f);
         yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, topY);
         currentSpeed = Mathf.Max(0.1f, baseSpeed - platformWeight * weightPenalty);
@@ -156,7 +157,8 @@ public class ElevatorPlatform : MonoBehaviour
     }
 
     private void OnArriveToSurface()
-    {   G.AudioManager.Stop("Fight");
+    {   G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
+        G.AudioManager.Stop("Fight");
         G.GoldPilesView.SetEnabled(false);
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });

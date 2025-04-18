@@ -106,14 +106,7 @@ public class EnemyDirector : MonoBehaviour
     #endregion
 
     #region Публичные методы
-
-    public void StartWaves()
-    {
-        if (_currentWaveIndex < 0)
-        {
-            StartNextWave();
-        }
-    }
+    
 
     public void StopAllWaves()
     {
@@ -126,6 +119,22 @@ public class EnemyDirector : MonoBehaviour
         ResetEnemies();
         ResetEnemyCounts();
         StartCoroutine(DelayedStart());
+    }
+
+    public IEnumerator StartWavesWithIncreasingDelays(float initialDelay, float delayIncrement)
+    {
+        float currentDelay = initialDelay;
+
+        while (_currentWaveIndex < waves.Count || loopWaves)
+        {
+            StartNextWave(); 
+
+        
+            yield return new WaitForSeconds(currentDelay);
+            currentDelay += delayIncrement; // Увеличиваем задержку
+        }
+
+        onAllWavesComplete?.Invoke(); 
     }
 
     public void StartNextWave()
@@ -183,11 +192,28 @@ public class EnemyDirector : MonoBehaviour
 
     private void CheckWaveCompletion()
     {
-        if (_waveActive && !_isSpawning && _activeEnemies.Count == 0)
+        if (_currentWaveIndex >= waves.Count && !loopWaves)
         {
             CompleteCurrentWave();
         }
     }
+    
+    /* private void CheckWaveCompletion()
+    {
+        if (_waveActive && !_isSpawning/* && _activeEnemies.Count == 0) 
+            // убрать комментарий, если нужно завершать волну только при уничтожении всех врагов
+        {
+            if (_totalEnemiesRemaining <= 0)
+            {
+                CompleteCurrentWave();
+            }
+        }
+        else if (_currentWaveIndex >= waves.Count)
+        {
+            CompleteCurrentWave();
+        }
+    } */
+    
 
     private void ResetWaveState()
     {
@@ -258,7 +284,7 @@ public class EnemyDirector : MonoBehaviour
     {
         if (e.State == GameLoopStateMachine.GameLoopState.Ascend)
         {
-            RestartWaves();
+            StartCoroutine(StartWavesWithIncreasingDelays(5f, 2f)); // Первая задержка 5 секунд, каждая следующая увеличивается на 2 секунды
         }
         else if (e.State == GameLoopStateMachine.GameLoopState.Shopping)
         {

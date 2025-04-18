@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airControlFactor = 0.5f;
 
     [Header("Jump Parameters")] [SerializeField]
-    private float jumpForce = 16f;
+    private float jumpForce = 10f;
 
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
 
+    
+    
     // Private variables
     private Rigidbody2D _rb;
     private SpriteRenderer _spriteRenderer;
@@ -67,6 +69,10 @@ public class PlayerController : MonoBehaviour
         _playerAnimator = G.Player.GetComponent<Animator>();
     }
 
+    public void SetJumpForce(float jumpForce)
+    {
+        this.jumpForce = jumpForce;
+    }
     private void Update()
     {
         // Поворот спрайта в зависимости от направления
