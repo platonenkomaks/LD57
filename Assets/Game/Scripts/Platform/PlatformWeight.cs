@@ -6,75 +6,62 @@ using TMPro;
 public class PlatformWeight : MonoBehaviour
 {
     [SerializeField] private GameObject weightArrow;
-   
-    
-    private GoldManager _goldManager;
+
+    public int goldOnPlatformBalance;
+
     private ElevatorPlatform _elevatorPlatform;
-    
-    private float _baseWeight = 1f; // Default platform weight
+
+    private const float BaseWeight = 1f; // Default platform weight
 
     private void Start()
     {
-        _goldManager = G.GoldManager;
+        goldOnPlatformBalance = 0;
+
         _elevatorPlatform = G.ElevatorPlatform;
         
-        if (weightArrow == null)
-        {
-            Debug.LogWarning("Weight arrow reference is missing! Please assign it in the inspector.");
-        }
-        
-        
-        // Initialize with base weight
         UpdatePlatformWeight();
     }
 
+    public void AddGold(int amount)
+    {
+        goldOnPlatformBalance += amount;
+        UpdatePlatformWeight();
+    }
+
+    public void ResetWeight()
+    {
+        goldOnPlatformBalance = 0;
+        UpdatePlatformWeight();
+    }
+    
     private void Update()
     {
         UpdatePlatformWeight();
         UpdateWeightArrowRotation();
     }
-    
+
     private void UpdatePlatformWeight()
     {
-        // Set platform weight based on base weight + gold balance
-        float weight = _baseWeight + _goldManager.GoldBalance;
+        var weight = BaseWeight + goldOnPlatformBalance;
         _elevatorPlatform.platformWeight = weight;
     }
+    
 
     private void UpdateWeightArrowRotation()
     {
         if (weightArrow == null) return;
-        
-        float rotationZ = 90f; // Default rotation for balance = 0
-        
-        switch (_goldManager.GoldBalance)
+
+        var rotationZ = goldOnPlatformBalance switch
         {
-            case 0:
-                rotationZ = 90f;
-                break;
-            case 1:
-                rotationZ = 60f;
-                break;
-            case 2:
-                rotationZ = 30f;
-                break;
-            case 3:
-                rotationZ = 0f;
-                break;
-            case 4:
-                rotationZ = -30f;
-                break;
-            case 5:
-                rotationZ = -60f;
-                break;
-            default:
-                // Balance >= 6
-                rotationZ = -90f;
-                break;
-        }
-        
+            0 => 90f,
+            1 => 60f,
+            2 => 30f,
+            3 => 0f,
+            4 => -30f,
+            5 => -60f,
+            _ => -90f
+        };
+
         weightArrow.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
     }
-    
-    
 }

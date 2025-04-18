@@ -13,7 +13,7 @@ namespace Platform
       if (G.PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerState.Carrying)
         return;
       
-      G.GoldManager.AddGold(1);
+      G.ElevatorPlatform.GetComponent<PlatformWeight>().AddGold(1);
       G.AudioManager.Play("DropGold");
       G.MiningSystem.EnableMining();
     }

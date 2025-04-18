@@ -134,6 +134,8 @@ public class ElevatorPlatform : MonoBehaviour
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
         G.AudioManager.Stop("Fight");
         G.GoldPilesView.SetEnabled(false);
+        G.GoldManager.AddGold(G.ElevatorPlatform.GetComponent<PlatformWeight>().goldOnPlatformBalance);
+        
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
         G.UIManager.ShowScreen("ShopScreen");
