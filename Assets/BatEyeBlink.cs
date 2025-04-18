@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BatEyeBlink : MonoBehaviour
 {
-    public SpriteRenderer renderer;
+    public SpriteRenderer Renderer;
     public Sprite openEye;
     public Sprite closedEye;
     public float blinkIntervalMin = 2f;
@@ -15,7 +15,7 @@ public class BatEyeBlink : MonoBehaviour
     private void Start()
     {
         _blinkTimer = Random.Range(blinkIntervalMin, blinkIntervalMax);
-        renderer.sprite = openEye;
+        Renderer.sprite = openEye;
     }
 
     private void Update()
@@ -29,9 +29,9 @@ public class BatEyeBlink : MonoBehaviour
     System.Collections.IEnumerator Blink()
     {
         _blinking = true;
-        renderer.sprite = closedEye;
+        Renderer.sprite = closedEye;
         yield return new WaitForSeconds(blinkDuration);
-        renderer.sprite = openEye;
+        Renderer.sprite = openEye;
         _blinkTimer = Random.Range(blinkIntervalMin, blinkIntervalMax);
         _blinking = false;
     }

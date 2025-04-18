@@ -4,7 +4,7 @@ public class RangedEnemy : Enemy
 {
     [Header("Настройки рендж-врага")]
     [SerializeField] private float flyHeight = 3f;
-    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private EnemyProjectile projectilePrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float projectileSpeed = 8f;
     [SerializeField] private float attackInterval = 1.5f;
@@ -32,11 +32,8 @@ public class RangedEnemy : Enemy
         _rb.gravityScale = 0;
         
         // Инициализируем аниматор
-        if (animator != null)
-        {
-            animator.Rebind();
-            animator.SetBool("IsFlying", true);
-        }
+        animator.Rebind();
+        animator.SetBool("IsFlying", true);
         
         _isInitialized = true;
     }
@@ -90,27 +87,12 @@ public class RangedEnemy : Enemy
         _rb.linearVelocity = Vector2.zero;
         
         // Анимация стрельбы
-        if (animator != null)
-        {
-            animator.SetTrigger("Attack");
-        }
+        animator.SetTrigger("Attack");
         
         // Создаем и запускаем снаряд
-        if (projectilePrefab != null && firePoint != null)
-        {
-            G.AudioManager.Play("FireBall");
-            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-            Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
-            
-            if (projectileRb != null)
-            {
-                Vector2 direction = DirectionToPlayer();
-                projectileRb.linearVelocity = direction * projectileSpeed;
-                
-                // Уничтожаем снаряд через некоторое время
-                Destroy(projectile, 5f);
-            }
-        }
+        G.AudioManager.Play("FireBall");
+        EnemyProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        projectile.Initialize(projectileSpeed);
     }
 
     public override void TakeDamage(float damage)
@@ -118,10 +100,7 @@ public class RangedEnemy : Enemy
         health -= damage;
         
         // Анимация получения урона
-        if (animator != null)
-        {
-            animator.SetTrigger("Hurt");
-        }
+        animator.SetTrigger("Hurt");
         
         // Если здоровье кончилось, умираем
         if (health <= 0)

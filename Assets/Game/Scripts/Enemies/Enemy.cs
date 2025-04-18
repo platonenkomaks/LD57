@@ -129,9 +129,7 @@ public abstract class Enemy : MonoBehaviour
             return Mathf.Infinity;
         }
         
-        float distance = Vector2.Distance(transform.position, player.position);
-        Debug.Log($"DistanceToPlayer: distance={distance} in {gameObject.name}");
-        return distance;
+        return Vector2.Distance(transform.position, player.position);
     }
 
     public Vector2 DirectionToPlayer()

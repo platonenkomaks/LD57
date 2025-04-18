@@ -126,7 +126,7 @@ public class ElevatorPlatform : MonoBehaviour
         if (G.PlayerHealth != null)
         {
             G.PlayerHealth.ResetHealt();
-            var healthUI = FindObjectOfType<PlayerHealthUI>();
+            var healthUI = FindAnyObjectByType<PlayerHealthUI>();
             if (healthUI != null)
             {
                 healthUI.UpdateHeartsDisplay();
