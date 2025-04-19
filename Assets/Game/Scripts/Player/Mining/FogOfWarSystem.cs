@@ -8,7 +8,7 @@ public class FogOfWarSystem : MonoBehaviour
     [SerializeField] private Tilemap fogTilemap;
     [SerializeField] private TileBase fogTile;
     [SerializeField] private float visibilityRange = 2f;
-    [SerializeField] private Color fogColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+    [SerializeField] private int penetrationDepth = 1; // Глубина видимости сквозь блоки
     
     [Header("References")]
     [SerializeField] private Tilemap mainTilemap;
@@ -17,21 +17,20 @@ public class FogOfWarSystem : MonoBehaviour
 
     #region Private Fields
     private Transform _playerTransform;
-    private bool _initialized = false;
     #endregion
 
     #region Unity Methods
+    
     private void Awake()
     {
         G.FogOfWarSystem = this;
     }
-
-    private void Start()
+    
+    public void Init(Transform playerTransform)
     {
-        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        InitializeFogOfWar();
+        _playerTransform = playerTransform;
     }
-
+    
     private void LateUpdate()
     {
         if (_playerTransform == null) return;
@@ -40,10 +39,16 @@ public class FogOfWarSystem : MonoBehaviour
         Vector3Int playerCell = mainTilemap.WorldToCell(_playerTransform.position);
         RevealAreaAroundPosition(playerCell);
     }
+
+    private void OnValidate()
+    {
+        // Убедимся, что глубина видимости не меньше 0
+        penetrationDepth = Mathf.Max(0, penetrationDepth);
+    }
     #endregion
 
     #region Public Methods
-   
+    // Публичный метод, который будет вызываться из MiningSystem
     public void OnBlockMined(Vector3Int position)
     {
         RevealAdjacentTiles(position);
@@ -51,51 +56,51 @@ public class FogOfWarSystem : MonoBehaviour
     #endregion
 
     #region Private Methods
-    private void InitializeFogOfWar()
-    {
-        if (_initialized) return;
-        
-        BoundsInt bounds = mainTilemap.cellBounds;
-        
-        for (int x = bounds.min.x - 10; x < bounds.max.x + 10; x++)
-        {
-            for (int y = bounds.min.y - 10; y < bounds.max.y + 10; y++)
-            {
-                Vector3Int cellPosition = new Vector3Int(x, y, 0);
-                fogTilemap.SetTile(cellPosition, fogTile);
-                fogTilemap.SetColor(cellPosition, fogColor);
-            }
-        }
-        
-        if (_playerTransform != null)
-        {
-            Vector3Int playerCell = mainTilemap.WorldToCell(_playerTransform.position);
-            RevealAreaAroundPosition(playerCell);
-        }
-        
-        _initialized = true;
-    }
-
+    
     private void RevealAreaAroundPosition(Vector3Int centerPosition)
     {
         // Открываем клетку, где находится игрок
         fogTilemap.SetTile(centerPosition, null);
         
-        // Открываем клетки в радиусе видимости
-        for (int x = -Mathf.RoundToInt(visibilityRange); x <= Mathf.RoundToInt(visibilityRange); x++)
+        // Запускаем лучи во всех направлениях от игрока
+        for (int angle = 0; angle < 360; angle += 5) // Шаг в 5 градусов для хорошего покрытия
         {
-            for (int y = -Mathf.RoundToInt(visibilityRange); y <= Mathf.RoundToInt(visibilityRange); y++)
+            CastVisibilityRay(centerPosition, angle);
+        }
+    }
+
+    private void CastVisibilityRay(Vector3Int startPosition, float angleDegrees)
+    {
+        float angleRadians = angleDegrees * Mathf.Deg2Rad;
+        Vector2 direction = new Vector2(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians));
+        
+        Vector3 worldStart = mainTilemap.GetCellCenterWorld(startPosition);
+        int blocksEncountered = 0;
+        float currentDistance = 0f;
+        float stepSize = 0.5f; // Размер шага для проверки
+        
+        while (currentDistance <= visibilityRange)
+        {
+            currentDistance += stepSize;
+            
+            // Вычисляем текущую позицию на луче
+            Vector2 currentPos = (Vector2)worldStart + direction * currentDistance;
+            Vector3Int cellPos = mainTilemap.WorldToCell(currentPos);
+            
+            // Открываем эту клетку (убираем туман)
+            fogTilemap.SetTile(cellPos, null);
+            
+            // Проверяем, есть ли здесь твердый блок
+            bool isBlockingTile = (mainTilemap.HasTile(cellPos) || goldTilemap.HasTile(cellPos));
+            
+            if (isBlockingTile)
             {
-                if (x * x + y * y <= visibilityRange * visibilityRange)
+                blocksEncountered++;
+                
+                // Если превысили глубину проникновения, прекращаем луч
+                if (blocksEncountered > penetrationDepth)
                 {
-                    Vector3Int offsetPosition = new Vector3Int(x, y, 0);
-                    Vector3Int tilePosition = centerPosition + offsetPosition;
-                    
-                    // Проверяем, видим ли этот тайл или он скрыт другими
-                    if (IsTileVisible(centerPosition, tilePosition))
-                    {
-                        fogTilemap.SetTile(tilePosition, null);
-                    }
+                    break;
                 }
             }
         }
@@ -103,44 +108,11 @@ public class FogOfWarSystem : MonoBehaviour
 
     private void RevealAdjacentTiles(Vector3Int position)
     {
-        // Открываем соседние клетки
-        Vector3Int[] neighbors = new Vector3Int[]
+        // Обновляем видимость для всей области вокруг разрушенного блока
+        for (int angle = 0; angle < 360; angle += 5)
         {
-            new Vector3Int(0, 1, 0),   // верх
-            new Vector3Int(0, -1, 0),  // низ
-            new Vector3Int(-1, 0, 0),  // лево
-            new Vector3Int(1, 0, 0),   // право
-            new Vector3Int(-1, 1, 0),  // верхний левый угол
-            new Vector3Int(1, 1, 0),   // верхний правый угол
-            new Vector3Int(-1, -1, 0), // нижний левый угол
-            new Vector3Int(1, -1, 0)   // нижний правый угол
-        };
-
-        foreach (Vector3Int offset in neighbors)
-        {
-            Vector3Int neighborPosition = position + offset;
-            fogTilemap.SetTile(neighborPosition, null);
+            CastVisibilityRay(position, angle);
         }
-    }
-
-    // Проверяет, видна ли клетка из указанной позиции
-    private bool IsTileVisible(Vector3Int fromPosition, Vector3Int toPosition)
-    {
-        
-        Vector3 from = mainTilemap.GetCellCenterWorld(fromPosition);
-        Vector3 to = mainTilemap.GetCellCenterWorld(toPosition);
-        Vector3 direction = to - from;
-        float distance = Vector3.Distance(from, to);
-        
-        // Проверяем, есть ли на пути твердые блоки
-        RaycastHit2D hit = Physics2D.Raycast(from, direction.normalized, distance);
-        if (hit.collider != null)
-        {
-            // Если что-то блокирует путь
-            return false;
-        }
-        
-        return true;
     }
     #endregion
 }

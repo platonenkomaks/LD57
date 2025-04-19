@@ -19,7 +19,7 @@ public class GoldView : MonoBehaviour
     private void Start()
     {
         SetEnabled(false);
-        G.GoldManager.OnGoldBalanceChange += UpdateGoldBalance;
+        G.ElevatorPlatform.GetComponent<PlatformWeight>().OnWeightChange += UpdateGoldBalance;
 
         UpdateGoldBalance();
     }
@@ -27,12 +27,12 @@ public class GoldView : MonoBehaviour
     private void OnDestroy()
     {
         if (G.GoldManager == null) return;
-        G.GoldManager.OnGoldBalanceChange -= UpdateGoldBalance;
+        G.ElevatorPlatform.GetComponent<PlatformWeight>().OnWeightChange -= UpdateGoldBalance;
     }
 
     private void UpdateGoldBalance()
     {
-        int goldBalance = G.GoldManager.GoldBalance;
+        int goldBalance = G.ElevatorPlatform.GetComponent<PlatformWeight>().goldOnPlatformBalance;
 
         for (int i = 0; i < _goldPiles.Length; i++)
         {

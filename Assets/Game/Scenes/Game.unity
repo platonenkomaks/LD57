@@ -148,10 +148,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6004f248373e411f834b95b77e131236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fogTilemap: {fileID: 1569027699}
+  fogTilemap: {fileID: 1085421397}
   fogTile: {fileID: 11400000, guid: 1beef83d0750a794bb15cc96880a5040, type: 2}
   visibilityRange: 2
-  fogColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  penetrationDepth: 2
   mainTilemap: {fileID: 1985363285}
   goldTilemap: {fileID: 682935520}
 --- !u!4 &50726452
@@ -639,6 +639,11 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 3092304397821696194, guid: c2d907ac1127a154fa25b2deabada1a6, type: 3}
   m_PrefabInstance: {fileID: 6715298359711718876}
   m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1085421397 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 5235489779942771400, guid: c2d907ac1127a154fa25b2deabada1a6, type: 3}
+  m_PrefabInstance: {fileID: 6715298359711718876}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1150432524 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4566405230372049159, guid: 9a1178594f93c2b43a821af4cf7b1394, type: 3}
@@ -802,11 +807,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1839735485 &1569027699 stripped
-Tilemap:
-  m_CorrespondingSourceObject: {fileID: 4076762884128545515, guid: c2d907ac1127a154fa25b2deabada1a6, type: 3}
-  m_PrefabInstance: {fileID: 6715298359711718876}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1839735485 &1985363285 stripped
 Tilemap:
   m_CorrespondingSourceObject: {fileID: 2469948750303992866, guid: c2d907ac1127a154fa25b2deabada1a6, type: 3}

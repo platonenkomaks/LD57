@@ -13,6 +13,7 @@ public class PlatformWeight : MonoBehaviour
 
     private const float BaseWeight = 1f; // Default platform weight
 
+    public Action OnWeightChange;
     private void Start()
     {
         goldOnPlatformBalance = 0;
@@ -42,6 +43,7 @@ public class PlatformWeight : MonoBehaviour
 
     private void UpdatePlatformWeight()
     {
+        OnWeightChange?.Invoke();
         var weight = BaseWeight + goldOnPlatformBalance;
         _elevatorPlatform.platformWeight = weight;
     }

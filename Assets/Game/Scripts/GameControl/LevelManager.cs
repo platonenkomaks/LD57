@@ -27,7 +27,7 @@ public class LevelManager : MonoBehaviour
         {
             settingsButton.onClick.AddListener(OnSettingsButtonPressed);
         }
-        
+       G.FogOfWarSystem.Init(_player.transform);
         G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
         G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
         G.MiningSystem.highlightTilemap = highlightTilemap;
