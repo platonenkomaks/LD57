@@ -10,6 +10,7 @@ public class FogOfWarSystem : MonoBehaviour
     [SerializeField] private TileBase fogTile;
     [SerializeField] private float visibilityRange = 2f;
     [SerializeField] private int penetrationDepth = 1; // Глубина видимости сквозь блоки
+    [SerializeField] private float tileFadeDuration = 1f;
     
     [Header("References")]
     [SerializeField] private SpriteRenderer alphaBlendTilePrefab;
@@ -90,7 +91,11 @@ public class FogOfWarSystem : MonoBehaviour
             Vector3Int cellPos = mainTilemap.WorldToCell(currentPos);
             
             // Tween the alpha of the tile before removing it
-            FadeOutTile(cellPos, () => fogTilemap.SetTile(cellPos, null));
+            if (fogTilemap.HasTile(cellPos))
+            {
+                FadeOutTile(cellPos);
+                fogTilemap.SetTile(cellPos, null);
+            }
             
             // Проверяем, есть ли здесь твердый блок
             bool isBlockingTile = (mainTilemap.HasTile(cellPos) || goldTilemap.HasTile(cellPos));
@@ -108,7 +113,7 @@ public class FogOfWarSystem : MonoBehaviour
         }
     }
 
-    private void FadeOutTile(Vector3Int cellPos, System.Action onComplete)
+    private void FadeOutTile(Vector3Int cellPos)
     {
         Vector3 worldPos = fogTilemap.GetCellCenterWorld(cellPos);
         SpriteRenderer spriteRenderer = Instantiate(alphaBlendTilePrefab, worldPos, Quaternion.identity, transform);
@@ -116,10 +121,9 @@ public class FogOfWarSystem : MonoBehaviour
         spriteRenderer.sortingOrder = 10; // Ensure it renders above the tilemap
         
         // Tween the alpha to 0
-        spriteRenderer.DOFade(0, 1f).OnComplete(() =>
+        spriteRenderer.DOFade(0, tileFadeDuration).OnComplete(() =>
         {
             Destroy(spriteRenderer.gameObject);
-            onComplete?.Invoke();
         });
     }
 

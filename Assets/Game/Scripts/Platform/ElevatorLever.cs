@@ -5,7 +5,6 @@ using Platform;
 using UnityEngine;
 
 
-
 public class ElevatorLever : MonoBehaviour
 {
     public ElevatorPlatform platform;
@@ -25,13 +24,12 @@ public class ElevatorLever : MonoBehaviour
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.sprite = leverUpSprite;
         if (hintUI != null)
             hintUI.SetActive(false);
     }
     void Update()
-
     {   
-        
         if (!isLocked && playerInRange && Input.GetKeyDown(KeyCode.S))
         {
             G.AudioManager.Play("Lever");
@@ -40,22 +38,6 @@ public class ElevatorLever : MonoBehaviour
 
             if (isDescending)
             {
-                // Переводим игрока в idle анимацию и блокируем
-                // if (G.Player != null)
-                // {
-                //     var playerController = G.Player.GetComponent<PlayerController>();
-                //     var playerAnimator = G.Player.GetComponent<Animator>();
-                    
-                //     if (playerAnimator != null)
-                //     {
-                //         playerAnimator.SetBool("IsIdle", true);
-                //     }
-                    
-                //     if (playerController != null)
-                //     {
-                //         playerController.enabled = false;
-                //     }
-                // }
                 StartCoroutine(DescentAfterDelay(1f));
                 
                 credits.StartCredits();
@@ -88,21 +70,25 @@ public class ElevatorLever : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isLocked && other.CompareTag("Player"))
+        if (!other.CompareTag("Player"))
+            return;
+        
+        playerInRange = true;
+        if (!isLocked)
         {
-            playerInRange = true;
-            if (hintUI != null)
-                hintUI.SetActive(true);
+            hintUI.SetActive(true);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!isLocked && other.CompareTag("Player"))
+        if (!other.CompareTag("Player"))
+            return;
+        
+        playerInRange = false;
+        if (!isLocked)
         {
-            playerInRange = false;
-            if (hintUI != null)
-                hintUI.SetActive(false);
+            hintUI.SetActive(false);
         }
     }
 

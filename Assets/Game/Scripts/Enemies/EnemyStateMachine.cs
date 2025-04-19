@@ -50,13 +50,11 @@ public class EnemyStateMachine
     {
         if (currentState != null && currentState.ID == newStateID)
         {
-            Debug.Log($"EnemyStateMachine: already in state {newStateID}");
             return;
         }
 
         if (states.TryGetValue(newStateID, out EnemyState newState))
         {
-            Debug.Log($"EnemyStateMachine: changing state from {currentState?.ID} to {newStateID}");
             currentState?.Exit();
             currentState = newState;
             currentState.Enter();

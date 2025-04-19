@@ -32,7 +32,7 @@ public class ElevatorPlatform : MonoBehaviour
         G.ElevatorPlatform = null;
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (isMoving)
         {
@@ -148,7 +148,7 @@ public class ElevatorPlatform : MonoBehaviour
         // Восстанавливаем здоровье игрока до максимального значения
         if (G.PlayerHealth != null)
         {
-            G.PlayerHealth.ResetHealt();
+            G.PlayerHealth.ResetHealth();
             var healthUI = FindAnyObjectByType<PlayerHealthUI>();
             if (healthUI != null)
             {
