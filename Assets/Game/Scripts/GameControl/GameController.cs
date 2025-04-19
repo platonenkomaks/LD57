@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
@@ -33,6 +34,11 @@ public class GameController : Singleton<GameController>
         yield return null;
         
         ChangeGameState(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Tutorial });
+    }
+
+    private void Update()
+    {
+        
     }
 
     private void OnDestroy()

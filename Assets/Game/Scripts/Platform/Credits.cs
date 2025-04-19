@@ -56,17 +56,4 @@ namespace Platform
             spriteRenderer.color = color;
         }
     }
-
-    public static class SpriteRendererExtensions
-    {
-        public static Tweener DOFade(this SpriteRenderer spriteRenderer, float endValue, float duration)
-        {
-            return DOTween.ToAlpha(
-                () => spriteRenderer.color,
-                x => spriteRenderer.color = x,
-                endValue,
-                duration
-            );
-        }
-    }
 }

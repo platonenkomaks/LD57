@@ -152,6 +152,7 @@ MonoBehaviour:
   fogTile: {fileID: 11400000, guid: 1beef83d0750a794bb15cc96880a5040, type: 2}
   visibilityRange: 2
   penetrationDepth: 2
+  alphaBlendTilePrefab: {fileID: 7515137692558657454, guid: 24d2c77be938146ee8cb6ff125fb75c4, type: 3}
   mainTilemap: {fileID: 1985363285}
   goldTilemap: {fileID: 682935520}
 --- !u!4 &50726452
