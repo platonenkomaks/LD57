@@ -75,6 +75,12 @@ public class PlayerController : MonoBehaviour
     {
         this.jumpForce = jumpForce;
     }
+    public void SetMoveSpeed(float moveSpeed)
+    {
+        this.moveSpeed = moveSpeed;
+    }
+    
+    
     private void Update()
     {
         // Поворот спрайта в зависимости от направления
