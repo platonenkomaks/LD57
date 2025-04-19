@@ -103,7 +103,7 @@ public class UIManager : Singleton<UIManager>
                 ShowScreen("WinScreen");
                 break;
             case GameLoopStateMachine.GameLoopState.Shopping:
-                ShowScreen("Shopping");
+                ShowScreen("ShopScreen");
                 break;
             case GameLoopStateMachine.GameLoopState.Mining:
                 ShowScreen("Mining");
