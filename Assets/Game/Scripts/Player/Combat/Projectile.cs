@@ -16,11 +16,6 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject, lifetime);
     }
 
-    private void Start()
-    {
-        Debug.Log("Пуля создана в позиции " + transform.position);
-    }
-
     private void Update()
     {
         // Сохраняем текущую позицию перед перемещением
@@ -38,14 +33,12 @@ public class Projectile : MonoBehaviour
         
         if (hit.collider != null)
         {
-            Debug.Log("Raycast попал в: " + hit.collider.gameObject.name + " с тегом: " + hit.collider.tag);
             HandleCollision(hit.collider);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("OnTriggerEnter2D вызван с: " + other.gameObject.name);
         HandleCollision(other);
     }
     
@@ -53,11 +46,9 @@ public class Projectile : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            Debug.Log("Обнаружен тег Enemy!");
             var enemy = other.GetComponent<Enemy>();
             if (enemy != null)
             {
-                Debug.Log("Найден компонент Enemy, применяем урон");
                 enemy.TakeDamage(1);
                 Destroy(gameObject);
                 return;

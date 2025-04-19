@@ -160,8 +160,6 @@ public class MeleeEnemy : Enemy
         Collider2D hitPlayer = Physics2D.OverlapCircle(transform.position, attackRange, LayerMask.GetMask("Player"));
         if (hitPlayer != null && hitPlayer.CompareTag("Player"))
         {
-            Debug.Log("Attack hit player!");
-
             PlayerHealth playerHealth = G.PlayerHealth;
             if (playerHealth != null)
             {

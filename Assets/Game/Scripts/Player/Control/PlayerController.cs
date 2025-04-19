@@ -226,12 +226,10 @@ public class PlayerController : MonoBehaviour
             {
                 _playerAnimator.SetTrigger("ShootUP");
                 direction = Vector2.up;
-                Debug.Log("Shooting UP");
             }
             else
             {
                 _playerAnimator.SetTrigger("ShootSide");
-                Debug.Log("Shooting SIDE");
             }
 
             var projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);

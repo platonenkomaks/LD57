@@ -26,7 +26,6 @@ public class RangedEnemy : Enemy
         }
         
         player = G.Player.transform;
-        Debug.Log($"RangedEnemy {gameObject.name} initialized with player at position: {player.position}");
         
         // Отключаем гравитацию для летающего врага
         _rb.gravityScale = 0;

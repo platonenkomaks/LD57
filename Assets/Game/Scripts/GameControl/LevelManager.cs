@@ -31,7 +31,7 @@ public class LevelManager : MonoBehaviour
         G.MiningSystem.removableTilemap = tileGrid.removableTilemap;
         G.MiningSystem.goldTilemap = tileGrid.goldTilemap;
         G.MiningSystem.highlightTilemap = highlightTilemap;
-        G.PlayerHealth.ResetHealt();
+        G.PlayerHealth.ResetHealth();
        batteryLightUI.Init();
 
     }

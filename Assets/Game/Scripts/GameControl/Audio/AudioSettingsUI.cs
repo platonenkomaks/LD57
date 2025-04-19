@@ -58,7 +58,6 @@ public class AudioSettingsUI : MonoBehaviour
                 if (cs.slider != null)
                 {
                     _savedVolumes[cs.category] = G.AudioManager.GetCategoryVolume(cs.category);
-                    Debug.Log($"Saving volume for {cs.category}: {_savedVolumes[cs.category]}");
                     G.AudioManager.SetCategoryVolume(cs.category, 0f);
                     cs.slider.SetValueWithoutNotify(0f);
                 }
@@ -71,7 +70,6 @@ public class AudioSettingsUI : MonoBehaviour
             {
                 if (cs.slider != null && _savedVolumes.ContainsKey(cs.category))
                 {
-                    Debug.Log($"Restoring volume for {cs.category}: {_savedVolumes[cs.category]}");
                     G.AudioManager.SetCategoryVolume(cs.category, _savedVolumes[cs.category]);
                     cs.slider.SetValueWithoutNotify(_savedVolumes[cs.category]);
                 }

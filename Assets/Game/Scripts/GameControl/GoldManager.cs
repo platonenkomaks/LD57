@@ -47,7 +47,7 @@ namespace GameControl
       
       GoldGoalProgress++;
       goldGoalProgress01.Value = (float)GoldGoalProgress / GoldGoal;
-      G.GoldManager.GetComponent<PlatformWeight>().ResetWeight();
+      G.ElevatorPlatform.GetComponent<PlatformWeight>().ResetWeight();
       
       OnGoldBalanceChange?.Invoke();
       

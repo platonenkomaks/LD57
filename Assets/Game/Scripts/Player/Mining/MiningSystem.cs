@@ -252,8 +252,6 @@ public class MiningSystem : MonoBehaviour
         G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
         StartGoldMining();
-    
-        Debug.Log("Золото добыто!");
     }
     private void StartGoldMining()
     {

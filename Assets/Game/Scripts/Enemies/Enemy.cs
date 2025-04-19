@@ -51,7 +51,6 @@ public abstract class Enemy : MonoBehaviour
         }
         
         player = G.Player.transform;
-        Debug.Log($"Enemy {gameObject.name} initialized with player at position: {player.position}");
         
         // Стартовое состояние (например, патруль)
         if (StateMachine == null)
@@ -101,6 +100,8 @@ public abstract class Enemy : MonoBehaviour
 
     public virtual void Die()
     {
+        canAttack = false;
+        
         // Проигрываем анимацию смерти
         if (animator != null)
         {

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
 using Events;
+using Game.Scripts.StateMachine.GameLoop;
 using Random = UnityEngine.Random;
 
 
@@ -61,6 +62,7 @@ public class BatteryLight : MonoBehaviour
 
     #region Приватные поля
 
+    private bool _isTutorialComplete = false;
     private float remainingBatteryLife;
     private float originalIntensity;
     private float targetRadius;
@@ -81,6 +83,12 @@ public class BatteryLight : MonoBehaviour
     private void Start()
     {
         InitializeLight();
+        G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
+    }
+    
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChange);
     }
 
     private void Update()
@@ -266,19 +274,13 @@ public class BatteryLight : MonoBehaviour
         RechargeBattery(1f);
     }
 
-    public void ToggleLight()
-    {
-        if (isDraining)
-            TurnOff();
-        else
-            TurnOn();
-    }
-
     public void TurnOn()
     {
         if (currentBatteryCharge <= 0) return;
         
-        isDraining = true;
+        if (_isTutorialComplete)
+            isDraining = true;
+        
         targetLight.enabled = true;
     }
     
@@ -333,6 +335,14 @@ public class BatteryLight : MonoBehaviour
     }
 
     #endregion
+
+    private void OnGameStateChange(OnGameStateChangedEvent e)
+    {
+        if (e.State != GameLoopStateMachine.GameLoopState.Tutorial)
+        {
+            _isTutorialComplete = true;
+        }
+    }
 
     #region Отладка
 

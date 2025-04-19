@@ -34,8 +34,6 @@ namespace EckTechGames.AutoSave
 			// If we're exiting edit mode (entering play mode)
 			if(playModeStateChange == PlayModeStateChange.ExitingEditMode)
 			{
-				Debug.Log("EckTechGames.AutoSave - Saving Scenes and Assets");
-
 				// Save the open scenes and any assets.
 				EditorSceneManager.SaveOpenScenes();
 				AssetDatabase.SaveAssets();

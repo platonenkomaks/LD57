@@ -32,15 +32,12 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
-        ResetHealt();
-        
+        ResetHealth();
     }
 
-    public void ResetHealt()
+    public void ResetHealth()
     {
-        Debug.Log("ResetHealt вызван");
         currentHealth = maxHealth;
-        Debug.Log($"ResetHealt: установлено здоровье {currentHealth}");
     }
 
     public void TakeDamage(int damage)
