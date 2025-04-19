@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,6 +12,7 @@ public class FogOfWarSystem : MonoBehaviour
     [SerializeField] private int penetrationDepth = 1; // Глубина видимости сквозь блоки
     
     [Header("References")]
+    [SerializeField] private SpriteRenderer alphaBlendTilePrefab;
     [SerializeField] private Tilemap mainTilemap;
     [SerializeField] private Tilemap goldTilemap;
     #endregion
@@ -87,8 +89,8 @@ public class FogOfWarSystem : MonoBehaviour
             Vector2 currentPos = (Vector2)worldStart + direction * currentDistance;
             Vector3Int cellPos = mainTilemap.WorldToCell(currentPos);
             
-            // Открываем эту клетку (убираем туман)
-            fogTilemap.SetTile(cellPos, null);
+            // Tween the alpha of the tile before removing it
+            FadeOutTile(cellPos, () => fogTilemap.SetTile(cellPos, null));
             
             // Проверяем, есть ли здесь твердый блок
             bool isBlockingTile = (mainTilemap.HasTile(cellPos) || goldTilemap.HasTile(cellPos));
@@ -104,6 +106,21 @@ public class FogOfWarSystem : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void FadeOutTile(Vector3Int cellPos, System.Action onComplete)
+    {
+        Vector3 worldPos = fogTilemap.GetCellCenterWorld(cellPos);
+        SpriteRenderer spriteRenderer = Instantiate(alphaBlendTilePrefab, worldPos, Quaternion.identity, transform);
+        spriteRenderer.sprite = fogTilemap.GetSprite(cellPos);
+        spriteRenderer.sortingOrder = 10; // Ensure it renders above the tilemap
+        
+        // Tween the alpha to 0
+        spriteRenderer.DOFade(0, 1f).OnComplete(() =>
+        {
+            Destroy(spriteRenderer.gameObject);
+            onComplete?.Invoke();
+        });
     }
 
     private void RevealAdjacentTiles(Vector3Int position)
