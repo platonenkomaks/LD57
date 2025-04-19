@@ -162,10 +162,16 @@ public class PlayerController : MonoBehaviour
             // Расчет движения
             var speedDiff = targetSpeed - _rb.linearVelocity.x;
             var movement = speedDiff * accelRate * Time.fixedDeltaTime;
+            
+            // Stop the player if they're decelerating and moving very slowly
+            if (Mathf.Abs(targetSpeed) < 0.01f && Mathf.Abs(_rb.linearVelocity.x) < 1f)
+            {
+                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+                movement = 0f;
+            }
 
             // Применение движения
             _rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
-
 
             _rb.gravityScale = _rb.linearVelocity.y switch
             {

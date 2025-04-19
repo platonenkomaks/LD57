@@ -277,9 +277,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15053e00c4caf6d41879b498a5c49585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 20
-  acceleration: 40
-  deceleration: 50
+  moveSpeed: 8
+  acceleration: 100
+  deceleration: 200
   airControlFactor: 0.5
   jumpForce: 10
   fallMultiplier: 2.5
@@ -345,7 +345,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 068299940807541e28f2ec6764ac1e54, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
