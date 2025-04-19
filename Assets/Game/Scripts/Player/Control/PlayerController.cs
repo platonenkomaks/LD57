@@ -255,10 +255,6 @@ public class PlayerController : MonoBehaviour
         
         public void onDeadAnimationEnd()
         {
-            Debug.Log("Death animation ended");
-           // Здесь можно добавить логику, которая будет выполняться после окончания анимации смерти
-            // Например, перезапуск уровня или переход на экран Game Over
-           // G.GameManager.RestartLevel();
-           G.EventManager.Trigger(new OnPlayerDeath());
+            G.EventManager.Trigger(new OnPlayerDeath());
         }
     }

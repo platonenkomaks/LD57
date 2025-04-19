@@ -18,7 +18,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     
     
-    private float currentSpeed = 0f;
+    public float CurrentSpeed { get; private set; } = 0f;
     private bool isMoving = false;
     private Vector2 targetPosition;
 
@@ -27,12 +27,17 @@ public class ElevatorPlatform : MonoBehaviour
         G.ElevatorPlatform = this;
     }
 
-    void Update()
+    private void OnDestroy()
+    {
+        G.ElevatorPlatform = null;
+    }
+
+    void FixedUpdate()
     {
         if (isMoving)
         {
             Vector2 newPosition =
-                Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
+                Vector2.MoveTowards(transform.position, targetPosition, CurrentSpeed * Time.fixedDeltaTime);
 
             transform.position = newPosition;
             cog.StartRotation();
@@ -62,7 +67,7 @@ public class ElevatorPlatform : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, bottomY);
-        currentSpeed = descendSpeed;
+        CurrentSpeed = descendSpeed;
         isMoving = true;
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
@@ -89,7 +94,7 @@ public class ElevatorPlatform : MonoBehaviour
         // Расчет скорости на основе требуемого времени подъема
         float totalAscentTime = baseAscendTime + (platformWeight - 1) * weightTimeAddition;
         float distance = Mathf.Abs(topY - transform.position.y);
-        currentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
+        CurrentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
 
         isMoving = true;
     }
@@ -97,7 +102,7 @@ public class ElevatorPlatform : MonoBehaviour
     public void Stop()
     {
         isMoving = false;
-        currentSpeed = 0f;
+        CurrentSpeed = 0f;
 
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Stop("ElevatorMoving");
