@@ -32,7 +32,7 @@ public class ElevatorPlatform : MonoBehaviour
         G.ElevatorPlatform = null;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (isMoving)
         {

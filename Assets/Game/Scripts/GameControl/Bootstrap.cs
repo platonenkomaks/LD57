@@ -13,9 +13,6 @@ public class Bootstrap : MonoBehaviour
         // на протяжении всей игры (Сингл тоны)
         InitializeRequiredSystems();
         
-        // Настройка приложения
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;
         
     }
     

@@ -121,19 +121,17 @@ public class EnemyDirector : MonoBehaviour
         StartCoroutine(DelayedStart());
     }
 
-    public IEnumerator StartWavesWithIncreasingDelays(float initialDelay, float delayIncrement)
+    public IEnumerator StartWavesWithDelays(float initialDelay)
     {
         float currentDelay = initialDelay;
-
+        
+        yield return new WaitForSeconds(1f);
+        
         while (_currentWaveIndex < waves.Count || loopWaves)
         {
             StartNextWave(); 
-
-        
             yield return new WaitForSeconds(currentDelay);
-            currentDelay += delayIncrement; // Увеличиваем задержку
         }
-
         onAllWavesComplete?.Invoke(); 
     }
 
@@ -284,7 +282,7 @@ public class EnemyDirector : MonoBehaviour
     {
         if (e.State == GameLoopStateMachine.GameLoopState.Ascend)
         {
-            StartCoroutine(StartWavesWithIncreasingDelays(5f, 2f)); // Первая задержка 5 секунд, каждая следующая увеличивается на 2 секунды
+            StartCoroutine(StartWavesWithDelays(10f));
         }
         else if (e.State == GameLoopStateMachine.GameLoopState.Shopping)
         {
