@@ -7,7 +7,7 @@ public class AudioZoneHorror : MonoBehaviour
     {
         if (!other.CompareTag("Player"))
             return;
-        
+        G.AudioManager.Stop("Intro");
         G.AudioManager.Play("HorrorSound");
         other.GetComponent<BatEyesSwarm>().StartSpawning();
     }

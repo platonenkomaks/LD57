@@ -238,4 +238,20 @@ MonoBehaviour:
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
+  - name: Landed
+    clip: {fileID: 8300000, guid: cda788c8eda004a44a51681ef3c265b1, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: Neon
+    clip: {fileID: 8300000, guid: c0dfaf92533848742813bcf2f7c3422d, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}

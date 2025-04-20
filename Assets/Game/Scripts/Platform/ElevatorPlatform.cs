@@ -56,7 +56,6 @@ public class ElevatorPlatform : MonoBehaviour
     public void StartDescent()
     {
         G.PlayerController.disableJump = true;
-        G.AudioManager.Stop("Intro");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
 
@@ -136,8 +135,10 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToSurface()
     {
+        
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
         G.AudioManager.Stop("Fight");
+        G.AudioManager.Play("Intro");
         G.GoldPilesView.SetEnabled(false);
         G.GoldManager.AddGold(G.ElevatorPlatform.GetComponent<PlatformWeight>().goldOnPlatformBalance);
         

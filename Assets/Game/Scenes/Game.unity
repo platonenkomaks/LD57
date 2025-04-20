@@ -301,7 +301,7 @@ MonoBehaviour:
     HardLimits:
       Enabled: 1
       Size: {x: 0.55, y: 0.62}
-      Offset: {x: 0, y: -0.39}
+      Offset: {x: 0, y: -0.6}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
   Damping: {x: 0.3, y: 1, z: 1}
@@ -362,7 +362,7 @@ Transform:
   m_GameObject: {fileID: 289836546}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -50.65, y: 68.689995, z: -10}
+  m_LocalPosition: {x: -51.09, y: 138.92, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -530,7 +530,7 @@ Transform:
   m_GameObject: {fileID: 980867162}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -50.65, y: 68.689995, z: -10}
+  m_LocalPosition: {x: -51.09, y: 138.92, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -769,6 +769,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1530268892}
   - component: {fileID: 1530268891}
+  - component: {fileID: 1530268893}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -809,6 +810,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1530268893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530268890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcdaa3fc83ae8cb4b9c1518ec5dd6a52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flickerDuration: 1.5
+  flickerCount: 5
 --- !u!1839735485 &1985363285 stripped
 Tilemap:
   m_CorrespondingSourceObject: {fileID: 2469948750303992866, guid: c2d907ac1127a154fa25b2deabada1a6, type: 3}

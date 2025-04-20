@@ -4,7 +4,7 @@ using GameControl;
 public static class G
 {
     public static Player Player;
-    
+    public static HUD HUD; 
     public static UIManager UIManager;
     
     // Managers
@@ -36,4 +36,6 @@ public static class G
     public static ElevatorPlatform ElevatorPlatform;
     public static FogOfWarSystem FogOfWarSystem;
     public static BackPack BackPack;
+    public static Intro Intro;
+    
 }
