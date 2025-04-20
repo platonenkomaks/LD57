@@ -217,7 +217,7 @@ MonoBehaviour:
   - name: Intro
     clip: {fileID: 8300000, guid: 869d5a0a8c8a3a148a438175b43940e4, type: 3}
     category: 2
-    volume: 0.1
+    volume: 0.455
     pitch: 1
     loop: 1
     spatialBlend: 0
@@ -228,6 +228,14 @@ MonoBehaviour:
     volume: 0.5
     pitch: 1
     loop: 1
+    spatialBlend: 0
+    source: {fileID: 0}
+  - name: Interact
+    clip: {fileID: 8300000, guid: 3480ed41e07513f4389c8d90455a74ad, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
     spatialBlend: 0
     source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class BackPack : MonoBehaviour
 {
@@ -14,16 +15,24 @@ public class BackPack : MonoBehaviour
     [SerializeField] private Image goldSlot4Image;
     [SerializeField] private Image goldSlot5Image;
 
+    [Header("Pop-up")]
+    [SerializeField] private GameObject popUpBackpackIsFull;
+    
+    [Header("Animation Settings")]
+    [SerializeField] private float scaleAmount = 1.5f;
+    [SerializeField] private float animationDuration = 0.5f;
+    [SerializeField] private Ease easeType = Ease.OutBack;
+    
     private Color defaultColor = new Color(0.47f, 0.47f, 0.47f);
     private Color fullColor = Color.white;
-
+    
     public int MaxGold => maxGold;
     public int CurrentGold => currentGold;
 
     public void Awake()
     {
         G.BackPack = this;
-
+        popUpBackpackIsFull.SetActive(false);
         ResetSlotColors();
     }
 
@@ -31,7 +40,17 @@ public class BackPack : MonoBehaviour
     {
         if (IsFull())
         {
+            if (G.BackPack.GetComponent<Tooltip>() != null)
+            {
+                G.BackPack.GetComponent<Tooltip>().HideTooltip();
+                popUpBackpackIsFull.SetActive(true);
+            }
+           
             G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Carrying);
+        }
+        else 
+        {
+            popUpBackpackIsFull.SetActive(false);
         }
     }
 
@@ -43,8 +62,8 @@ public class BackPack : MonoBehaviour
         {
             currentGold = maxGold;
         }
-
-        UpdateSlotColors();
+        G.AudioManager.Play("Interact");
+        UpdateSlotColors(previousGold);
     }
 
     public void ResetGold()
@@ -63,15 +82,39 @@ public class BackPack : MonoBehaviour
         return currentGold <= 0;
     }
 
-    private void UpdateSlotColors()
+    private void UpdateSlotColors(int previousGold)
     {
         ResetSlotColors();
 
-        if (currentGold >= 1) goldSlot1Image.color = fullColor;
-        if (currentGold >= 2) goldSlot2Image.color = fullColor;
-        if (currentGold >= 3) goldSlot3Image.color = fullColor;
-        if (currentGold >= 4) goldSlot4Image.color = fullColor;
-        if (currentGold >= 5) goldSlot5Image.color = fullColor;
+        if (currentGold >= 1) 
+        {
+            goldSlot1Image.color = fullColor;
+            if (previousGold < 1) AnimateSlot(goldSlot1Image);
+        }
+        
+        if (currentGold >= 2) 
+        {
+            goldSlot2Image.color = fullColor;
+            if (previousGold < 2) AnimateSlot(goldSlot2Image);
+        }
+        
+        if (currentGold >= 3) 
+        {
+            goldSlot3Image.color = fullColor;
+            if (previousGold < 3) AnimateSlot(goldSlot3Image);
+        }
+        
+        if (currentGold >= 4) 
+        {
+            goldSlot4Image.color = fullColor;
+            if (previousGold < 4) AnimateSlot(goldSlot4Image);
+        }
+        
+        if (currentGold >= 5) 
+        {
+            goldSlot5Image.color = fullColor;
+            if (previousGold < 5) AnimateSlot(goldSlot5Image);
+        }
     }
 
     private void ResetSlotColors()
@@ -81,5 +124,21 @@ public class BackPack : MonoBehaviour
         goldSlot3Image.color = defaultColor;
         goldSlot4Image.color = defaultColor;
         goldSlot5Image.color = defaultColor;
+    }
+    
+    private void AnimateSlot(Image slotImage)
+    {
+       
+        Vector3 originalScale = slotImage.transform.localScale;
+        
+        Sequence scaleSequence = DOTween.Sequence();
+        
+        scaleSequence.Append(slotImage.transform.DOScale(originalScale * scaleAmount, animationDuration / 2)
+            .SetEase(easeType));
+        
+        scaleSequence.Append(slotImage.transform.DOScale(originalScale, animationDuration / 2)
+            .SetEase(Ease.OutQuad));
+        
+        scaleSequence.Play();
     }
 }

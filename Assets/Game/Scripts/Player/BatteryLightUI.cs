@@ -6,7 +6,9 @@ public class BatteryLightUI : MonoBehaviour
 {
     [SerializeField] private BatteryLight batteryLight;
     [SerializeField] private Image batteryFillImage;
-
+    
+    [SerializeField] private GameObject popupLowBattery;
+    
     private bool isPlayerCreated = false;
     private bool isVisible = false;
 
@@ -20,6 +22,10 @@ public class BatteryLightUI : MonoBehaviour
         
         // Изначально скрываем UI
         gameObject.SetActive(false);
+    }
+    private void Awake()
+    {
+        popupLowBattery.SetActive(false);
     }
     
     private void OnDestroy()
@@ -35,6 +41,15 @@ public class BatteryLightUI : MonoBehaviour
         if (batteryFillImage != null && batteryLight != null) 
         {
             batteryFillImage.fillAmount = batteryLight.GetBatteryPercentage() / 100f;
+        }
+        
+        if (batteryLight.GetBatteryPercentage() <= 20f)
+        {
+            popupLowBattery.SetActive(true);
+        }
+        else
+        {
+            popupLowBattery.SetActive(false);
         }
     }
     

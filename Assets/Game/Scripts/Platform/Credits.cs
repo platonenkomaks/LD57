@@ -32,7 +32,7 @@ namespace Platform
             // Fade in panel1
             panel1.gameObject.SetActive(true);
             panel1.DOFade(1f, 2f);
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(3f);
 
             // Fade out panel1
             panel1.DOFade(0f, 1f).OnComplete(() => panel1.gameObject.SetActive(false));
@@ -41,7 +41,7 @@ namespace Platform
             yield return new WaitForSeconds(1f);
             panel2.gameObject.SetActive(true);
             panel2.DOFade(1f, 1f);
-            yield return new WaitForSeconds(6f);
+            yield return new WaitForSeconds(4f);
 
             // Fade out panel2
             panel2.DOFade(0f, 1f).OnComplete(() => panel2.gameObject.SetActive(false));
