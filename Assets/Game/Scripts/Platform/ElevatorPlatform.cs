@@ -88,8 +88,6 @@ public class ElevatorPlatform : MonoBehaviour
     public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
     {
         G.Player.GetComponent<PlayerController>().SetJumpForce(15f);
-        G.Player.GetComponent<PlayerController>().SetMoveSpeed(14f);
-        
         yield return new WaitForSeconds(seconds);
         targetPosition = new Vector2(transform.position.x, topY);
 
@@ -139,14 +137,12 @@ public class ElevatorPlatform : MonoBehaviour
     private void OnArriveToSurface()
     {
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
-        G.Player.GetComponent<PlayerController>().SetMoveSpeed(8f);
         G.AudioManager.Stop("Fight");
         G.GoldPilesView.SetEnabled(false);
         G.GoldManager.AddGold(G.ElevatorPlatform.GetComponent<PlatformWeight>().goldOnPlatformBalance);
         
         lever.isLocked = false;
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
-        G.UIManager.ShowScreen("ShopScreen");
 
         // Восстанавливаем здоровье игрока до максимального значения
         if (G.PlayerHealth != null)

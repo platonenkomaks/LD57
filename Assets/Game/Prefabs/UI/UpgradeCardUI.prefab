@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ec105aa6c1a4d6a96843964e3d07128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scaleFactor: 1.15
 --- !u!1 &8485718883143618490
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,7 +320,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21.05
+  m_fontSize: 40
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

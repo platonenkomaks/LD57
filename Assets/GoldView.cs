@@ -26,7 +26,7 @@ public class GoldView : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (G.GoldManager == null) return;
+        if (G.ElevatorPlatform == null) return;
         G.ElevatorPlatform.GetComponent<PlatformWeight>().OnWeightChange -= UpdateGoldBalance;
     }
 

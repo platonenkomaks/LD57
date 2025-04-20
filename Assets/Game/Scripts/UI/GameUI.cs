@@ -10,21 +10,29 @@ namespace UI
   {
     [SerializeField] private GameObject _gameOverPanel;
     [SerializeField] private Image foregroundTint;
+    [SerializeField] private GameObject shopButton;
     
     private void Start()
     {
       G.EventManager.Register<OnPlayerDeath>(OnGameOver);
+      G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChanged);
       DoFadeOut();
     }
 
     private void OnDestroy()
     {
       G.EventManager.Unregister<OnPlayerDeath>(OnGameOver);
+      G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChanged);
     }
 
     private void OnGameOver(OnPlayerDeath e)
     {
       _gameOverPanel.SetActive(true);
+    }
+    
+    private void OnGameStateChanged(OnGameStateChangedEvent e)
+    {
+      shopButton.SetActive(e.State == GameLoopStateMachine.GameLoopState.Shopping);
     }
 
     public void Restart()

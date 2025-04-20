@@ -1,15 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerHealthUI : MonoBehaviour
 {
     [SerializeField] private GameObject heartPrefab;
     [SerializeField] private Transform heartsContainer;
-    [SerializeField] private float heartSpacing = 40f;
-    [SerializeField] private int heartsPerRow = 10;
     [SerializeField] private int healthPerHeart = 1;
-
-    private Image[] _heartImages;
+    
     private PlayerHealth _playerHealth;
 
     private void Start()
@@ -21,9 +17,7 @@ public class PlayerHealthUI : MonoBehaviour
             return;
         }
         
-        int totalHearts = Mathf.CeilToInt(_playerHealth.maxHealth / healthPerHeart);
-        
-        _heartImages = new Image[totalHearts];
+        int totalHearts = Mathf.CeilToInt((float)_playerHealth.maxHealth / healthPerHeart);
         
         CreateHearts(totalHearts);
         
@@ -53,16 +47,7 @@ public class PlayerHealthUI : MonoBehaviour
         // Создаем все сердца
         for (int i = 0; i < count; i++)
         {
-            GameObject newHeart = Instantiate(heartPrefab, heartsContainer);
-            RectTransform heartRect = newHeart.GetComponent<RectTransform>();
-            
-            // Размещаем сердце в сетке
-            int row = i / heartsPerRow;
-            int col = i % heartsPerRow;
-            heartRect.anchoredPosition = new Vector2(col * heartSpacing, -row * heartSpacing);
-            
-            // Сохраняем ссылку на изображение сердца для последующих обновлений
-            _heartImages[i] = newHeart.GetComponent<Image>();
+            Instantiate(heartPrefab, heartsContainer);
         }
     }
 
@@ -75,22 +60,16 @@ public class PlayerHealthUI : MonoBehaviour
 
         // Убедимся, что количество сердец соответствует текущему здоровью
         int currentHeartCount = heartsContainer.childCount;
-
+        
         if (currentHeartCount < currentHealth)
         {
             // Добавляем недостающие сердца
             for (int i = currentHeartCount; i < currentHealth; i++)
             {
-                GameObject newHeart = Instantiate(heartPrefab, heartsContainer);
-                RectTransform heartRect = newHeart.GetComponent<RectTransform>();
-
-                // Размещаем сердце в сетке
-                int row = i / heartsPerRow;
-                int col = i % heartsPerRow;
-                heartRect.anchoredPosition = new Vector2(col * heartSpacing, -row * heartSpacing);
+                Instantiate(heartPrefab, heartsContainer);
             }
         }
-        else if (currentHeartCount > currentHealth)
+        else if (currentHeartCount > currentHealth && currentHeartCount > 0)
         {
             // Удаляем лишние сердца
             for (int i = currentHeartCount - 1; i >= currentHealth; i--)
