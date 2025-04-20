@@ -45,7 +45,7 @@ namespace GameControl
       G.EventManager.Trigger(new OnGoldBalanceChange { NewBalance = GoldBalance });
       G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldGoal });
       
-      GoldGoalProgress++;
+      GoldGoalProgress += amount;
       goldGoalProgress01.Value = (float)GoldGoalProgress / GoldGoal;
       G.ElevatorPlatform.GetComponent<PlatformWeight>().ResetWeight();
       
