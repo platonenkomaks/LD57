@@ -7,11 +7,15 @@ public class PlatformWeight : MonoBehaviour
 {
     [SerializeField] private GameObject weightArrow;
 
+    [SerializeField] private TextMeshPro weightText;
+    
     public int goldOnPlatformBalance;
 
     private ElevatorPlatform _elevatorPlatform;
 
     private const float BaseWeight = 1f; // Default platform weight
+    
+    
 
     public Action OnWeightChange;
     private void Start()
@@ -51,6 +55,8 @@ public class PlatformWeight : MonoBehaviour
 
     private void UpdateWeightArrowRotation()
     {
+        UpdateTimeDisplay();
+        
         if (weightArrow == null) return;
 
         var rotationZ = goldOnPlatformBalance switch
@@ -66,4 +72,13 @@ public class PlatformWeight : MonoBehaviour
 
         weightArrow.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
     }
+    
+    private void UpdateTimeDisplay()
+    {
+        if (weightText == null) return;
+
+        var time = _elevatorPlatform.baseAscendTime + (_elevatorPlatform.weightTimeAddition * goldOnPlatformBalance);
+        weightText.text = $"{time}";
+    }
+    
 }

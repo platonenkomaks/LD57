@@ -10,12 +10,13 @@ namespace Platform
       if (!other.CompareTag("Player"))
         return;
       
-      if (G.PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerState.Carrying)
-        return;
+      if (G.BackPack.IsEmpty()) return;
       
-      G.ElevatorPlatform.GetComponent<PlatformWeight>().AddGold(1);
+      G.ElevatorPlatform.GetComponent<PlatformWeight>().AddGold(G.BackPack.CurrentGold);
+      G.BackPack.ResetGold();
       G.AudioManager.Play("DropGold");
       G.MiningSystem.EnableMining();
+      
     }
   }
 }

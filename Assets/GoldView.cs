@@ -39,8 +39,17 @@ public class GoldView : MonoBehaviour
             _goldPiles[i].SetActive(false);
         }
 
-        if (goldBalance > 0 && goldBalance <= _goldPiles.Length)
+        if (goldBalance > 5)
         {
+           
+            for (int i = 0; i < _goldPiles.Length; i++)
+            {
+                _goldPiles[i].SetActive(true);
+            }
+        }
+        else if (goldBalance > 0 && goldBalance <= _goldPiles.Length)
+        {
+           
             _goldPiles[goldBalance - 1].SetActive(true);
         }
     }

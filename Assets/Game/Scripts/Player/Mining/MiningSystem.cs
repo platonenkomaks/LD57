@@ -168,8 +168,11 @@ public class MiningSystem : MonoBehaviour
         var goldTile = goldTilemap.GetTile(goldCellPosition);
         if (goldTile)
         {
-            MineGold(goldCellPosition);
-            return;
+            if (!G.BackPack.IsFull())
+            {
+                MineGold(goldCellPosition);
+                return;
+            }
         }
     
         var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
@@ -256,15 +259,15 @@ public class MiningSystem : MonoBehaviour
     private void StartGoldMining()
     {
         _isMiningGold = true;
-        _canMine = false;
         _goldMiningEndTime = Time.time + goldMiningDuration;
     }
     
     private void FinishGoldMining()
     {
         _isMiningGold = false;
-        _canMine = false;
-        G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Carrying);
+        
+        
+        G.BackPack.AddGold(1);
     }
     #endregion
 }
