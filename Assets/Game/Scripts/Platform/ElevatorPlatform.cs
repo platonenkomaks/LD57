@@ -1,8 +1,8 @@
 using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class ElevatorPlatform : MonoBehaviour
 {
@@ -15,8 +15,6 @@ public class ElevatorPlatform : MonoBehaviour
 
     public float topY = 100f; // Цель при подъеме
     public float bottomY = 0f; // Цель при спуске
-
-    
     
     public float CurrentSpeed { get; private set; } = 0f;
     private bool isMoving = false;
@@ -26,9 +24,15 @@ public class ElevatorPlatform : MonoBehaviour
     {
         G.ElevatorPlatform = this;
     }
+    
+    private void Start()
+    {
+        G.EventManager.Register<OnPlayerRespawn>(OnRespawn);
+    }
 
     private void OnDestroy()
     {
+        G.EventManager.Unregister<OnPlayerRespawn>(OnRespawn);
         G.ElevatorPlatform = null;
     }
 
@@ -51,6 +55,13 @@ public class ElevatorPlatform : MonoBehaviour
         {
             cog.StopRotation();
         }
+    }
+
+    private void OnRespawn(OnPlayerRespawn _)
+    {
+        StopAllCoroutines();
+        transform.position = new Vector2(transform.position.x, topY);
+        Park();
     }
 
     public void StartDescent()
@@ -135,7 +146,6 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToSurface()
     {
-        
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
         G.AudioManager.Stop("Fight");
         G.AudioManager.Play("Intro");
@@ -143,21 +153,16 @@ public class ElevatorPlatform : MonoBehaviour
         G.GoldManager.AddGold(G.ElevatorPlatform.GetComponent<PlatformWeight>().goldOnPlatformBalance);
         
         lever.isLocked = false;
+        
+        G.EventManager.Trigger(new OnCheckpoint());
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
 
         // Восстанавливаем здоровье игрока до максимального значения
-        if (G.PlayerHealth != null)
+        G.PlayerHealth.ResetHealth();
+        var healthUI = FindAnyObjectByType<PlayerHealthUI>();
+        if (healthUI != null)
         {
-            G.PlayerHealth.ResetHealth();
-            var healthUI = FindAnyObjectByType<PlayerHealthUI>();
-            if (healthUI != null)
-            {
-                healthUI.UpdateHeartsDisplay();
-            }
-        }
-        else
-        {
-            Debug.LogError("G.PlayerHealth is null!");
+            healthUI.UpdateHeartsDisplay();
         }
     }
 }

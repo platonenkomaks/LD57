@@ -68,9 +68,7 @@ public class Intro : MonoBehaviour
         
         yield return new WaitForSeconds(2f);
         
-        G.HUD.gameObject.SetActive(true);
-        
-        
+        G.HUD.Show();
     }
 
   

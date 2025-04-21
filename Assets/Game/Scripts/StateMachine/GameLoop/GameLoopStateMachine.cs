@@ -19,6 +19,16 @@ namespace Game.Scripts.StateMachine.GameLoop
     private readonly DescendState _descendState = new();
     private readonly AscendState _ascendState = new();
 
+    public GameLoopStateMachine()
+    {
+      G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+    
+    private void OnDestroy()
+    {
+      G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+
     public void SetState(GameLoopState newState)
     {
       switch (newState)
@@ -42,6 +52,11 @@ namespace Game.Scripts.StateMachine.GameLoop
       {
         State = newState
       });
+    }
+
+    private void OnPlayerRespawn(OnPlayerRespawn _)
+    {
+      this.SetState(GameLoopState.Shopping);
     }
   }
 }

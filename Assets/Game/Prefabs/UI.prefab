@@ -334,7 +334,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7409910365088380780
 RectTransform:
   m_ObjectHideFlags: 0
@@ -501,7 +501,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8207811752864725025
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2644,6 +2644,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8859224498463094570}
   - component: {fileID: 921532224633870672}
+  - component: {fileID: 7213247374022274261}
   m_Layer: 0
   m_Name: HUD
   m_TagString: Untagged
@@ -2690,6 +2691,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69af83e248d348adae04beff5a66037f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 7213247374022274261}
+--- !u!225 &7213247374022274261
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6188152069536244958}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6747998313372793101
 GameObject:
   m_ObjectHideFlags: 0
@@ -3607,6 +3621,7 @@ MonoBehaviour:
   _gameOverPanel: {fileID: 7612709860317304480}
   foregroundTint: {fileID: 3024999394655705894}
   shopButton: {fileID: 8915074870772029208}
+  shoppingScreen: {fileID: 8105200184156351418}
 --- !u!1 &8915074870772029208
 GameObject:
   m_ObjectHideFlags: 0
@@ -3697,10 +3712,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8430403763315747691}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 8105200184156351418}
+        m_TargetAssemblyTypeName: UI.Game.ShoppingScreen, Assembly-CSharp
+        m_MethodName: ShowShopScreen
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4896,8 +4911,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3145186391494038460, guid: 70836bbe076bb4bec8102c4cb7a61ae6, type: 3}
   m_PrefabInstance: {fileID: 8720379986492674924}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8430403763315747691 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1007624252693641223, guid: 70836bbe076bb4bec8102c4cb7a61ae6, type: 3}
+--- !u!114 &8105200184156351418 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 684116113247942870, guid: 70836bbe076bb4bec8102c4cb7a61ae6, type: 3}
   m_PrefabInstance: {fileID: 8720379986492674924}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d7d835b3e04c0e88ac35f8630a5c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

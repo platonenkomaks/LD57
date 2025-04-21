@@ -62,7 +62,7 @@ public class BatteryLight : MonoBehaviour
 
     #region Приватные поля
 
-    private bool _isTutorialComplete = false;
+    private bool canDrainBattery = false;
     private float remainingBatteryLife;
     private float originalIntensity;
     private float targetRadius;
@@ -278,7 +278,7 @@ public class BatteryLight : MonoBehaviour
     {
         if (currentBatteryCharge <= 0) return;
         
-        if (_isTutorialComplete)
+        if (canDrainBattery)
             isDraining = true;
         
         targetLight.enabled = true;
@@ -338,9 +338,19 @@ public class BatteryLight : MonoBehaviour
 
     private void OnGameStateChange(OnGameStateChangedEvent e)
     {
-        if (e.State != GameLoopStateMachine.GameLoopState.Tutorial)
+        switch (e.State)
         {
-            _isTutorialComplete = true;
+            case GameLoopStateMachine.GameLoopState.Tutorial:
+            case GameLoopStateMachine.GameLoopState.Shopping:
+                canDrainBattery = false;
+                break;
+            case GameLoopStateMachine.GameLoopState.Mining:
+            case GameLoopStateMachine.GameLoopState.Descend:
+            case GameLoopStateMachine.GameLoopState.Ascend:
+            case GameLoopStateMachine.GameLoopState.Win:
+            default:
+                canDrainBattery = true;
+                break;
         }
     }
 

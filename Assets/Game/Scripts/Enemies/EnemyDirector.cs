@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Events;
-using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
+using Game.Scripts.StateMachine.GameLoop;
 
 public class EnemyDirector : MonoBehaviour
 {
@@ -69,7 +69,7 @@ public class EnemyDirector : MonoBehaviour
     private int _currentWaveIndex = -1;
     private int _totalEnemiesSpawned = 0;
     private int _totalEnemiesRemaining = 0;
-    private readonly List<GameObject> _activeEnemies = new List<GameObject>();
+    private readonly List<Enemy> _activeEnemies = new();
     private bool _isSpawning = false;
     private Coroutine _spawnCoroutine;
     private bool _waveActive = false;
@@ -147,7 +147,7 @@ public class EnemyDirector : MonoBehaviour
         InitializeNewWave();
     }
 
-    public void RegisterEnemy(GameObject enemy)
+    public void RegisterEnemy(Enemy enemy)
     {
         if (!_activeEnemies.Contains(enemy))
         {
@@ -293,7 +293,7 @@ public class EnemyDirector : MonoBehaviour
 
     private void DestroyEnemies()
     {
-        _activeEnemies.ForEach(Destroy);
+        _activeEnemies.ForEach(enemy => enemy.Die());
     }
 
     private IEnumerator SpawnWave(Wave wave)
@@ -368,10 +368,9 @@ public class EnemyDirector : MonoBehaviour
         if (enemy.TryGetComponent<Enemy>(out var enemyComponent))
         {
             enemyComponent.Init(G.Player.transform);
+            _activeEnemies.Add(enemyComponent);
+            _totalEnemiesSpawned++;
         }
-
-        _activeEnemies.Add(enemy);
-        _totalEnemiesSpawned++;
     }
 
     private void CompleteCurrentWave()

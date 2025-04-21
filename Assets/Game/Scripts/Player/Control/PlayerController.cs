@@ -33,9 +33,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float groundCheckRadius = 0.5f;
     [SerializeField] private LayerMask groundLayer;
-
-
     
+    [Header("Respawn Parameters")]
+    [SerializeField] private Vector3 respawnPosition;
     
     // Private variables
     private Rigidbody2D _rb;
@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour
     private RandomSoundPlayer _randomSoundPlayer;
 
     // Input reference
+    private bool _isLocked;
     private PlayerInput _playerInput;
 
     private void Awake()
@@ -69,6 +70,12 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _playerAnimator = G.Player.GetComponent<Animator>();
+        G.EventManager.Register<OnPlayerRespawn>(OnRespawn);
+    }
+
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnPlayerRespawn>(OnRespawn);
     }
 
     public void SetJumpForce(float jumpForce)
@@ -83,6 +90,8 @@ public class PlayerController : MonoBehaviour
     
     private void Update()
     {
+        if (_isLocked) return;
+        
         // Поворот спрайта в зависимости от направления
         var horizontalInput = _playerInput.GetHorizontalInput();
 
@@ -154,6 +163,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
         {
+            if (_isLocked) return;
+            
             // Расчет целевой скорости
             var horizontalInput = _playerInput.GetHorizontalInput();
             var targetSpeed = horizontalInput * moveSpeed;
@@ -217,7 +228,6 @@ public class PlayerController : MonoBehaviour
         private void Shoot()
         {
             G.AudioManager.Play("Shoot");
-    
           
 
             Vector2 direction = Vector2.right * (_spriteRenderer.flipX ? -1 : 1);
@@ -257,9 +267,17 @@ public class PlayerController : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
-        
+
+        private void OnRespawn(OnPlayerRespawn _)
+        {
+            transform.position = respawnPosition;
+            _isLocked = false;
+        }
+    
         public void Die()
         {
+            _isLocked = true;
+            _rb.linearVelocity = Vector2.zero;
             _playerAnimator.SetTrigger("Dead");
         }
         

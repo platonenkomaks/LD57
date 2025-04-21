@@ -18,8 +18,6 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        G.HUD.gameObject.SetActive(false);
-
         _player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
         G.Player = _player;
         playerCinemachineTarget.SetTargetForCinemachineCamera(_player.transform);

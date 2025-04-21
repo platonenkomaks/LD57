@@ -1,16 +1,31 @@
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.Game
 {
-  public class ShoppingScreen : UIScreen
+  public class ShoppingScreen : MonoBehaviour
   {
-    [SerializeField] private Button shopScreenButton;
-
-    protected override void Start()
+    [SerializeField] private CanvasGroup shopCanvasGroup;
+    
+    public void ShowShopScreen(float delay = 0f)
     {
-      base.Start();
-      shopScreenButton.onClick.AddListener(() => G.UIManager.ShowScreen("ShopScreen"));
+      shopCanvasGroup.DOKill();
+      shopCanvasGroup.alpha = 0;
+      shopCanvasGroup.interactable = false;
+      shopCanvasGroup.gameObject.SetActive(true);
+      shopCanvasGroup
+        .DOFade(1f, 0.25f)
+        .SetDelay(delay)
+        .OnComplete(() => shopCanvasGroup.interactable = true);
+    }
+    
+    public void HideShopScreen()
+    {
+      shopCanvasGroup.DOKill();
+      shopCanvasGroup.interactable = false;
+      shopCanvasGroup
+        .DOFade(0f, 0.25f)
+        .OnComplete(() => shopCanvasGroup.gameObject.SetActive(false));
     }
   }
 }

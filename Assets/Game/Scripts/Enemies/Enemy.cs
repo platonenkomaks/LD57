@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -102,11 +103,10 @@ public abstract class Enemy : MonoBehaviour
     {
         canAttack = false;
         
-        // Проигрываем анимацию смерти
-        if (animator != null)
-        {
+        if (animator.parameters.Any(param => param.name == "Die"))
             animator.SetTrigger("Die");
-        }
+        else 
+            DestroyEnemy();
     }
     
     public void DestroyEnemy()

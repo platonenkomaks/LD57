@@ -1,5 +1,4 @@
 using Events;
-using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 namespace Platform
