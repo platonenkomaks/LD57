@@ -62,7 +62,7 @@ public class Intro : MonoBehaviour
             yield return new WaitForSeconds(offTime);
         }
         
-
+        G.AudioManager.Play("LightSwitch");
         G.AudioManager.Play("Landed");
         _playerLight.SetActive(true);
         
