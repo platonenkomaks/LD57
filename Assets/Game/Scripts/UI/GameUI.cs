@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
+using UI.Game;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,8 @@ namespace UI
     [SerializeField] private GameObject _gameOverPanel;
     [SerializeField] private Image foregroundTint;
     [SerializeField] private GameObject shopButton;
-    
+    [SerializeField] private ShoppingScreen shoppingScreen;
+
     private void Start()
     {
       G.EventManager.Register<OnPlayerDeath>(OnGameOver);
@@ -32,7 +34,13 @@ namespace UI
     
     private void OnGameStateChanged(OnGameStateChangedEvent e)
     {
-      shopButton.SetActive(e.State == GameLoopStateMachine.GameLoopState.Shopping);
+      bool isShopping = e.State == GameLoopStateMachine.GameLoopState.Shopping;
+      shopButton.SetActive(isShopping);
+
+      if (isShopping)
+      {
+        shoppingScreen.ShowShopScreen();
+      }
     }
 
     public void Restart()
