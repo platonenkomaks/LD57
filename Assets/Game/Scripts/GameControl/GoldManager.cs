@@ -26,14 +26,35 @@ namespace GameControl
 
     public readonly UnityEvent<int, int> OnGoldProgressEvent = new();
 
+    private int _checkpointGoldBalance;
+
     private void Awake()
     {
       G.GoldManager = this;
     }
-    
+
+    private void Start()
+    {
+      G.EventManager.Register<OnCheckpoint>(OnCheckpoint);
+      G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+
     private void OnDestroy()
     {
+      G.EventManager.Unregister<OnCheckpoint>(OnCheckpoint);
+      G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
       G.GoldManager = null;
+    }
+    
+    private void OnCheckpoint(OnCheckpoint _)
+    {
+      _checkpointGoldBalance = GoldBalance;
+    }
+    
+    private void OnPlayerRespawn(OnPlayerRespawn _)
+    {
+      GoldBalance = _checkpointGoldBalance;
+      G.EventManager.Trigger(new OnGoldBalanceChange { NewBalance = GoldBalance });
     }
 
     public void AddGold(int amount)

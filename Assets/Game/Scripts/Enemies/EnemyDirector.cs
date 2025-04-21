@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Events;
-using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
+using Game.Scripts.StateMachine.GameLoop;
 
 public class EnemyDirector : MonoBehaviour
 {

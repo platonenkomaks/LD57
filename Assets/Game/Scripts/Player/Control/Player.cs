@@ -20,8 +20,6 @@ public class Player : MonoBehaviour
         yield return null;
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         
-       
-        
         G.PlayerStateMachine = new PlayerStateMachine(
             playerSpriteRenderer,
             miningGoldSprite,
@@ -31,7 +29,6 @@ public class Player : MonoBehaviour
         
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
         G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
-        
     }
     
     private void OnDestroy()

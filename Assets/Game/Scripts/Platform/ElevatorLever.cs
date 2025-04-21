@@ -1,7 +1,7 @@
 using System.Collections;
 using Events;
-using Game.Scripts.StateMachine.GameLoop;
 using Platform;
+using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
 
 

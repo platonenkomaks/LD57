@@ -3,33 +3,40 @@ using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UI.Game;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace UI
 {
   public class GameUI : MonoBehaviour
   {
-    [SerializeField] private GameObject _gameOverPanel;
     [SerializeField] private Image foregroundTint;
     [SerializeField] private GameObject shopButton;
     [SerializeField] private ShoppingScreen shoppingScreen;
 
     private void Start()
     {
-      G.EventManager.Register<OnPlayerDeath>(OnGameOver);
+      G.EventManager.Register<OnPlayerDeath>(OnPlayerDeath);
+      G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
       G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChanged);
       DoFadeOut();
     }
 
     private void OnDestroy()
     {
-      G.EventManager.Unregister<OnPlayerDeath>(OnGameOver);
+      G.EventManager.Unregister<OnPlayerDeath>(OnPlayerDeath);
+      G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
       G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChanged);
     }
 
-    private void OnGameOver(OnPlayerDeath e)
+    private void OnPlayerDeath(OnPlayerDeath e)
     {
-      _gameOverPanel.SetActive(true);
+      DoFadeIn(() => G.EventManager.Trigger(new OnPlayerRespawn()));
+    }
+
+    private void OnPlayerRespawn(OnPlayerRespawn e)
+    {
+      DoFadeOut(delay: 0.5f);
     }
     
     private void OnGameStateChanged(OnGameStateChangedEvent e)
@@ -39,7 +46,7 @@ namespace UI
 
       if (isShopping)
       {
-        shoppingScreen.ShowShopScreen();
+        shoppingScreen.ShowShopScreen(1f);
       }
     }
 
@@ -56,15 +63,30 @@ namespace UI
         G.SceneLoader.LoadScene("Game");
       });
     }
+    
+    private void DoFadeIn(UnityAction onComplete = null)
+    {
+      foregroundTint.color = new Color(0, 0, 0, 0);
+      foregroundTint.gameObject.SetActive(true);
 
-    private void DoFadeOut()
+      Sequence seq = DOTween.Sequence();
+      seq.Append(foregroundTint.DOFade(1f, 0.5f));
+      seq.OnComplete(() => onComplete?.Invoke());
+    }
+
+    private void DoFadeOut(UnityAction onComplete = null, float delay = 0)
     {
       foregroundTint.color = new Color(0, 0, 0, 1);
       foregroundTint.gameObject.SetActive(true);
       
       Sequence seq = DOTween.Sequence();
       seq.Append(foregroundTint.DOFade(0f, 0.5f));
-      seq.AppendCallback(() => foregroundTint.gameObject.SetActive(false));
+      seq.SetDelay(delay);
+      seq.OnComplete(() =>
+      {
+        foregroundTint.gameObject.SetActive(false);
+        onComplete?.Invoke();
+      });
     }
   }
 }

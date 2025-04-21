@@ -36,7 +36,9 @@ namespace Events
     public PlayerStateMachine.PlayerState State;
   }
   
+  public struct OnCheckpoint : IEvent {}
   public struct OnPlayerDeath : IEvent {}
+  public struct OnPlayerRespawn : IEvent {}
   
   public struct OnPlayerShoot : IEvent {}
 }
