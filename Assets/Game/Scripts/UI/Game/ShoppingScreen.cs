@@ -7,7 +7,7 @@ namespace UI.Game
   {
     [SerializeField] private CanvasGroup shopCanvasGroup;
     
-    public void ShowShopScreen()
+    public void ShowShopScreen(float delay = 0f)
     {
       shopCanvasGroup.DOKill();
       shopCanvasGroup.alpha = 0;
@@ -15,6 +15,7 @@ namespace UI.Game
       shopCanvasGroup.gameObject.SetActive(true);
       shopCanvasGroup
         .DOFade(1f, 0.25f)
+        .SetDelay(delay)
         .OnComplete(() => shopCanvasGroup.interactable = true);
     }
     
