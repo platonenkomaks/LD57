@@ -7,6 +7,7 @@ using UnityEngine;
         private void Awake ()
         {
             G.HUD = this;
+            canvasGroup.alpha = 0;
         }
 
         private void OnDestroy()
@@ -16,8 +17,6 @@ using UnityEngine;
 
         public void Show()
         {
-            canvasGroup.alpha = 0;
-            gameObject.SetActive(true);
             canvasGroup.DOFade(1, 1f);
         }
     }

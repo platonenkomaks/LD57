@@ -2,7 +2,6 @@ using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class ElevatorPlatform : MonoBehaviour
 {
@@ -135,7 +134,6 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToSurface()
     {
-        
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
         G.AudioManager.Stop("Fight");
         G.AudioManager.Play("Intro");
@@ -146,18 +144,11 @@ public class ElevatorPlatform : MonoBehaviour
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
 
         // Восстанавливаем здоровье игрока до максимального значения
-        if (G.PlayerHealth != null)
+        G.PlayerHealth.ResetHealth();
+        var healthUI = FindAnyObjectByType<PlayerHealthUI>();
+        if (healthUI != null)
         {
-            G.PlayerHealth.ResetHealth();
-            var healthUI = FindAnyObjectByType<PlayerHealthUI>();
-            if (healthUI != null)
-            {
-                healthUI.UpdateHeartsDisplay();
-            }
-        }
-        else
-        {
-            Debug.LogError("G.PlayerHealth is null!");
+            healthUI.UpdateHeartsDisplay();
         }
     }
 }

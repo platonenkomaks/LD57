@@ -2,7 +2,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities;
 
 namespace UI
 {
@@ -10,21 +9,20 @@ namespace UI
   {
     [SerializeField] private Image fill;
     [SerializeField] private TMP_Text text;
-
-    private int _goalProgress = 0;
     
     private IEnumerator Start()
     {
       fill.fillAmount = 0;
       yield return null;
-      G.GoldManager.goldGoalProgress01.OnChanged += OnChanged;
+      
+      G.GoldManager.OnGoldProgressEvent.AddListener(OnChanged);
     }
 
-    private void OnChanged(Observable<float> _, float oldVal, float newVal)
+    private void OnChanged(int goldMined, int goldGoal)
     {
-      _goalProgress++;
-      fill.fillAmount = newVal;
-      text.text = "Gold Left to Mine: "+_goalProgress + " / " + G.GoldManager.GoldGoal;
+      float newFillAmount = (float)goldMined / goldGoal;
+      fill.fillAmount = newFillAmount;
+      text.text = "Gold Left to Mine: " + goldMined + " / " + goldGoal;
     }
   }
 }

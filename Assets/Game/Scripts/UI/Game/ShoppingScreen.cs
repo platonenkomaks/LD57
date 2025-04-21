@@ -14,7 +14,7 @@ namespace UI.Game
       shopCanvasGroup.interactable = false;
       shopCanvasGroup.gameObject.SetActive(true);
       shopCanvasGroup
-        .DOFade(1f, 1f)
+        .DOFade(1f, 0.25f)
         .OnComplete(() => shopCanvasGroup.interactable = true);
     }
     
@@ -23,7 +23,7 @@ namespace UI.Game
       shopCanvasGroup.DOKill();
       shopCanvasGroup.interactable = false;
       shopCanvasGroup
-        .DOFade(0f, 0.2f)
+        .DOFade(0f, 0.25f)
         .OnComplete(() => shopCanvasGroup.gameObject.SetActive(false));
     }
   }

@@ -2,6 +2,7 @@ using System;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
+using UnityEngine.Events;
 using Utilities;
 
 namespace GameControl
@@ -17,16 +18,13 @@ namespace GameControl
     /// How much gold has been collected.
     /// </summary>
     public int GoldGoalProgress { get; private set; }
-
-    [HideInInspector]
-    public Observable<float> goldGoalProgress01 = new(0f);
     
     /// <summary>
     /// How much gold does the player have.
     /// </summary>
     public int GoldBalance { get; private set; }
 
-    public Action OnGoldBalanceChange;
+    public readonly UnityEvent<int, int> OnGoldProgressEvent = new();
 
     private void Awake()
     {
@@ -46,11 +44,10 @@ namespace GameControl
       G.EventManager.Trigger(new OnRemainingGoldCount { RemainingGoldCount = GoldGoal });
       
       GoldGoalProgress += amount;
-      goldGoalProgress01.Value = (float)GoldGoalProgress / GoldGoal;
+      
       G.ElevatorPlatform.GetComponent<PlatformWeight>().ResetWeight();
       
-      OnGoldBalanceChange?.Invoke();
-      
+      OnGoldProgressEvent?.Invoke(GoldGoalProgress, GoldGoal);
       
       if (GoldGoalProgress >= GoldGoal)
       {
