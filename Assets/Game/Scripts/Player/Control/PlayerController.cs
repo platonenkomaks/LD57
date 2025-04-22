@@ -270,8 +270,6 @@ public class PlayerController : MonoBehaviour
         public void Die()
         {
             if (_isDying) return;
-         
-            print("Dying");
             
             _isDying = true;
             _isLocked = true;

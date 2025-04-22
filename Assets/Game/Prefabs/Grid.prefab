@@ -477957,10 +477957,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1015887729490594595}
     m_Modifications:
     - target: {fileID: 4372894610855547335, guid: ef3903d000c384d479038b10de674d7c, type: 3}
-      propertyPath: spawnPoints.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4372894610855547335, guid: ef3903d000c384d479038b10de674d7c, type: 3}
       propertyPath: 'spawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 8894234378288631170}
@@ -478047,10 +478043,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1015887729490594595}
     m_Modifications:
     - target: {fileID: 4372894610855547335, guid: 7dec592eff5fe433f9066ccc8449b3c4, type: 3}
-      propertyPath: spawnPoints.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4372894610855547335, guid: 7dec592eff5fe433f9066ccc8449b3c4, type: 3}
       propertyPath: 'spawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 8894234378288631170}
@@ -478117,10 +478109,6 @@ PrefabInstance:
     - target: {fileID: 8315985565227094634, guid: 7dec592eff5fe433f9066ccc8449b3c4, type: 3}
       propertyPath: m_Name
       value: RangedSpawner
-      objectReference: {fileID: 0}
-    - target: {fileID: 8315985565227094634, guid: 7dec592eff5fe433f9066ccc8449b3c4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

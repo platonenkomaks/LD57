@@ -53,30 +53,36 @@ MonoBehaviour:
     maxEnemiesAtOnce: 3
     isBossWave: 0
   - waveName: "\u0412\u0442\u043E\u0440\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
-    enemyCount: 5
+    enemyCount: 3
     timeBetweenSpawns: 1
     timeBeforeNextWave: 15
     maxEnemiesAtOnce: 4
     isBossWave: 0
   - waveName: "\u0422\u0440\u0435\u0442\u044C\u044F \u0432\u043E\u043B\u043D\u0430"
-    enemyCount: 5
+    enemyCount: 3
     timeBetweenSpawns: 2
     timeBeforeNextWave: 0.1
     maxEnemiesAtOnce: 5
     isBossWave: 0
   - waveName: "\u0427\u0435\u0442\u0432\u0435\u0440\u0442\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
-    enemyCount: 5
+    enemyCount: 3
     timeBetweenSpawns: 2
     timeBeforeNextWave: 0.1
     maxEnemiesAtOnce: 7
     isBossWave: 0
   - waveName: "\u041F\u044F\u0442\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
-    enemyCount: 5
+    enemyCount: 3
     timeBetweenSpawns: 1
     timeBeforeNextWave: 0.1
     maxEnemiesAtOnce: 10
     isBossWave: 0
-  spawnPoints: []
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
