@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
 
 // Базовый абстрактный класс врага
@@ -24,6 +25,8 @@ public abstract class Enemy : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Animator animator;
     public bool canAttack = true;
+
+    public UnityAction<Enemy> OnDie;
 
     public void Init(Transform targetPlayer)
     {
@@ -102,6 +105,7 @@ public abstract class Enemy : MonoBehaviour
     public virtual void Die()
     {
         canAttack = false;
+        OnDie?.Invoke(this);
         
         if (animator.parameters.Any(param => param.name == "Die"))
             animator.SetTrigger("Die");
