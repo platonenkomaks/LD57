@@ -16,7 +16,6 @@ namespace Platform
       G.BackPack.ResetGold();
       G.AudioManager.Play("DropGold");
       G.MiningSystem.EnableMining();
-      
     }
   }
 }

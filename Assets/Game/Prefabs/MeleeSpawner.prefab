@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8315985565227094634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7307234090215830307}
+  - component: {fileID: 4372894610855547335}
+  m_Layer: 0
+  m_Name: MeleeSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7307234090215830307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8315985565227094634}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4372894610855547335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8315985565227094634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ca2375069b04ed78d4f6fe9660c5d6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 7164533648015123212, guid: 33d9fbf29cd41244e95112d9f756da96, type: 3}
+  waves:
+  - waveName: "\u041F\u0435\u0440\u0432\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
+    enemyCount: 3
+    timeBetweenSpawns: 1
+    timeBeforeNextWave: 10
+    maxEnemiesAtOnce: 3
+    isBossWave: 0
+  - waveName: "\u0412\u0442\u043E\u0440\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
+    enemyCount: 3
+    timeBetweenSpawns: 1
+    timeBeforeNextWave: 15
+    maxEnemiesAtOnce: 4
+    isBossWave: 0
+  - waveName: "\u0422\u0440\u0435\u0442\u044C\u044F \u0432\u043E\u043B\u043D\u0430"
+    enemyCount: 3
+    timeBetweenSpawns: 2
+    timeBeforeNextWave: 0.1
+    maxEnemiesAtOnce: 5
+    isBossWave: 0
+  - waveName: "\u0427\u0435\u0442\u0432\u0435\u0440\u0442\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
+    enemyCount: 3
+    timeBetweenSpawns: 2
+    timeBeforeNextWave: 0.1
+    maxEnemiesAtOnce: 7
+    isBossWave: 0
+  - waveName: "\u041F\u044F\u0442\u0430\u044F \u0432\u043E\u043B\u043D\u0430"
+    enemyCount: 3
+    timeBetweenSpawns: 1
+    timeBeforeNextWave: 0.1
+    maxEnemiesAtOnce: 10
+    isBossWave: 0
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  spawnCheckRadius: 1

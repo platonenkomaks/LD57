@@ -1,7 +1,6 @@
-using System;
+using DG.Tweening;
 using Events;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
@@ -53,6 +52,8 @@ public class PlayerController : MonoBehaviour
     private float _lastShootTime;
     private RandomSoundPlayer _randomSoundPlayer;
 
+    private bool _isDying;
+    
     // Input reference
     private bool _isLocked;
     private PlayerInput _playerInput;
@@ -82,11 +83,11 @@ public class PlayerController : MonoBehaviour
     {
         this.jumpForce = jumpForce;
     }
+    
     public void SetMoveSpeed(float moveSpeed)
     {
         this.moveSpeed = moveSpeed;
     }
-    
     
     private void Update()
     {
@@ -118,7 +119,6 @@ public class PlayerController : MonoBehaviour
         // Обработка буфера прыжка
         if (_playerInput.IsJumpButtonPressed() && !disableJump)
         {
-            this.transform.SetParent(null);
             _jumpBufferCounter = jumpBufferTime;
         }
         else
@@ -199,22 +199,6 @@ public class PlayerController : MonoBehaviour
             };
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Platform"))
-            {
-                transform.SetParent(collision.transform);
-            }
-        }
-
-        private void OnCollisionExit2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Platform"))
-            {
-                transform.SetParent(null);
-            }
-        }
-
         public void EnableCombatMode()
         {
             _canShoot = true;
@@ -270,12 +254,24 @@ public class PlayerController : MonoBehaviour
 
         private void OnRespawn(OnPlayerRespawn _)
         {
-            transform.position = respawnPosition;
-            _isLocked = false;
+            // Teleport player to the platform after a delay
+            // The delay is needed to reset the Backpack and the gold so that they don't get added to the progress
+            Sequence seq = DOTween.Sequence();
+            seq.AppendInterval(0.25f);
+            seq.AppendCallback(() =>
+            {
+                _isDying = false;
+                _playerAnimator.SetTrigger("Alive");
+                transform.position = respawnPosition;
+                _isLocked = false;
+            });
         }
     
         public void Die()
         {
+            if (_isDying) return;
+            
+            _isDying = true;
             _isLocked = true;
             _rb.linearVelocity = Vector2.zero;
             _playerAnimator.SetTrigger("Dead");

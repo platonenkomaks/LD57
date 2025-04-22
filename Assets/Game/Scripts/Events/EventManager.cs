@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Events
 {
@@ -31,9 +32,18 @@ namespace Events
       var eventType = typeof(T);
       if (eventListeners.TryGetValue(eventType, out var eventListener))
       {
-        foreach (var listener in eventListener)
+        for (int i = eventListener.Count - 1; i >= 0; i--)
         {
-          listener(eventInstance);
+          var listener = eventListener[i];
+          if (listener.Target == null)
+          {
+            eventListener.RemoveAt(i);
+            Debug.LogWarning($"EventManager: listener {listener} is null");
+          }
+          else
+          {
+            listener(eventInstance);
+          }
         }
       }
     }

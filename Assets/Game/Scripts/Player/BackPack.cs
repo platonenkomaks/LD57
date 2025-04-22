@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Events;
 
 public class BackPack : MonoBehaviour
 {
@@ -34,6 +35,13 @@ public class BackPack : MonoBehaviour
         G.BackPack = this;
         popUpBackpackIsFull.SetActive(false);
         ResetSlotColors();
+        G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+    
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
+        G.BackPack = null;
     }
 
     private void Update()
@@ -69,6 +77,7 @@ public class BackPack : MonoBehaviour
     public void ResetGold()
     {
         currentGold = 0;
+        popUpBackpackIsFull.SetActive(false);
         ResetSlotColors();
     }
 
@@ -115,6 +124,11 @@ public class BackPack : MonoBehaviour
             goldSlot5Image.color = fullColor;
             if (previousGold < 5) AnimateSlot(goldSlot5Image);
         }
+    }
+    
+    private void OnPlayerRespawn(OnPlayerRespawn _)
+    {
+        ResetGold();
     }
 
     private void ResetSlotColors()

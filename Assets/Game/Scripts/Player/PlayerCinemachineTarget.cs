@@ -1,4 +1,3 @@
-using System.Collections;
 using Events;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -12,15 +11,13 @@ public class PlayerCinemachineTarget : MonoBehaviour
         _cmCamera = GetComponent<CinemachineCamera>();
     }
     
-    private IEnumerator Start()
+    private void OnEnable()
     {
-        yield return null;
         G.EventManager.Register<OnPlatformEnter>(FocusOnPlatform);
         G.EventManager.Register<OnPlatformExit>(FocusOnPlayer);
-        
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         G.EventManager.Unregister<OnPlatformEnter>(FocusOnPlatform);
         G.EventManager.Unregister<OnPlatformExit>(FocusOnPlayer);
