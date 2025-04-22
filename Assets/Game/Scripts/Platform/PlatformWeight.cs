@@ -1,30 +1,59 @@
 using System;
-using GameControl;
 using UnityEngine;
 using TMPro;
 
 public class PlatformWeight : MonoBehaviour
 {
     [SerializeField] private GameObject weightArrow;
-
     [SerializeField] private TextMeshPro weightText;
     
     public int goldOnPlatformBalance;
-
+    
     private ElevatorPlatform _elevatorPlatform;
-
     private const float BaseWeight = 1f; // Default platform weight
     
+    private bool isAscending = false;
+    private float remainingTime = 0f;
+    private float totalAscentTime = 0f;
     
-
     public Action OnWeightChange;
+    
     private void Start()
     {
         goldOnPlatformBalance = 0;
-
         _elevatorPlatform = G.ElevatorPlatform;
         
+        // Subscribe to elevator events to track when ascent starts/ends
+        if (_elevatorPlatform != null)
+        {
+            _elevatorPlatform.OnStartAscent += HandleAscentStart;
+            _elevatorPlatform.OnArriveToSurfaceEvent += HandleAscentEnd;
+        }
+        
         UpdatePlatformWeight();
+    }
+    
+    private void OnDestroy()
+    {
+        // Unsubscribe from events when destroyed
+        if (_elevatorPlatform != null)
+        {
+            _elevatorPlatform.OnStartAscent -= HandleAscentStart;
+            _elevatorPlatform.OnArriveToSurfaceEvent -= HandleAscentEnd;
+        }
+    }
+
+    private void HandleAscentStart()
+    {
+        isAscending = true;
+        totalAscentTime = _elevatorPlatform.baseAscendTime + (_elevatorPlatform.weightTimeAddition * goldOnPlatformBalance);
+        remainingTime = totalAscentTime;
+    }
+
+    private void HandleAscentEnd()
+    {
+        isAscending = false;
+        UpdateTimeDisplay();
     }
 
     public void AddGold(int amount)
@@ -43,6 +72,15 @@ public class PlatformWeight : MonoBehaviour
     {
         UpdatePlatformWeight();
         UpdateWeightArrowRotation();
+     
+        if (isAscending)
+        {
+            remainingTime -= Time.deltaTime;
+            if (remainingTime < 0)
+                remainingTime = 0;
+                
+            UpdateTimeDisplay();
+        }
     }
 
     private void UpdatePlatformWeight()
@@ -52,7 +90,6 @@ public class PlatformWeight : MonoBehaviour
         _elevatorPlatform.platformWeight = weight;
     }
     
-
     private void UpdateWeightArrowRotation()
     {
         UpdateTimeDisplay();
@@ -77,8 +114,14 @@ public class PlatformWeight : MonoBehaviour
     {
         if (weightText == null) return;
 
-        var time = _elevatorPlatform.baseAscendTime + (_elevatorPlatform.weightTimeAddition * goldOnPlatformBalance);
-        weightText.text = $"{time}";
+        if (isAscending)
+        {
+            weightText.text = $"{remainingTime:F1}";
+        }
+        else
+        {
+            var time = _elevatorPlatform.baseAscendTime + (_elevatorPlatform.weightTimeAddition * goldOnPlatformBalance);
+            weightText.text = $"{time}";
+        }
     }
-    
 }

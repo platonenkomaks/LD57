@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
@@ -12,7 +13,7 @@ public class ElevatorPlatform : MonoBehaviour
     public float baseAscendTime = 60f; // Базовое время подъема (в секундах)
     public float weightTimeAddition = 10f; // Дополнительное время на единицу веса (в секундах)
     public Cog cog;
-
+    
     public float topY = 100f; // Цель при подъеме
     public float bottomY = 0f; // Цель при спуске
     
@@ -20,6 +21,9 @@ public class ElevatorPlatform : MonoBehaviour
     private bool isMoving = false;
     private Vector2 targetPosition;
 
+    public Action OnStartAscent;
+    public Action OnArriveToSurfaceEvent;
+    
     private void Awake()
     {
         G.ElevatorPlatform = this;
@@ -69,7 +73,6 @@ public class ElevatorPlatform : MonoBehaviour
         G.PlayerController.disableJump = true;
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
-
         StartCoroutine(DescentAfterDelay(1.5f));
     }
 
@@ -89,7 +92,9 @@ public class ElevatorPlatform : MonoBehaviour
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
 
+       
         StartCoroutine(AscentAfterDelay(2.5f));
+       
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("Fight");
@@ -99,6 +104,7 @@ public class ElevatorPlatform : MonoBehaviour
     {
         G.Player.GetComponent<PlayerController>().SetJumpForce(15f);
         yield return new WaitForSeconds(seconds);
+        OnStartAscent?.Invoke();
         targetPosition = new Vector2(transform.position.x, topY);
 
         // Расчет скорости на основе требуемого времени подъема
@@ -146,6 +152,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     private void OnArriveToSurface()
     {
+        OnArriveToSurfaceEvent?.Invoke();
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
         G.AudioManager.Stop("Fight");
         G.AudioManager.Play("Intro");

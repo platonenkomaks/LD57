@@ -294,6 +294,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  respawnPosition: {x: 0, y: 70, z: 0}
   isGrounded: 0
   disableJump: 0
 --- !u!114 &1634218767354475830
