@@ -32,7 +32,7 @@ public class RangedEnemy : Enemy
         
         // Инициализируем аниматор
         animator.Rebind();
-        animator.SetBool("IsFlying", true);
+        // animator.SetBool("IsFlying", true);
         
         _isInitialized = true;
     }
@@ -86,7 +86,7 @@ public class RangedEnemy : Enemy
         _rb.linearVelocity = Vector2.zero;
         
         // Анимация стрельбы
-        animator.SetTrigger("Attack");
+        //animator.SetTrigger("Attack");
         
         // Создаем и запускаем снаряд
         G.AudioManager.Play("FireBall");
@@ -104,7 +104,7 @@ public class RangedEnemy : Enemy
         // Если здоровье кончилось, умираем
         if (health <= 0)
         {
-            DestroyEnemy();
+            Die();
         }
     }
 

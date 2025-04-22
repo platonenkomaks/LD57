@@ -1,4 +1,5 @@
 using System;
+using Events;
 using UnityEngine;
 using TMPro;
 
@@ -20,6 +21,7 @@ public class PlatformWeight : MonoBehaviour
     
     private void Start()
     {
+        G.EventManager.Register<OnPlayerRespawn>(OnRespawn);
         goldOnPlatformBalance = 0;
         _elevatorPlatform = G.ElevatorPlatform;
         
@@ -35,12 +37,19 @@ public class PlatformWeight : MonoBehaviour
     
     private void OnDestroy()
     {
+        G.EventManager.Unregister<OnPlayerRespawn>(OnRespawn);
+        
         // Unsubscribe from events when destroyed
         if (_elevatorPlatform != null)
         {
             _elevatorPlatform.OnStartAscent -= HandleAscentStart;
             _elevatorPlatform.OnArriveToSurfaceEvent -= HandleAscentEnd;
         }
+    }
+    
+    private void OnRespawn(OnPlayerRespawn _)
+    {
+        ResetWeight();
     }
 
     private void HandleAscentStart()

@@ -7,12 +7,12 @@ namespace Platform
   {
     private bool _isWorking = true;
     
-    private void Start()
+    private void OnEnable()
     {
       G.EventManager.Register<OnPlayerDeath>(OnGameOver);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
       G.EventManager.Unregister<OnPlayerDeath>(OnGameOver);
     }
@@ -26,7 +26,7 @@ namespace Platform
     {
       if (collision.CompareTag("Player") && _isWorking)
       {
-        G.AudioManager.Play("LightSwitch");
+        G.AudioManager?.Play("LightSwitch");
         G.EventManager.Trigger(new OnPlatformEnter());
         G.Player.BatteryLight.TurnOff();
       }
@@ -36,7 +36,7 @@ namespace Platform
     {
       if (collision.CompareTag("Player") && _isWorking)
       { 
-        G.AudioManager.Play("LightSwitch");
+        G.AudioManager?.Play("LightSwitch");
         G.EventManager.Trigger(new OnPlatformExit());
         G.Player.BatteryLight.TurnOn();
       }

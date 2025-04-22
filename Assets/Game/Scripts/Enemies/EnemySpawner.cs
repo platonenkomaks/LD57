@@ -20,6 +20,7 @@ public class EnemySpawner : MonoBehaviour
 
     #region Приватные поля
 
+    private bool _isSpawning = false;
     private int _currentWaveIndex = -1;
     private readonly List<Enemy> _activeEnemies = new();
     private Coroutine _currentSpawnWaveCoroutine;
@@ -28,19 +29,27 @@ public class EnemySpawner : MonoBehaviour
 
     #region Unity методы
 
-    private void Start()
+    private void OnEnable()
     {
         G.EventManager.Register<OnGameStateChangedEvent>(OnGameStateChange);
+        G.EventManager.Register<OnPlayerDeath>(OnPlayerDeath);
     }
     
-    private void OnDestroy()
+    private void OnDisable()
     {
         G.EventManager.Unregister<OnGameStateChangedEvent>(OnGameStateChange);
+        G.EventManager.Unregister<OnPlayerDeath>(OnPlayerDeath);
     }
 
     #endregion
 
     #region Приватные методы
+
+    private void OnPlayerDeath(OnPlayerDeath e)
+    {
+        DestroyEnemies();
+        StopSpawn();
+    }
     
     private void OnGameStateChange(OnGameStateChangedEvent e)
     {
@@ -50,19 +59,26 @@ public class EnemySpawner : MonoBehaviour
         }
         else if (e.State == GameLoopStateMachine.GameLoopState.Shopping)
         {
-            StopAllCoroutines();
-            DestroyEnemies();
+            StopSpawn();
         }
     }
     
     private IEnumerator StartWaves()
     {
+        _isSpawning = true;
         while (_currentWaveIndex < waves.Count - 1)
         {
             var newWave = StartNewWave(); 
             yield return new WaitForSeconds(newWave.timeBeforeNextWave);
         }
     }
+
+    private void StopSpawn()
+    {
+        _isSpawning = false;
+        StopAllCoroutines();
+        KillEnemies();
+    } 
 
     private Wave StartNewWave()
     {
@@ -78,35 +94,47 @@ public class EnemySpawner : MonoBehaviour
         return currentWave;
     }
 
+    private void KillEnemies()
+    {
+        int enemiesToDestroy = _activeEnemies.Count;
+        for (var i = enemiesToDestroy - 1; i >= 0; i--)
+        {
+            var enemy = _activeEnemies[i];
+            enemy.Die();
+        }
+    }
+
     private void DestroyEnemies()
     {
-        _activeEnemies.ForEach(enemy => enemy.Die());
-        _activeEnemies.Clear();
+        int enemiesToDestroy = _activeEnemies.Count;
+        for (var i = enemiesToDestroy - 1; i >= 0; i--)
+        {
+            var enemy = _activeEnemies[i];
+            enemy.Die();
+        }
     }
 
     private IEnumerator SpawnWave(Wave wave)
     {
-        print("Starting wave spawning: " + wave.enemyCount);
          while (wave.enemyCount > 0)
          {
-             print("Checking if can spawn: " + _activeEnemies.Count + " < " + wave.maxEnemiesAtOnce);
              yield return new WaitUntil(() => _activeEnemies.Count < wave.maxEnemiesAtOnce);
              
              SpawnEnemy();
              wave.enemyCount--;
-             print("Spawning enemy, remaining: " + wave.enemyCount);
              yield return new WaitForSeconds(wave.timeBetweenSpawns);
          }
     }
     
     private void RemoveEnemy(Enemy enemy)
     {
-        print("Enemy died");
         _activeEnemies.Remove(enemy);
     }
 
     private void SpawnEnemy()
     {
+        if (!_isSpawning) return;
+        
         Transform spawnPoint = GetSuitableSpawnPoint();
         Enemy enemy = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
         enemy.Init(G.Player.transform);

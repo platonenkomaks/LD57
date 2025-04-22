@@ -46,9 +46,9 @@ public class GameController : Singleton<GameController>
         G.EventManager.Unregister<SetGameStateEvent>(ChangeGameState);
     }
 
-    public Player LoadPlayer(Vector3 spawnPoint)
+    public Player LoadPlayer(Vector3 spawnPoint, Transform parent)
     {
-        return Instantiate(player, spawnPoint, Quaternion.identity);
+        return Instantiate(player, spawnPoint, Quaternion.identity, parent);
     }
 
     public static void PlayerDied()

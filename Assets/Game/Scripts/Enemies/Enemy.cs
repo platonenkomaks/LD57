@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Events;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
@@ -28,15 +29,16 @@ public abstract class Enemy : MonoBehaviour
 
     public UnityAction<Enemy> OnDie;
 
+    private bool _isDying = false;
+    private bool _freeze = false;
+
     public void Init(Transform targetPlayer)
     {
         player = targetPlayer.transform;
     }
 
-
     public virtual void Awake()
     {
-        
         _rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
@@ -48,40 +50,32 @@ public abstract class Enemy : MonoBehaviour
 
     public virtual void Start()
     {
-        if (G.Player == null)
-        {
-            Debug.LogError("G.Player is null in Enemy.Start()");
-            return;
-        }
-        
         player = G.Player.transform;
-        
-        // Стартовое состояние (например, патруль)
-        if (StateMachine == null)
-        {
-            Debug.LogError($"StateMachine is null in Enemy {gameObject.name}");
-            return;
-        }
-        
         StateMachine.ChangeState(EnemyStateID.Patrol);
+    }
+    
+    private void OnEnable()
+    {
+        G.EventManager.Register<OnPlayerDeath>(OnPlayerDeath);
+    }
+
+    private void OnDisable()
+    {
+        G.EventManager.Unregister<OnPlayerDeath>(OnPlayerDeath);
     }
 
     public virtual void Update()
     {
-        // Обновляем состояние
-        if (StateMachine != null)
-        {
-            StateMachine.Update();
-        }
+        if (_freeze) return;
+        
+        StateMachine?.Update();
     }
 
     public virtual void FixedUpdate()
     {
-        // Физические обновления (движение и т.д.)
-        if (StateMachine != null)
-        {
-            StateMachine.FixedUpdate();
-        }
+        if (_freeze) return;
+        
+        StateMachine?.FixedUpdate();
     }
 
     protected abstract void InitializeStateMachine();
@@ -104,6 +98,10 @@ public abstract class Enemy : MonoBehaviour
 
     public virtual void Die()
     {
+        // Protect against multiple calls while death animation is playing
+        if (_isDying) return;
+        
+        _isDying = true;
         canAttack = false;
         OnDie?.Invoke(this);
         
@@ -183,5 +181,11 @@ public abstract class Enemy : MonoBehaviour
         // Draw a sphere above the enemy with the color of the current state
         Gizmos.color = stateColor;
         Gizmos.DrawSphere(transform.position + Vector3.up * 2, 0.5f);
+    }
+
+    private void OnPlayerDeath(OnPlayerDeath e)
+    {
+        _freeze = true;
+        canAttack = false;
     }
 }

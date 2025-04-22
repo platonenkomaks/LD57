@@ -478118,6 +478118,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedSpawner
       objectReference: {fileID: 0}
+    - target: {fileID: 8315985565227094634, guid: 7dec592eff5fe433f9066ccc8449b3c4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

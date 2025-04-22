@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ElevatorPlatform : MonoBehaviour
@@ -65,7 +65,10 @@ public class ElevatorPlatform : MonoBehaviour
     {
         StopAllCoroutines();
         transform.position = new Vector2(transform.position.x, topY);
-        Park();
+        
+        Sequence sequence = DOTween.Sequence();
+        sequence.AppendInterval(0.1f);
+        sequence.AppendCallback(Park);
     }
 
     public void StartDescent()

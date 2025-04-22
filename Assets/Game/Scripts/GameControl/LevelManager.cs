@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private Transform playerSpawnParent;
     [SerializeField] private GameObject playerSpawnPosition;
     [SerializeField] private Button settingsButton;
 
@@ -18,7 +19,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        _player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position);
+        _player = GameController.Instance.LoadPlayer(playerSpawnPosition.transform.position, playerSpawnParent);
         G.Player = _player;
         playerCinemachineTarget.SetTargetForCinemachineCamera(_player.transform);
         

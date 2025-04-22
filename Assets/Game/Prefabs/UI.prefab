@@ -3618,7 +3618,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58406a5ee2fa415e8133de462b6c237d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameOverPanel: {fileID: 7612709860317304480}
   foregroundTint: {fileID: 3024999394655705894}
   shopButton: {fileID: 8915074870772029208}
   shoppingScreen: {fileID: 8105200184156351418}
@@ -3715,7 +3714,7 @@ MonoBehaviour:
       - m_Target: {fileID: 8105200184156351418}
         m_TargetAssemblyTypeName: UI.Game.ShoppingScreen, Assembly-CSharp
         m_MethodName: ShowShopScreen
-        m_Mode: 1
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

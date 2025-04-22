@@ -43,9 +43,9 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (_isInvincible) return;
-
+        if (currentHealth <= 0) return;
+        
         currentHealth -= damage;
-
         G.AudioManager.Play("PlayerHit");
         if (currentHealth <= 0)
         {

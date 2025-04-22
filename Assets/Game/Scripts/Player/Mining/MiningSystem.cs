@@ -1,3 +1,5 @@
+using Events;
+using GameControl;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -30,6 +32,10 @@ public class MiningSystem : MonoBehaviour
     private float _goldMiningEndTime;
     private Camera _mainCamera;
     private Vector3Int _currentHighlightPosition = Vector3Int.one * int.MinValue;
+    
+    // Checkpoint system
+    private TilemapSnapshot _goldTilemapSnapshot;
+    private TilemapSnapshot _removableTilemapSnapshot;
     #endregion
 
     #region Unity Methods
@@ -41,6 +47,17 @@ public class MiningSystem : MonoBehaviour
     private void Start()
     {
         _mainCamera = Camera.main;
+        _goldTilemapSnapshot = new TilemapSnapshot(goldTilemap);
+        _removableTilemapSnapshot = new TilemapSnapshot(removableTilemap);
+        G.EventManager.Register<OnCheckpoint>(OnCheckpoint);
+        G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+    
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnCheckpoint>(OnCheckpoint);
+        G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
+        G.MiningSystem = null;
     }
 
     private void Update()
@@ -181,6 +198,18 @@ public class MiningSystem : MonoBehaviour
         MineObstacle(obstaclesCellPosition);
     }
 
+    private void OnCheckpoint(OnCheckpoint e)
+    {
+        _goldTilemapSnapshot = new TilemapSnapshot(goldTilemap);
+        _removableTilemapSnapshot = new TilemapSnapshot(removableTilemap);
+    }
+    
+    private void OnPlayerRespawn(OnPlayerRespawn e)
+    {
+        _goldTilemapSnapshot.ApplyTo(goldTilemap);
+        _removableTilemapSnapshot.ApplyTo(removableTilemap);
+    }
+
     private void PlayMiningAnimation(Vector2 targetPosition)
     {
         Vector2 direction = targetPosition - (Vector2)transform.position;
@@ -265,8 +294,6 @@ public class MiningSystem : MonoBehaviour
     private void FinishGoldMining()
     {
         _isMiningGold = false;
-        
-        
         G.BackPack.AddGold(1);
     }
     #endregion
