@@ -42,7 +42,6 @@ public class EnemyProjectile : MonoBehaviour
         float discriminant = b * b - 4 * a * c;
         if (discriminant < 0)
         {
-            Destroy(this.gameObject);
             return;
         }
 
@@ -54,8 +53,7 @@ public class EnemyProjectile : MonoBehaviour
         Vector2 velocity = (D + V * t).normalized * _speed;
         GetComponent<Rigidbody2D>().linearVelocity = velocity;
 
-        // Уничтожаем снаряд через некоторое время
-        Destroy(this.gameObject, 5f);
+        Destroy(this.gameObject, 10f);
     }
 
     private void OnDrawGizmosSelected()
@@ -66,22 +64,18 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Если попали в игрока, наносим урон
         if (collision.CompareTag("Player"))
         {
-            
             PlayerHealth playerHealth = G.PlayerHealth;
             if (playerHealth != null)
             {
-              
+                GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
                 G.AudioManager.Play("FireBallHit");
                 playerHealth.TakeDamage(damage);
-                
-              //  _animator.SetTrigger("HitPlayer");
+                _animator.SetTrigger("HitPlayer");
+               
             }
-            Destroy();
         }
-        
         
     }
     public void Destroy()

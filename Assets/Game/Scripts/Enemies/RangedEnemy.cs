@@ -81,14 +81,10 @@ public class RangedEnemy : Enemy
     public void Attack()
     {
         if (player == null) return;
-        
-        // Останавливаемся
         _rb.linearVelocity = Vector2.zero;
         
         // Анимация стрельбы
-        //animator.SetTrigger("Attack");
         
-        // Создаем и запускаем снаряд
         G.AudioManager.Play("FireBall");
         EnemyProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         projectile.Initialize(projectileSpeed);
@@ -98,23 +94,12 @@ public class RangedEnemy : Enemy
     {
         health -= damage;
         
-        // Анимация получения урона
         animator.SetTrigger("Hurt");
         
-        // Если здоровье кончилось, умираем
         if (health <= 0)
         {
             Die();
         }
     }
-
-    // Визуализация зон в редакторе
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-        
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-    }
+    
 }
