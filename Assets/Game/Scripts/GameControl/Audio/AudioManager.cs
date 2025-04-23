@@ -112,7 +112,7 @@ public class AudioManager : Singleton<AudioManager>
     {
         if (_soundDictionary.TryGetValue(soundName, out Sound sound))
         {
-            sound.source.Play();
+            sound.source?.Play();
         }
         else
         {

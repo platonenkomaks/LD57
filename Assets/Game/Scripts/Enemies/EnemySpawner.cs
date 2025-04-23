@@ -66,9 +66,9 @@ public class EnemySpawner : MonoBehaviour
     private IEnumerator StartWaves()
     {
         _isSpawning = true;
-        while (_currentWaveIndex < waves.Count - 1)
+        while (_isSpawning)
         {
-            var newWave = StartNewWave(); 
+            var newWave = StartNewWave();
             yield return new WaitForSeconds(newWave.timeBeforeNextWave);
         }
     }
@@ -83,6 +83,7 @@ public class EnemySpawner : MonoBehaviour
     private Wave StartNewWave()
     {
         _currentWaveIndex++;
+        _currentWaveIndex = Mathf.Clamp(_currentWaveIndex, 0, waves.Count - 1);
         Wave currentWave = Wave.DeepCopy(waves[_currentWaveIndex]);
         
         if (_currentSpawnWaveCoroutine != null)
