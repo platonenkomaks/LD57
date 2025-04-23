@@ -2,6 +2,7 @@ using Events;
 using GameControl;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections;
 
 public class MiningSystem : MonoBehaviour
 {
@@ -190,6 +191,12 @@ public class MiningSystem : MonoBehaviour
                 MineGold(goldCellPosition);
                 return;
             }
+            else
+            {
+                // Если рюкзак полон, то трясем рюкзак
+                StartCoroutine(ShakeBackpack());
+                
+            }
         }
     
         var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
@@ -295,6 +302,33 @@ public class MiningSystem : MonoBehaviour
     {
         _isMiningGold = false;
         G.BackPack.AddGold(1);
+    }
+    
+    
+    private static IEnumerator ShakeBackpack()
+    {
+        if (G.BackPack == null || G.BackPack.gameObject == null) yield break;
+    
+        var backpackObject = G.BackPack.gameObject;
+        var originalPosition = backpackObject.transform.localPosition;
+    
+        const float duration = 1f;
+        const float magnitude = 0.15f;
+        float elapsed = 0;
+    
+        while (elapsed < duration)
+        {
+            var x = originalPosition.x + Random.Range(-10f, 10f) * magnitude;
+            var y = originalPosition.y + Random.Range(-10f, 10f) * magnitude;
+        
+            backpackObject.transform.localPosition = new Vector3(x, y, originalPosition.z);
+        
+            elapsed += Time.deltaTime;
+        
+            yield return null;
+        }
+        
+        backpackObject.transform.localPosition = originalPosition;
     }
     #endregion
 }

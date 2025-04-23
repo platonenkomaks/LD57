@@ -98,17 +98,14 @@ public abstract class Enemy : MonoBehaviour
 
     public virtual void Die()
     {
-        // Protect against multiple calls while death animation is playing
         if (_isDying) return;
         
         _isDying = true;
         canAttack = false;
         OnDie?.Invoke(this);
         
-        if (animator.parameters.Any(param => param.name == "Die"))
-            animator.SetTrigger("Die");
-        else 
-            DestroyEnemy();
+        animator.SetTrigger("Die");
+       
     }
     
     public void DestroyEnemy()

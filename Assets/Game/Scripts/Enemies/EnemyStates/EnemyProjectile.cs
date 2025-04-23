@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -7,6 +8,12 @@ public class EnemyProjectile : MonoBehaviour
 
     private float _speed = 1f;
     private Vector3 _interceptPoint;
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     public void Initialize(float speed)
     {
@@ -62,16 +69,23 @@ public class EnemyProjectile : MonoBehaviour
         // Если попали в игрока, наносим урон
         if (collision.CompareTag("Player"))
         {
+            
             PlayerHealth playerHealth = G.PlayerHealth;
             if (playerHealth != null)
             {
+              
                 G.AudioManager.Play("FireBallHit");
                 playerHealth.TakeDamage(damage);
-                Destroy(gameObject);
+                
+              //  _animator.SetTrigger("HitPlayer");
             }
-
+            Destroy();
         }
         
-        Destroy(gameObject, 2f);
+        
+    }
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
 }
