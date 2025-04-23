@@ -33,6 +33,8 @@ public class MiningSystem : MonoBehaviour
     private float _goldMiningEndTime;
     private Camera _mainCamera;
     private Vector3Int _currentHighlightPosition = Vector3Int.one * int.MinValue;
+    private Vector3Int _lastMinedPosition = Vector3Int.one * int.MinValue;
+    private bool _isMouseHeld = false;
     
     // Checkpoint system
     private TilemapSnapshot _goldTilemapSnapshot;
@@ -113,7 +115,19 @@ public class MiningSystem : MonoBehaviour
     {
         if (!_canMine || _isMiningGold) return;
 
+        // Отслеживаем нажатие и отпускание кнопки мыши
         if (Input.GetMouseButtonDown(0))
+        {
+            _isMouseHeld = true;
+            TryMine();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _isMouseHeld = false;
+            _lastMinedPosition = Vector3Int.one * int.MinValue; // Сбрасываем последнюю позицию при отпускании кнопки
+        }
+        // Если кнопка мыши удерживается и прошло время перезарядки, пробуем добывать
+        else if (_isMouseHeld && Time.time - _lastMiningTime >= miningCooldown)
         {
             TryMine();
         }
@@ -176,33 +190,46 @@ public class MiningSystem : MonoBehaviour
     
         if (Vector2.Distance(mouseWorldPos, transform.position) > detectionRange) return;
     
+        var obstaclesCellPosition = removableTilemap.WorldToCell(mouseWorldPos);
+        var goldCellPosition = goldTilemap.WorldToCell(mouseWorldPos);
+        
+        // Проверяем, не добываем ли мы снова тот же блок (актуально для удержания кнопки)
+        if (obstaclesCellPosition == _lastMinedPosition || goldCellPosition == _lastMinedPosition)
+        {
+            return;
+        }
+    
+        var goldTile = goldTilemap.GetTile(goldCellPosition);
+        var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
+        
+        // Если нет ни золота, ни препятствия - не проигрываем анимацию
+        if (!goldTile && !obstacleTile) return;
+        
+        // Проигрываем анимацию добычи
         PlayMiningAnimation(mouseWorldPos);
         G.AudioManager.Play("Axe");
         _lastMiningTime = Time.time;
     
-        var obstaclesCellPosition = removableTilemap.WorldToCell(mouseWorldPos);
-        var goldCellPosition = goldTilemap.WorldToCell(mouseWorldPos);
-    
-        var goldTile = goldTilemap.GetTile(goldCellPosition);
         if (goldTile)
         {
             if (!G.BackPack.IsFull())
             {
                 MineGold(goldCellPosition);
+                _lastMinedPosition = goldCellPosition;
                 return;
             }
             else
             {
                 // Если рюкзак полон, то трясем рюкзак
                 StartCoroutine(ShakeBackpack());
-                
             }
         }
     
-        var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
-        if (!obstacleTile) return;
-        
-        MineObstacle(obstaclesCellPosition);
+        if (obstacleTile)
+        {
+            MineObstacle(obstaclesCellPosition);
+            _lastMinedPosition = obstaclesCellPosition;
+        }
     }
 
     private void OnCheckpoint(OnCheckpoint e)

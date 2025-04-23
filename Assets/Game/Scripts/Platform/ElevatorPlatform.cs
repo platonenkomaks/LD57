@@ -20,6 +20,7 @@ public class ElevatorPlatform : MonoBehaviour
     public float CurrentSpeed { get; private set; } = 0f;
     private bool isMoving = false;
     private Vector2 targetPosition;
+    private bool isAscending = false;
 
     public Action OnStartAscent;
     public Action OnArriveToSurfaceEvent;
@@ -48,7 +49,9 @@ public class ElevatorPlatform : MonoBehaviour
                 Vector2.MoveTowards(transform.position, targetPosition, CurrentSpeed * Time.fixedDeltaTime);
 
             transform.position = newPosition;
-            cog.StartRotation();
+            
+            // Передаем в метод направление и текущую скорость платформы
+            cog.StartRotation(isAscending, CurrentSpeed);
 
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
@@ -85,6 +88,7 @@ public class ElevatorPlatform : MonoBehaviour
         targetPosition = new Vector2(transform.position.x, bottomY);
         CurrentSpeed = descendSpeed;
         isMoving = true;
+        isAscending = false; // Set to false when descending
         G.AudioManager.Stop("ElevatorStop");
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorMoving");
@@ -94,8 +98,7 @@ public class ElevatorPlatform : MonoBehaviour
     {
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
-
-       
+        
         StartCoroutine(AscentAfterDelay(2.5f));
        
         G.AudioManager.Stop("ElevatorStop");
@@ -116,6 +119,7 @@ public class ElevatorPlatform : MonoBehaviour
         CurrentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
 
         isMoving = true;
+        isAscending = true; // Set to true when ascending
     }
 
     public void Stop()

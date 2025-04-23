@@ -2,30 +2,33 @@ using UnityEngine;
 
 public class Cog : MonoBehaviour
 {
-    public float rotationSpeed = 10f;
-  
-    public Vector3 rotationAxis = Vector3.forward;
+    public float baseRotationSpeed = 1f;  // Базовая скорость вращения
+    public Vector3 rotationAxisForward = Vector3.forward;
+    public Vector3 rotationAxisBack = Vector3.back;
     
-    private bool _isRotating = false;
+    private bool isRotating = false;
+    private Vector3 currentRotationAxis;
+    private float currentRotationSpeed;
 
     private void Update()
     {
-        if (_isRotating)
+        if (isRotating)
         {
-            transform.Rotate(rotationAxis, rotationSpeed * Time.deltaTime);
+            transform.Rotate(currentRotationAxis, currentRotationSpeed * Time.deltaTime);
         }
     }
-    
 
-    public void StartRotation()
+    public void StartRotation(bool isAscending, float platformSpeed)
     {
-        _isRotating = true;
+        isRotating = true;
+        currentRotationAxis = isAscending ? rotationAxisForward : rotationAxisBack;
+        
+        // Скорость вращения пропорциональна скорости платформы
+        currentRotationSpeed = baseRotationSpeed * (platformSpeed / 0.4f);  
     }
-    
     
     public void StopRotation()
     {
-        _isRotating = false;
+        isRotating = false;
     }
-    
 }
