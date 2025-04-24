@@ -167,6 +167,7 @@ public class MiningSystem : MonoBehaviour
         
         if (hasGold || hasObstacle)
         {
+            G.AudioManager.Play("Interact");
             highlightTilemap.SetTile(cellPosition, highlightTile);
             highlightTilemap.SetColor(cellPosition, hasGold ? highlightGoldColor : highlightNormalColor);
             _currentHighlightPosition = cellPosition;

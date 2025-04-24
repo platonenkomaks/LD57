@@ -76,6 +76,7 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartDescent()
     {
+        ResetHealth();
         G.PlayerController.disableJump = true;
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
@@ -96,6 +97,8 @@ public class ElevatorPlatform : MonoBehaviour
 
     public void StartAscent()
     {
+        ResetHealth();
+        
         G.AudioManager.Stop("ElevatorStart");
         G.AudioManager.Play("ElevatorStart");
         
@@ -171,6 +174,11 @@ public class ElevatorPlatform : MonoBehaviour
         G.EventManager.Trigger(new OnCheckpoint());
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
 
+        ResetHealth();
+    }
+    
+    private void ResetHealth()
+    {
         // Восстанавливаем здоровье игрока до максимального значения
         G.PlayerHealth.ResetHealth();
         var healthUI = FindAnyObjectByType<PlayerHealthUI>();

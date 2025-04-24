@@ -76,6 +76,10 @@ public class EnemyProjectile : MonoBehaviour
                
             }
         }
+        else
+        {
+            Destroy();
+        }
         
     }
     public void Destroy()
