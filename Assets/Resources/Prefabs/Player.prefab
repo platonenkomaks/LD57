@@ -281,7 +281,7 @@ MonoBehaviour:
   acceleration: 100
   deceleration: 200
   airControlFactor: 0.5
-  jumpForce: 10
+  jumpForce: 12
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   coyoteTime: 0.1
@@ -518,6 +518,10 @@ MonoBehaviour:
   goldMiningEffectPrefab: {fileID: 0}
   removableTilemap: {fileID: 0}
   goldTilemap: {fileID: 0}
+  normalDestructionTile: {fileID: 11400000, guid: 1392d88694c78764bb915659ecdddb89, type: 2}
+  goldDestructionTile: {fileID: 11400000, guid: 62f1cc894aa1c43408f1dd08111e55e9, type: 2}
+  destructionAnimationDuration: 0.5
+  goldDestructionAnimationDuration: 0.5
   highlightTilemap: {fileID: 0}
   highlightTile: {fileID: 11400000, guid: d3757c3c6f6fb494f9d79801f3a34364, type: 2}
   highlightNormalColor: {r: 1, g: 1, b: 1, a: 1}

@@ -3,6 +3,7 @@ using GameControl;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MiningSystem : MonoBehaviour
 {
@@ -18,6 +19,15 @@ public class MiningSystem : MonoBehaviour
     [Header("Tilemaps")]
     public Tilemap removableTilemap;
     public Tilemap goldTilemap;
+    
+    [Header("Destruction Animation")]
+    [SerializeField] private AnimatedTile normalDestructionTile;
+    [SerializeField] private AnimatedTile goldDestructionTile;
+    [SerializeField] private float destructionAnimationDuration = 0.5f;
+    [SerializeField] private float goldDestructionAnimationDuration = 0.75f;
+    
+    private Dictionary<Vector3Int, TileBase> _originalTiles = new Dictionary<Vector3Int, TileBase>();
+    private Dictionary<Vector3Int, Tilemap> _tilemapLookup = new Dictionary<Vector3Int, Tilemap>();
 
     [Header("Highlight Settings")] 
     public Tilemap highlightTilemap;
@@ -36,10 +46,25 @@ public class MiningSystem : MonoBehaviour
     private Vector3Int _lastMinedPosition = Vector3Int.one * int.MinValue;
     private bool _isMouseHeld = false;
     
-    // Checkpoint system
     private TilemapSnapshot _goldTilemapSnapshot;
     private TilemapSnapshot _removableTilemapSnapshot;
+    
+    private List<AnimationTracker> _pendingAnimations = new List<AnimationTracker>();
     #endregion
+
+    private class AnimationTracker
+    {
+        public Vector3Int Position;
+        public float CompletionTime;
+        public bool IsGold;
+        
+        public AnimationTracker(Vector3Int position, float completionTime, bool isGold)
+        {
+            Position = position;
+            CompletionTime = completionTime;
+            IsGold = isGold;
+        }
+    }
 
     #region Unity Methods
     private void Awake()
@@ -66,6 +91,8 @@ public class MiningSystem : MonoBehaviour
     private void Update()
     {
         HandleGoldMiningTimer();
+        CleanupAnimationCompletions();
+        
         if (G.PlayerStateMachine == null) return;
         
         HandleTileHighlight();
@@ -87,6 +114,43 @@ public class MiningSystem : MonoBehaviour
     {
         _canMine = true;
         G.PlayerStateMachine.SetState(PlayerStateMachine.PlayerState.Mining);
+    }
+    #endregion
+
+    #region Animation Management
+    private void CleanupAnimationCompletions()
+    {
+        for (int i = _pendingAnimations.Count - 1; i >= 0; i--)
+        {
+            var animation = _pendingAnimations[i];
+            if (Time.time >= animation.CompletionTime)
+            {
+                CompleteDestructionAnimation(animation.Position, animation.IsGold);
+                _pendingAnimations.RemoveAt(i);
+            }
+        }
+    }
+    
+    private void CompleteDestructionAnimation(Vector3Int position, bool isGold)
+    {
+        Tilemap targetTilemap = isGold ? goldTilemap : removableTilemap;
+        
+        targetTilemap.SetTile(position, null);
+        
+        if (G.FogOfWarSystem != null)
+        {
+            G.FogOfWarSystem.OnBlockMined(position);
+        }
+        
+        if (_originalTiles.ContainsKey(position))
+        {
+            _originalTiles.Remove(position);
+        }
+        
+        if (_tilemapLookup.ContainsKey(position))
+        {
+            _tilemapLookup.Remove(position);
+        }
     }
     #endregion
 
@@ -115,7 +179,6 @@ public class MiningSystem : MonoBehaviour
     {
         if (!_canMine || _isMiningGold) return;
 
-        // Отслеживаем нажатие и отпускание кнопки мыши
         if (Input.GetMouseButtonDown(0))
         {
             _isMouseHeld = true;
@@ -124,9 +187,8 @@ public class MiningSystem : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             _isMouseHeld = false;
-            _lastMinedPosition = Vector3Int.one * int.MinValue; // Сбрасываем последнюю позицию при отпускании кнопки
+            _lastMinedPosition = Vector3Int.one * int.MinValue;
         }
-        // Если кнопка мыши удерживается и прошло время перезарядки, пробуем добывать
         else if (_isMouseHeld && Time.time - _lastMiningTime >= miningCooldown)
         {
             TryMine();
@@ -194,7 +256,6 @@ public class MiningSystem : MonoBehaviour
         var obstaclesCellPosition = removableTilemap.WorldToCell(mouseWorldPos);
         var goldCellPosition = goldTilemap.WorldToCell(mouseWorldPos);
         
-        // Проверяем, не добываем ли мы снова тот же блок (актуально для удержания кнопки)
         if (obstaclesCellPosition == _lastMinedPosition || goldCellPosition == _lastMinedPosition)
         {
             return;
@@ -203,10 +264,8 @@ public class MiningSystem : MonoBehaviour
         var goldTile = goldTilemap.GetTile(goldCellPosition);
         var obstacleTile = removableTilemap.GetTile(obstaclesCellPosition);
         
-        // Если нет ни золота, ни препятствия - не проигрываем анимацию
         if (!goldTile && !obstacleTile) return;
         
-        // Проигрываем анимацию добычи
         PlayMiningAnimation(mouseWorldPos);
         G.AudioManager.Play("Axe");
         _lastMiningTime = Time.time;
@@ -221,7 +280,6 @@ public class MiningSystem : MonoBehaviour
             }
             else
             {
-                // Если рюкзак полон, то трясем рюкзак
                 StartCoroutine(ShakeBackpack());
             }
         }
@@ -235,12 +293,25 @@ public class MiningSystem : MonoBehaviour
 
     private void OnCheckpoint(OnCheckpoint e)
     {
+        foreach (var animation in _pendingAnimations)
+        {
+            CompleteDestructionAnimation(animation.Position, animation.IsGold);
+        }
+        _pendingAnimations.Clear();
+        
         _goldTilemapSnapshot = new TilemapSnapshot(goldTilemap);
         _removableTilemapSnapshot = new TilemapSnapshot(removableTilemap);
     }
     
     private void OnPlayerRespawn(OnPlayerRespawn e)
     {
+        foreach (var animation in _pendingAnimations)
+        {
+            Tilemap targetTilemap = animation.IsGold ? goldTilemap : removableTilemap;
+            targetTilemap.SetTile(animation.Position, null);
+        }
+        _pendingAnimations.Clear();
+        
         _goldTilemapSnapshot.ApplyTo(goldTilemap);
         _removableTilemapSnapshot.ApplyTo(removableTilemap);
     }
@@ -269,9 +340,22 @@ public class MiningSystem : MonoBehaviour
     
     private void MineObstacle(Vector3Int cellPosition)
     {
-        removableTilemap.SetTile(cellPosition, null);
-        highlightTilemap.SetTile(cellPosition, null);
+        TileBase originalTile = removableTilemap.GetTile(cellPosition);
+        if (originalTile != null)
+        {
+            _originalTiles[cellPosition] = originalTile;
+            _tilemapLookup[cellPosition] = removableTilemap;
+        }
     
+        removableTilemap.SetTile(cellPosition, normalDestructionTile);
+    
+        _pendingAnimations.Add(new AnimationTracker(
+            cellPosition, 
+            Time.time + destructionAnimationDuration, 
+            false
+        ));
+    
+        highlightTilemap.SetTile(cellPosition, null);
         if (_currentHighlightPosition == cellPosition)
         {
             _currentHighlightPosition = Vector3Int.one * int.MinValue;
@@ -283,22 +367,28 @@ public class MiningSystem : MonoBehaviour
             Instantiate(miningEffectPrefab, effectPosition, Quaternion.identity);
         }
     
-        // Обновляем туман войны после удаления блока
-        if (G.FogOfWarSystem != null)
-        {
-            G.FogOfWarSystem.OnBlockMined(cellPosition);
-        }
-    
         G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
     }
 
-
     private void MineGold(Vector3Int cellPosition)
     {
-        goldTilemap.SetTile(cellPosition, null);
-        highlightTilemap.SetTile(cellPosition, null);
+        TileBase originalTile = goldTilemap.GetTile(cellPosition);
+        if (originalTile != null)
+        {
+            _originalTiles[cellPosition] = originalTile;
+            _tilemapLookup[cellPosition] = goldTilemap;
+        }
     
+        goldTilemap.SetTile(cellPosition, goldDestructionTile);
+    
+        _pendingAnimations.Add(new AnimationTracker(
+            cellPosition, 
+            Time.time + goldDestructionAnimationDuration, 
+            true
+        ));
+    
+        highlightTilemap.SetTile(cellPosition, null);
         if (_currentHighlightPosition == cellPosition)
         {
             _currentHighlightPosition = Vector3Int.one * int.MinValue;
@@ -310,16 +400,11 @@ public class MiningSystem : MonoBehaviour
             Instantiate(goldMiningEffectPrefab, effectPosition, Quaternion.identity);
         }
     
-        // Обновляем туман войны после добычи золота
-        if (G.FogOfWarSystem != null)
-        {
-            G.FogOfWarSystem.OnBlockMined(cellPosition);
-        }
-    
         G.AudioManager.Play("StoneCrack");
         _lastMiningTime = Time.time;
         StartGoldMining();
     }
+    
     private void StartGoldMining()
     {
         _isMiningGold = true;
@@ -331,7 +416,6 @@ public class MiningSystem : MonoBehaviour
         _isMiningGold = false;
         G.BackPack.AddGold(1);
     }
-    
     
     private static IEnumerator ShakeBackpack()
     {

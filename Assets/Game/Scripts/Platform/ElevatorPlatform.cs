@@ -164,7 +164,7 @@ public class ElevatorPlatform : MonoBehaviour
     {
         OnArriveToSurfaceEvent?.Invoke();
         
-        G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
+        G.Player.GetComponent<PlayerController>().SetJumpForce(12f);
         
         G.AudioManager.Stop("Fight");
         G.AudioManager.Play("Intro");

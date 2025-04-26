@@ -193,8 +193,8 @@ MonoBehaviour:
   - name: StoneCrack
     clip: {fileID: 8300000, guid: d5d64ab79998d6e4183cd6dbd00647d1, type: 3}
     category: 1
-    volume: 0.227
-    pitch: 1.69
+    volume: 1
+    pitch: 1
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}

@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 
 
@@ -42,6 +43,7 @@ public class EnemyProjectile : MonoBehaviour
         float discriminant = b * b - 4 * a * c;
         if (discriminant < 0)
         {
+            Destroy(this.gameObject);
             return;
         }
 
@@ -82,6 +84,10 @@ public class EnemyProjectile : MonoBehaviour
         }
         
     }
+    
+    
+    
+    
     public void Destroy()
     {
         Destroy(gameObject);

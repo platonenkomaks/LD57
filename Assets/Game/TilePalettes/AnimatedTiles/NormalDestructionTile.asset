@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b75c95f34a00d4e8c04f76b73312e6, type: 3}
+  m_Name: NormalDestructionTile
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: -837256861, guid: 437f96a0ea69a664f8ef3647e92e4374, type: 3}
+  - {fileID: 21300000, guid: ad7a7cd4baeb0bd4f930e5495d30e7f3, type: 3}
+  - {fileID: 21300000, guid: d04beb698770154488c7dd2b034bfe62, type: 3}
+  - {fileID: 21300000, guid: f611313d4b6de84429b16c25ca18bf26, type: 3}
+  - {fileID: 21300000, guid: 8c7891e579531d14bafab7661ab4b548, type: 3}
+  - {fileID: 21300000, guid: ea6c2bddacb68084da3f233ca7ca6f49, type: 3}
+  - {fileID: 21300000, guid: 198e4c6fe512a8048b66d0338e5e8385, type: 3}
+  m_MinSpeed: 5
+  m_MaxSpeed: 5
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 0
+  m_TileAnimationFlags: 0
