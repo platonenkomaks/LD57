@@ -103,7 +103,8 @@ public class EnemySpawner : MonoBehaviour
         
         //Уничтожаем врагов с медленной анимацией
         SlowKillEnemies();
-        _currentSpawnWaveCoroutine = null;
+        
+        _currentWaveIndex = -1;
         
     } 
     private void SlowKillEnemies()
