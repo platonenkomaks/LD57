@@ -163,15 +163,20 @@ public class ElevatorPlatform : MonoBehaviour
     private void OnArriveToSurface()
     {
         OnArriveToSurfaceEvent?.Invoke();
+        
         G.Player.GetComponent<PlayerController>().SetJumpForce(10f);
+        
         G.AudioManager.Stop("Fight");
         G.AudioManager.Play("Intro");
+        
         G.GoldPilesView.SetEnabled(false);
         G.GoldManager.AddGold(G.ElevatorPlatform.GetComponent<PlatformWeight>().goldOnPlatformBalance);
         
         lever.isLocked = false;
         
         G.EventManager.Trigger(new OnCheckpoint());
+
+
         G.EventManager.Trigger(new SetGameStateEvent { State = GameLoopStateMachine.GameLoopState.Shopping });
 
         ResetHealth();

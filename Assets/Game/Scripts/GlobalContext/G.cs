@@ -28,6 +28,7 @@ public static class G
     // Effects
     public static BatteryLight BatteryLight;
     public static VisualEffectsManager VisualEffectsManager;
+    public static DeathStar DeathStar;
     
     // Sound
     public static AudioManager AudioManager;

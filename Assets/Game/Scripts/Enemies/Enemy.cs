@@ -107,6 +107,16 @@ public abstract class Enemy : MonoBehaviour
         animator.SetTrigger("Die");
        
     }
+    public virtual void SlowDie()
+    {
+        if (_isDying) return;
+        
+        _isDying = true;
+        canAttack = false;
+        OnDie?.Invoke(this);
+        
+        animator.SetTrigger("SlowDie");
+    }
     
     public void DestroyEnemy()
     {

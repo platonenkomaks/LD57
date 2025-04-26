@@ -17,10 +17,14 @@ namespace UI.Game
         .DOFade(1f, 0.25f)
         .SetDelay(delay)
         .OnComplete(() => shopCanvasGroup.interactable = true);
+      
+     
     }
     
     public void HideShopScreen()
     {
+      G.DeathStar.StopDestroy();
+      G.PlayerHealth.RemoveInvincibility();
       shopCanvasGroup.DOKill();
       shopCanvasGroup.interactable = false;
       shopCanvasGroup

@@ -82,4 +82,13 @@ public class PlayerHealth : MonoBehaviour
     {
         G.PlayerController.Die();
     }
+    
+    public void MakeInvincible()
+    {
+        _isInvincible = true;
+    }
+    public void RemoveInvincibility()
+    {
+        _isInvincible = false;
+    }
 }

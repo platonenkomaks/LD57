@@ -73,13 +73,53 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    
+    
     private void StopSpawn()
     {
+        G.PlayerHealth.MakeInvincible();
+        
         _isSpawning = false;
+        
         StopAllCoroutines();
-        KillEnemies();
+        
+        
+        
+        //Запускаем анимацию уничтожения
+        G.DeathStar.StartDestroy();
+        
+        //Красим всех живых врагов в черный цвет и останавливаем их
+        for (int i = _activeEnemies.Count - 1; i >= 0; i--)
+        {
+            var enemy = _activeEnemies[i];
+            enemy.GetComponent<SpriteRenderer>().color = Color.black;
+            enemy.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            
+            if (enemy.GetComponent<RangedEnemy>() != null)
+            {
+                enemy.GetComponent<RangedEnemy>().DestroyAllProjectiles();
+            }
+        }
+        
+        //Уничтожаем врагов с медленной анимацией
+        SlowKillEnemies();
+        _currentSpawnWaveCoroutine = null;
+        
     } 
-
+    private void SlowKillEnemies()
+    {
+        int enemiesToDestroy = _activeEnemies.Count;
+        for (var i = enemiesToDestroy - 1; i >= 0; i--)
+        {
+            var enemy = _activeEnemies[i];
+            enemy.SlowDie();
+        }
+    }
+    
+    
+    
+    
+    
     private Wave StartNewWave()
     {
         _currentWaveIndex++;
@@ -95,15 +135,7 @@ public class EnemySpawner : MonoBehaviour
         return currentWave;
     }
 
-    private void KillEnemies()
-    {
-        int enemiesToDestroy = _activeEnemies.Count;
-        for (var i = enemiesToDestroy - 1; i >= 0; i--)
-        {
-            var enemy = _activeEnemies[i];
-            enemy.Die();
-        }
-    }
+    
 
     private void DestroyEnemies()
     {

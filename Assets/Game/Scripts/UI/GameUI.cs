@@ -46,7 +46,7 @@ namespace UI
 
       if (isShopping)
       {
-        shoppingScreen.ShowShopScreen(1f);
+        shoppingScreen.ShowShopScreen(4f);
       }
     }
 

@@ -19,4 +19,8 @@ using UnityEngine;
         {
             canvasGroup.DOFade(1, 1f);
         }
+        public void Hide()
+        {
+            canvasGroup.DOFade(0, 1f);
+        }
     }

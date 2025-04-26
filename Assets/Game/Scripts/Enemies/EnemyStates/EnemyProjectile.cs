@@ -86,4 +86,9 @@ public class EnemyProjectile : MonoBehaviour
     {
         Destroy(gameObject);
     }
+    
+    private void OnDestroy()
+    {
+        RangedEnemy.RemoveProjectileFromList(this);
+    }
 }

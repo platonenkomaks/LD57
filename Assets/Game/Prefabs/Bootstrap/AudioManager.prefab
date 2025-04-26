@@ -254,4 +254,12 @@ MonoBehaviour:
     loop: 0
     spatialBlend: 0
     source: {fileID: 0}
+  - name: Fire
+    clip: {fileID: 8300000, guid: a4fe39d50360b9a47a6e08ed30ff12be, type: 3}
+    category: 1
+    volume: 1
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: d1c573cd80d0b3644a1e0c57805a2417, type: 2}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class RangedEnemy : Enemy
 {
@@ -11,6 +12,9 @@ public class RangedEnemy : Enemy
     
     private float _attackTimer;
     private bool _isInitialized = false;
+    
+    // Статический список для хранения всех созданных пуль
+    private static List<EnemyProjectile> _activeProjectiles = new List<EnemyProjectile>();
 
     protected override void InitializeStateMachine()
     {
@@ -76,6 +80,9 @@ public class RangedEnemy : Enemy
         
         // Поворачиваемся к игроку
         spriteRenderer.flipX = direction.x < 0;
+        
+        // Очистка списка от уничтоженных пуль
+        CleanupDestroyedProjectiles();
     }
 
     public void Attack()
@@ -88,6 +95,9 @@ public class RangedEnemy : Enemy
         G.AudioManager.Play("FireBall");
         EnemyProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         projectile.Initialize(projectileSpeed);
+        
+        // Добавляем пулю в список активных
+        _activeProjectiles.Add(projectile);
     }
 
     public override void TakeDamage(float damage)
@@ -102,4 +112,53 @@ public class RangedEnemy : Enemy
         }
     }
     
+    // Удаляет уничтоженные пули из списка
+    private void CleanupDestroyedProjectiles()
+    {
+        _activeProjectiles.RemoveAll(p => p == null);
+    }
+    
+    // Метод для получения всех активных пуль
+    public static List<EnemyProjectile> GetAllProjectiles()
+    {
+        return new List<EnemyProjectile>(_activeProjectiles);
+    }
+    
+    // Метод для удаления всех активных пуль
+    public void DestroyAllProjectiles()
+    {
+        foreach (var projectile in _activeProjectiles)
+        {
+            if (projectile != null)
+            {
+                Destroy(projectile.gameObject);
+            }
+        }
+        
+        _activeProjectiles.Clear();
+    }
+    
+    // Метод для удаления конкретной пули
+    public static void DestroyProjectile(EnemyProjectile projectile)
+    {
+        if (_activeProjectiles.Contains(projectile))
+        {
+            _activeProjectiles.Remove(projectile);
+            Destroy(projectile.gameObject);
+        }
+    }
+    
+    // Необходимо вызвать этот метод, когда пуля самостоятельно уничтожается
+    public static void RemoveProjectileFromList(EnemyProjectile projectile)
+    {
+        if (_activeProjectiles.Contains(projectile))
+        {
+            _activeProjectiles.Remove(projectile);
+        }
+    }
+    
+    private void OnDestroy()
+    {
+         DestroyAllProjectiles();
+    }
 }
