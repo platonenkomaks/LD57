@@ -21,39 +21,89 @@ public class EnemyProjectile : MonoBehaviour
         _speed = speed;
 
         // Get player's current position and velocity
-        Vector2 P = G.Player.transform.position;
-        Vector2 V = G.ElevatorPlatform.CurrentSpeed * Vector2.up + G.Player.GetComponent<Rigidbody2D>().linearVelocity;
+        Vector2 playerPosition = G.Player.transform.position;
+        Vector2 playerVelocity = G.ElevatorPlatform.CurrentSpeed * Vector2.up + G.Player.GetComponent<Rigidbody2D>().linearVelocity;
 
         // Starting projectile position and vector to player
-        Vector2 S = transform.position;
-        Vector2 D = (P - S);
+        Vector2 startPosition = transform.position;
+        Vector2 directionToPlayer = (playerPosition - startPosition);
 
-        // Equation: || P + V * t - S || = _speed * t
-        //   The left part is the distance the projectile will travel based on vectors
-        //   The right part is the distance the projectile will travel based on time
-
-        // Equation is equivalent to: || D + V * t || = _speed * t
-        // Expanding to: || D ||^2 + 2 * D * V * t + || V ||^2 * t^2 = _speed^2 * t^2\
-        // Or: (Vector2.Dot(V, V) - _speed^2)* t^2 + 2 * Vector2.Dot(V, D) * t + Vector2.Dot(D, D) = 0
-        // Solve quadratic equation for t
-        float a = Vector2.Dot(V, V) - _speed * _speed;
-        float b = 2 * Vector2.Dot(V, D);
-        float c = Vector2.Dot(D, D);
-
-        float discriminant = b * b - 4 * a * c;
-        if (discriminant < 0)
+        // Проверка на неподвижную цель
+        if (playerVelocity.sqrMagnitude < 0.001f)
         {
-            Destroy(this.gameObject);
+            // Для неподвижной цели просто направляем пулю прямо в текущее положение игрока
+            _interceptPoint = playerPosition;
+            GetComponent<Rigidbody2D>().linearVelocity = directionToPlayer.normalized * _speed;
+            Destroy(this.gameObject, 10f);
             return;
         }
 
-        float t1 = (-b - Mathf.Sqrt(discriminant)) / (2 * a);
-        float t2 = (-b + Mathf.Sqrt(discriminant)) / (2 * a);
+        // Рассчитаем коэффициенты квадратного уравнения
+        float a = Vector2.Dot(playerVelocity, playerVelocity) - _speed * _speed;
+        float b = 2 * Vector2.Dot(playerVelocity, directionToPlayer);
+        float c = Vector2.Dot(directionToPlayer, directionToPlayer);
 
-        float t = Mathf.Max(t1, t2);
-        _interceptPoint = P + V * t;
-        Vector2 velocity = (D + V * t).normalized * _speed;
-        GetComponent<Rigidbody2D>().linearVelocity = velocity;
+        // Объявляем переменную для времени перехвата
+        float interceptTime;
+
+        // Проверка ситуации, когда a близко к нулю (линейное уравнение)
+        if (Mathf.Abs(a) < 0.0001f)
+        {
+            // Решаем линейное уравнение b*t + c = 0
+            if (Mathf.Abs(b) < 0.0001f)
+            {
+                // Если и b близко к нулю, то решений нет или бесконечно много
+                Destroy(this.gameObject);
+                return;
+            }
+            
+            interceptTime = -c / b;
+            if (interceptTime <= 0)
+            {
+                // Если время отрицательное, значит перехват невозможен
+                Destroy(this.gameObject);
+                return;
+            }
+        }
+        else
+        {
+            float discriminant = b * b - 4 * a * c;
+            if (discriminant < 0)
+            {
+                // Нет решений, перехват невозможен
+                Destroy(this.gameObject);
+                return;
+            }
+
+            float sqrtDiscriminant = Mathf.Sqrt(discriminant);
+            float timeOption1 = (-b - sqrtDiscriminant) / (2 * a);
+            float timeOption2 = (-b + sqrtDiscriminant) / (2 * a);
+
+            // Выбираем положительное время, если возможно
+            if (timeOption1 > 0 && timeOption2 > 0)
+            {
+                interceptTime = Mathf.Min(timeOption1, timeOption2); // Выбираем ближайшее время перехвата
+            }
+            else if (timeOption1 > 0)
+            {
+                interceptTime = timeOption1;
+            }
+            else if (timeOption2 > 0)
+            {
+                interceptTime = timeOption2;
+            }
+            else
+            {
+                // Оба времени отрицательные, перехват невозможен
+                Destroy(this.gameObject);
+                return;
+            }
+        }
+
+        // Вычисляем точку перехвата и скорость снаряда
+        _interceptPoint = playerPosition + playerVelocity * interceptTime;
+        Vector2 projectileVelocity = (directionToPlayer + playerVelocity * interceptTime).normalized * _speed;
+        GetComponent<Rigidbody2D>().linearVelocity = projectileVelocity;
 
         Destroy(this.gameObject, 10f);
     }
@@ -75,18 +125,13 @@ public class EnemyProjectile : MonoBehaviour
                 G.AudioManager.Play("FireBallHit");
                 playerHealth.TakeDamage(damage);
                 _animator.SetTrigger("HitPlayer");
-               
             }
         }
         else
         {
             Destroy();
         }
-        
     }
-    
-    
-    
     
     public void Destroy()
     {
