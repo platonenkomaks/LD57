@@ -4,12 +4,13 @@ using DG.Tweening;
 using Events;
 using Game.Scripts.StateMachine.GameLoop;
 using UnityEngine;
+using Utilities;
 
 public class ElevatorPlatform : MonoBehaviour
 {
     [SerializeField] private ElevatorLever lever;
     public float descendSpeed = 8f;
-    public float platformWeight = 1f;
+    private float platformWeight = 1f;
     public float baseAscendTime = 60f; // Базовое время подъема (в секундах)
     public float weightTimeAddition = 10f; // Дополнительное время на единицу веса (в секундах)
     public Cog cog;
@@ -22,6 +23,7 @@ public class ElevatorPlatform : MonoBehaviour
     private Vector2 targetPosition;
     private bool isAscending = false;
 
+    public Action<float> OnAscentTimeChange;
     public Action OnStartAscent;
     public Action OnArriveToSurfaceEvent;
     
@@ -33,6 +35,7 @@ public class ElevatorPlatform : MonoBehaviour
     private void Start()
     {
         G.EventManager.Register<OnPlayerRespawn>(OnRespawn);
+        G.StatSystem.ElevatorSpeedStat.Stat.OnChanged += OnStatChange;
     }
 
     private void OnDestroy()
@@ -113,39 +116,36 @@ public class ElevatorPlatform : MonoBehaviour
     {
         G.Player.GetComponent<PlayerController>().SetJumpForce(15f);
         yield return new WaitForSeconds(seconds);
-        OnStartAscent?.Invoke();
-        targetPosition = new Vector2(transform.position.x, topY);
         
-        Debug.Log($"StatSystem null? {G.StatSystem == null}");
-    
-        if (G.StatSystem != null) {
-            Debug.Log($"Current ElevatorSpeed value: {G.StatSystem.ElevatorSpeed}");
-        }
+        targetPosition = new Vector2(transform.position.x, topY);
 
+        float totalAscentTime = GetAscentTime();
+        float distance = Mathf.Abs(topY - transform.position.y);
+        CurrentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
+        OnStartAscent?.Invoke();
+        
+        isMoving = true;
+        isAscending = true;
+    }
+
+    private void OnStatChange(Observable<float> stat, float oldVal, float newVal)
+    {
+        float ascentTime = GetAscentTime();
+        OnAscentTimeChange?.Invoke(ascentTime);
+    }
+
+    private float GetAscentTime()
+    {
         // Рассчитываем модифицированное базовое время подъема на основе апгрейда скорости
         float reductionPerLevel = 10f; // Уменьшение времени на каждый уровень апгрейда
         float minBaseTime = 10f; // Минимальное базовое время подъема
     
-        float upgradeLevel = G.StatSystem != null ? G.StatSystem.ElevatorSpeed - 1 : 0;
+        float upgradeLevel = G.StatSystem.ElevatorSpeed - 1;
         float timeReduction = upgradeLevel * reductionPerLevel;
         float modifiedBaseAscendTime = Mathf.Max(minBaseTime, baseAscendTime - timeReduction);
-    
-       
-        Debug.Log($"Base ascend time: {baseAscendTime}, Upgrade level: {upgradeLevel}");
-        Debug.Log($"Time reduction: {timeReduction}, Modified time: {modifiedBaseAscendTime}");
-    
        
         float totalAscentTime = modifiedBaseAscendTime + (platformWeight - 1) * weightTimeAddition;
-        float distance = Mathf.Abs(topY - transform.position.y);
-        CurrentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
-    
-        
-        
-        Debug.Log($"Platform weight: {platformWeight}, Weight addition: {(platformWeight - 1) * weightTimeAddition}");
-        Debug.Log($"Total ascent time: {totalAscentTime}, Distance: {distance}, Current speed: {CurrentSpeed}");
-
-        isMoving = true;
-        isAscending = true;
+        return totalAscentTime;
     }
 
     public void Stop()
@@ -169,7 +169,13 @@ public class ElevatorPlatform : MonoBehaviour
     }
 
     // Для изменения параметров
-    public void SetWeight(float newWeight) => platformWeight = newWeight;
+    public void SetWeight(float newWeight)
+    {
+        platformWeight = newWeight;
+        float ascentTime = GetAscentTime();
+        OnAscentTimeChange?.Invoke(ascentTime);
+    }
+
     public void SetBaseAscendTime(float newTime) => baseAscendTime = newTime;
     public void SetWeightTimeAddition(float addition) => weightTimeAddition = addition;
 

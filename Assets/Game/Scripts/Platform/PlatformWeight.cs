@@ -24,13 +24,10 @@ public class PlatformWeight : MonoBehaviour
         G.EventManager.Register<OnPlayerRespawn>(OnRespawn);
         goldOnPlatformBalance = 0;
         _elevatorPlatform = G.ElevatorPlatform;
-        
-        // Subscribe to elevator events to track when ascent starts/ends
-        if (_elevatorPlatform != null)
-        {
-            _elevatorPlatform.OnStartAscent += HandleAscentStart;
-            _elevatorPlatform.OnArriveToSurfaceEvent += HandleAscentEnd;
-        }
+
+        _elevatorPlatform.OnAscentTimeChange += OnAscentTimeChange;
+        _elevatorPlatform.OnStartAscent += HandleAscentStart;
+        _elevatorPlatform.OnArriveToSurfaceEvent += HandleAscentEnd;
         
         UpdatePlatformWeight();
     }
@@ -42,6 +39,7 @@ public class PlatformWeight : MonoBehaviour
         // Unsubscribe from events when destroyed
         if (_elevatorPlatform != null)
         {
+            _elevatorPlatform.OnAscentTimeChange -= OnAscentTimeChange;
             _elevatorPlatform.OnStartAscent -= HandleAscentStart;
             _elevatorPlatform.OnArriveToSurfaceEvent -= HandleAscentEnd;
         }
@@ -55,13 +53,13 @@ public class PlatformWeight : MonoBehaviour
     private void HandleAscentStart()
     {
         isAscending = true;
-        totalAscentTime = _elevatorPlatform.baseAscendTime + (_elevatorPlatform.weightTimeAddition * goldOnPlatformBalance);
         remainingTime = totalAscentTime;
     }
 
     private void HandleAscentEnd()
     {
         isAscending = false;
+        remainingTime = totalAscentTime;
         UpdateTimeDisplay();
     }
 
@@ -96,15 +94,11 @@ public class PlatformWeight : MonoBehaviour
     {
         OnWeightChange?.Invoke();
         var weight = BaseWeight + goldOnPlatformBalance;
-        _elevatorPlatform.platformWeight = weight;
+        _elevatorPlatform.SetWeight(weight);
     }
     
     private void UpdateWeightArrowRotation()
     {
-        UpdateTimeDisplay();
-        
-        if (weightArrow == null) return;
-
         var rotationZ = goldOnPlatformBalance switch
         {
             0 => 90f,
@@ -119,18 +113,15 @@ public class PlatformWeight : MonoBehaviour
         weightArrow.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
     }
     
-    public void UpdateTimeDisplay()
+    private void OnAscentTimeChange(float time)
     {
-        if (weightText == null) return;
+        totalAscentTime = time;
+        remainingTime = time;
+        UpdateTimeDisplay();
+    }
 
-        if (isAscending)
-        {
-            weightText.text = $"{remainingTime:F1}";
-        }
-        else
-        {
-            var time = _elevatorPlatform.baseAscendTime + (_elevatorPlatform.weightTimeAddition * goldOnPlatformBalance);
-            weightText.text = $"{time}";
-        }
+    private void UpdateTimeDisplay()
+    {
+        weightText.text = $"{remainingTime:F1}";
     }
 }

@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc97b81bd3842b1a1a62edf8077c677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elevatorSpeed: {fileID: 11400000, guid: 147b6d00caa76434b82dc1625dd37dc8, type: 2}
-  batteryPower: {fileID: 11400000, guid: 1292c0d5ed0804687b1804513168d631, type: 2}
-  shotgunCooldown: {fileID: 11400000, guid: 1e188f6692f68484fa967da47dd46493, type: 2}
+  <ElevatorSpeedStat>k__BackingField: {fileID: 11400000, guid: 147b6d00caa76434b82dc1625dd37dc8, type: 2}
+  <BatteryPowerStat>k__BackingField: {fileID: 11400000, guid: 1292c0d5ed0804687b1804513168d631, type: 2}
+  <ShotgunCooldownStat>k__BackingField: {fileID: 11400000, guid: 1e188f6692f68484fa967da47dd46493, type: 2}

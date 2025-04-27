@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour
             {
                 
                 G.AudioManager.Play("GunCLick");
-                var cooldown = G.StatSystem.ShootgunCooldown;
+                var cooldown = G.StatSystem.ShotgunCooldown;
                 if (Time.time - _lastShootTime < cooldown) return;
 
                 Shoot();

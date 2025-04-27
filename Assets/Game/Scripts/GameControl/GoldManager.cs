@@ -18,11 +18,11 @@ namespace GameControl
     /// How much gold has been collected.
     /// </summary>
     public int GoldGoalProgress { get; private set; }
-    
+
     /// <summary>
     /// How much gold does the player have.
     /// </summary>
-    public int GoldBalance { get; private set; }
+    public int GoldBalance { get; private set; } = 100;
 
     public readonly UnityEvent<int, int> OnGoldProgressEvent = new();
 

@@ -40,7 +40,7 @@ public class GunRechargeUI : MonoBehaviour
         if (_isRecharging)
         {
             _currentRechargeTime += Time.deltaTime;
-            float cooldown = G.StatSystem.ShootgunCooldown;
+            float cooldown = G.StatSystem.ShotgunCooldown;
             float fillAmount = _currentRechargeTime / cooldown;
             rechargeImage.fillAmount = fillAmount;
             

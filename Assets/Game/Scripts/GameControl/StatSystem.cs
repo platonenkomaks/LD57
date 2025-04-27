@@ -6,19 +6,20 @@ namespace GameControl
 {
   public class StatSystem : MonoBehaviour
   {
-    [SerializeField] public FloatStat elevatorSpeed;
-    [SerializeField] private FloatStat batteryPower;
-    [SerializeField] private FloatStat shotgunCooldown;
+    [field:SerializeField] public FloatStat ElevatorSpeedStat { get; private set; }
+    [field:SerializeField] public FloatStat BatteryPowerStat { get; private set; }
+    [field:SerializeField] public FloatStat ShotgunCooldownStat { get; private set; }
 
-    public float ShootgunCooldown => shotgunCooldown.Stat.Value;
-    public float BatteryPower => batteryPower.Stat.Value;
-    public float ElevatorSpeed => elevatorSpeed.Stat.Value;
-    private void Start()
+    public float ShotgunCooldown => ShotgunCooldownStat.Stat.Value;
+    public float BatteryPower => BatteryPowerStat.Stat.Value;
+    public float ElevatorSpeed => ElevatorSpeedStat.Stat.Value;
+    
+    private void Awake()
     {
       G.StatSystem = this;
-      elevatorSpeed.Initialize();
-      batteryPower.Initialize();
-      shotgunCooldown.Initialize();
+      ElevatorSpeedStat.Initialize();
+      BatteryPowerStat.Initialize();
+      ShotgunCooldownStat.Initialize();
     }
 
     private void OnDestroy()
