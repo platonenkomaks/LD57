@@ -39,6 +39,7 @@ namespace Game.Scripts.StateMachine.GameLoop
           break;
         case GameLoopState.Mining:
           ChangeState(_miningState);
+          G.Player.BatteryLight.FullRecharge();
           break;
         case GameLoopState.Descend:
           ChangeState(_descendState);

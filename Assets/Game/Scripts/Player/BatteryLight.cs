@@ -17,10 +17,7 @@ public class BatteryLight : MonoBehaviour
     [SerializeField] private float baseBatteryLife = 60f; // базовое время работы в секундах
     [SerializeField] private float initialLightRadius = 5f;
     [SerializeField] private float minLightRadius = 0.5f;
-    [SerializeField] [Range(0f, 1f)] private float currentBatteryCharge = 1f;
-
-    // Текущее максимальное время работы с учетом апгрейдов
-    private float maxBatteryLife;
+    [SerializeField] [Range(0f, 1f)] private float batteryChargePercentage = 1f;
 
     [Header("Battery Drain Settings")]
     [SerializeField] private AnimationCurve drainCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
@@ -71,6 +68,8 @@ public class BatteryLight : MonoBehaviour
     private bool isInCriticalMode = false;
     private System.Random rand;
 
+    private float MaxBatteryLife => G.StatSystem.BatteryPower;
+
     #endregion
 
     #region Unity методы
@@ -108,38 +107,21 @@ public class BatteryLight : MonoBehaviour
 
     private void InitializeLight()
     {
-        // Получаем текущий уровень апгрейда батареи
-        UpdateBatteryLifeFromUpgrades();
-        
-        remainingBatteryLife = maxBatteryLife * currentBatteryCharge;
+        remainingBatteryLife = MaxBatteryLife;
         originalIntensity = targetLight.intensity;
         targetLight.pointLightOuterRadius = initialLightRadius;
         rand = new System.Random();
     }
 
-    private void UpdateBatteryLifeFromUpgrades()
-    {
-        // Умножаем базовое время работы на уровень апгрейда батареи
-        if (G.StatSystem != null)
-        {
-            float batteryPowerMultiplier = G.StatSystem.BatteryPower;
-            maxBatteryLife = baseBatteryLife * batteryPowerMultiplier;
-        }
-        else
-        {
-            maxBatteryLife = baseBatteryLife;
-        }
-    }
-
     private void UpdateBatteryLife()
     {
         remainingBatteryLife = Mathf.Max(0f, remainingBatteryLife - Time.deltaTime);
-        currentBatteryCharge = remainingBatteryLife / maxBatteryLife;
+        batteryChargePercentage = remainingBatteryLife / MaxBatteryLife;
     }
 
     private void UpdateLightRadius()
     {
-        float drainFactor = drainCurve.Evaluate(1f - currentBatteryCharge);
+        float drainFactor = drainCurve.Evaluate(1f - batteryChargePercentage);
         targetRadius = Mathf.Lerp(initialLightRadius, minLightRadius, drainFactor);
         targetLight.pointLightOuterRadius = targetRadius;
     }
@@ -169,9 +151,9 @@ public class BatteryLight : MonoBehaviour
 
     private void UpdateLightColor()
     {
-        if (currentBatteryCharge < lowBatterySoundThreshold)
+        if (batteryChargePercentage < lowBatterySoundThreshold)
         {
-            float colorBlend = 1 - (currentBatteryCharge / lowBatterySoundThreshold);
+            float colorBlend = 1 - (batteryChargePercentage / lowBatterySoundThreshold);
             targetLight.color = Color.Lerp(normalLightColor, lowBatteryColor, colorBlend);
         }
         else
@@ -194,11 +176,11 @@ public class BatteryLight : MonoBehaviour
 
     private float CalculateFlickerValue()
     {
-        if (currentBatteryCharge < severeFlickerThreshold)
+        if (batteryChargePercentage < severeFlickerThreshold)
         {
             return CalculateSevereFlicker();
         }
-        else if (currentBatteryCharge < flickerThreshold)
+        else if (batteryChargePercentage < flickerThreshold)
         {
             return CalculateNormalFlicker();
         }
@@ -231,7 +213,7 @@ public class BatteryLight : MonoBehaviour
 
     private float CalculateNormalFlicker()
     {
-        float intensityFactor = 1f - currentBatteryCharge / flickerThreshold;
+        float intensityFactor = 1f - batteryChargePercentage / flickerThreshold;
         if (randomizeFlicker)
         {
             return (float)rand.NextDouble() * flickerIntensity * intensityFactor;
@@ -243,11 +225,11 @@ public class BatteryLight : MonoBehaviour
     {
         if (Time.time <= nextSoundTime) return;
 
-        if (currentBatteryCharge < criticalBatterySoundThreshold)
+        if (batteryChargePercentage < criticalBatterySoundThreshold)
         {
             HandleCriticalBatterySound();
         }
-        else if (currentBatteryCharge < lowBatterySoundThreshold)
+        else if (batteryChargePercentage < lowBatterySoundThreshold)
         {
             HandleLowBatterySound();
         }
@@ -278,13 +260,11 @@ public class BatteryLight : MonoBehaviour
 
     public void RechargeBattery(float chargeAmount)
     {
-        // Обновляем максимальное время работы с учетом текущих апгрейдов
-        UpdateBatteryLifeFromUpgrades();
-        
-        currentBatteryCharge = Mathf.Clamp01(currentBatteryCharge + chargeAmount);
-        remainingBatteryLife = maxBatteryLife * currentBatteryCharge;
+        remainingBatteryLife += chargeAmount;
+        remainingBatteryLife = Mathf.Clamp(remainingBatteryLife, 0f, MaxBatteryLife);
+        batteryChargePercentage = remainingBatteryLife / MaxBatteryLife;
 
-        if (!targetLight.enabled && currentBatteryCharge > 0)
+        if (!targetLight.enabled && batteryChargePercentage > 0)
         {
             isInCriticalMode = false;
         }
@@ -292,20 +272,14 @@ public class BatteryLight : MonoBehaviour
 
     public void FullRecharge()
     {
-        // Обновляем максимальное время работы с учетом текущих апгрейдов
-        UpdateBatteryLifeFromUpgrades();
-        
-        currentBatteryCharge = 1f;
-        remainingBatteryLife = maxBatteryLife;
+        batteryChargePercentage = 1f;
+        remainingBatteryLife = MaxBatteryLife;
         isInCriticalMode = false;
     }
 
     public void TurnOn()
     {
-        if (currentBatteryCharge <= 0) return;
-        
-        // Обновляем максимальное время работы с учетом текущих апгрейдов
-        UpdateBatteryLifeFromUpgrades();
+        if (batteryChargePercentage <= 0) return;
         
         if (canDrainBattery)
             isDraining = true;
@@ -321,13 +295,12 @@ public class BatteryLight : MonoBehaviour
 
     public int GetBatteryPercentage()
     {
-        return Mathf.RoundToInt(currentBatteryCharge * 100f);
+        return Mathf.RoundToInt(batteryChargePercentage * 100f);
     }
     
     public float GetMaxBatteryLifeSeconds()
     {
-        UpdateBatteryLifeFromUpgrades();
-        return maxBatteryLife;
+        return remainingBatteryLife;
     }
 
     #endregion
@@ -339,7 +312,7 @@ public class BatteryLight : MonoBehaviour
         float originalRadius = targetLight.pointLightOuterRadius;
         float pulseFactor = 1.2f;
 
-        while (isInCriticalMode && currentBatteryCharge > 0)
+        while (isInCriticalMode && batteryChargePercentage > 0)
         {
             yield return StartCoroutine(PulseCycle(originalRadius, pulseFactor));
             yield return new WaitForSeconds(0.5f);
