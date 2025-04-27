@@ -1,5 +1,6 @@
 using Events;
 using GameControl;
+using Platform;
 
 public static class G
 {
@@ -38,5 +39,6 @@ public static class G
     public static FogOfWarSystem FogOfWarSystem;
     public static BackPack BackPack;
     public static Intro Intro;
-    
+
+    public static PlatformArea PlatformArea;
 }

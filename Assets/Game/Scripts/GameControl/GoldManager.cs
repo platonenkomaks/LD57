@@ -22,7 +22,7 @@ namespace GameControl
     /// <summary>
     /// How much gold does the player have.
     /// </summary>
-    public int GoldBalance { get; private set; } = 100;
+    public int GoldBalance { get; private set; }
 
     public readonly UnityEvent<int, int> OnGoldProgressEvent = new();
 

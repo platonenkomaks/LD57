@@ -43,7 +43,8 @@ public class BatteryLightUI : MonoBehaviour
             batteryFillImage.fillAmount = batteryLight.GetBatteryPercentage() / 100f;
         }
         
-        if (batteryLight.GetBatteryPercentage() <= 20f)
+        if (batteryLight.GetBatteryPercentage() <= 20f && !G.PlatformArea.IsInArea)
+       
         {
             popupLowBattery.SetActive(true);
         }
