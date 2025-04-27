@@ -16,9 +16,9 @@ MonoBehaviour:
   Description: 'Elevator speed: '
   Image: {fileID: 21300000, guid: 80bcda1a07d55406691a526cb335a7fa, type: 3}
   Label: {fileID: 0}
-  StartValue: 2
+  StartValue: 1
   Upgrades:
+  - 2
+  - 3
   - 4
-  - 6
-  - 8
   UpgradeCosts: 030000000400000005000000

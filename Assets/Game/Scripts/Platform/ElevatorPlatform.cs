@@ -109,20 +109,43 @@ public class ElevatorPlatform : MonoBehaviour
         G.AudioManager.Play("Fight");
     }
 
-    public IEnumerator AscentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
+    public IEnumerator AscentAfterDelay(float seconds)
     {
         G.Player.GetComponent<PlayerController>().SetJumpForce(15f);
         yield return new WaitForSeconds(seconds);
         OnStartAscent?.Invoke();
         targetPosition = new Vector2(transform.position.x, topY);
+        
+        Debug.Log($"StatSystem null? {G.StatSystem == null}");
+    
+        if (G.StatSystem != null) {
+            Debug.Log($"Current ElevatorSpeed value: {G.StatSystem.ElevatorSpeed}");
+        }
 
-        // Расчет скорости на основе требуемого времени подъема
-        float totalAscentTime = baseAscendTime + (platformWeight - 1) * weightTimeAddition;
+        // Рассчитываем модифицированное базовое время подъема на основе апгрейда скорости
+        float reductionPerLevel = 10f; // Уменьшение времени на каждый уровень апгрейда
+        float minBaseTime = 10f; // Минимальное базовое время подъема
+    
+        float upgradeLevel = G.StatSystem != null ? G.StatSystem.ElevatorSpeed - 1 : 0;
+        float timeReduction = upgradeLevel * reductionPerLevel;
+        float modifiedBaseAscendTime = Mathf.Max(minBaseTime, baseAscendTime - timeReduction);
+    
+       
+        Debug.Log($"Base ascend time: {baseAscendTime}, Upgrade level: {upgradeLevel}");
+        Debug.Log($"Time reduction: {timeReduction}, Modified time: {modifiedBaseAscendTime}");
+    
+       
+        float totalAscentTime = modifiedBaseAscendTime + (platformWeight - 1) * weightTimeAddition;
         float distance = Mathf.Abs(topY - transform.position.y);
         CurrentSpeed = Mathf.Max(0.1f, distance / totalAscentTime);
+    
+        
+        
+        Debug.Log($"Platform weight: {platformWeight}, Weight addition: {(platformWeight - 1) * weightTimeAddition}");
+        Debug.Log($"Total ascent time: {totalAscentTime}, Distance: {distance}, Current speed: {CurrentSpeed}");
 
         isMoving = true;
-        isAscending = true; // Set to true when ascending
+        isAscending = true;
     }
 
     public void Stop()

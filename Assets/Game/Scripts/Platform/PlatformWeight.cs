@@ -119,7 +119,7 @@ public class PlatformWeight : MonoBehaviour
         weightArrow.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
     }
     
-    private void UpdateTimeDisplay()
+    public void UpdateTimeDisplay()
     {
         if (weightText == null) return;
 
