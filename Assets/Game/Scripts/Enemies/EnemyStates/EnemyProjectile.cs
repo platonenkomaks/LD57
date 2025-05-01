@@ -139,6 +139,12 @@ public class EnemyProjectile : MonoBehaviour
                 _animator.SetTrigger("HitPlayer");
             }
         }
+        else if (collision.CompareTag("Platform"))
+        {
+            GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+            G.AudioManager.Play("FireBallHit");
+            _animator.SetTrigger("HitPlayer");
+        }
     }
     
     public void Destroy()

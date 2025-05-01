@@ -71,8 +71,9 @@ public class RangedEnemy : Enemy
         }
         
         // Атакуем игрока
+        
         _attackTimer -= Time.deltaTime;
-        if (_attackTimer <= 0 && G.PlayerController.isGrounded)
+        if (_attackTimer <= 0)
         {
             Attack();
             _attackTimer = attackInterval;
