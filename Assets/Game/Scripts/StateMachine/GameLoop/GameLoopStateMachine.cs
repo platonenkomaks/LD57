@@ -24,7 +24,7 @@ namespace Game.Scripts.StateMachine.GameLoop
       G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
     }
     
-    private void OnDestroy()
+    ~GameLoopStateMachine()
     {
       G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
     }
@@ -57,7 +57,7 @@ namespace Game.Scripts.StateMachine.GameLoop
 
     private void OnPlayerRespawn(OnPlayerRespawn _)
     {
-      this.SetState(GameLoopState.Shopping);
+      SetState(GameLoopState.Shopping);
     }
   }
 }

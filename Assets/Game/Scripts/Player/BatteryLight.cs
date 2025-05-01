@@ -14,7 +14,6 @@ public class BatteryLight : MonoBehaviour
     [SerializeField] private Light2D targetLight;
 
     [Header("Battery Settings")] 
-    [SerializeField] private float baseBatteryLife = 60f; // базовое время работы в секундах
     [SerializeField] private float initialLightRadius = 5f;
     [SerializeField] private float minLightRadius = 0.5f;
     [SerializeField] [Range(0f, 1f)] private float batteryChargePercentage = 1f;

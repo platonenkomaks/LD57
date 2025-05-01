@@ -74,7 +74,8 @@ public class ElevatorPlatform : MonoBehaviour
         
         Sequence sequence = DOTween.Sequence();
         sequence.AppendInterval(0.1f);
-        sequence.AppendCallback(Park);
+        sequence.AppendCallback(Stop);
+        sequence.AppendCallback(OnArriveToSurface);
     }
 
     public void StartDescent()

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,12 +7,9 @@ public class Intro : MonoBehaviour
     [SerializeField] private float flickerDuration = 1.0f;
     [SerializeField] private int flickerCount = 10;
     
-
     private GameObject _playerLight;
     private GameObject _hud;
-
-
-    private bool _hasLanded = false;
+    
     private RaycastHit _hit;
 
     public void Awake()
@@ -70,9 +66,4 @@ public class Intro : MonoBehaviour
         
         G.HUD.Show();
     }
-
-  
-
-
-    
 }

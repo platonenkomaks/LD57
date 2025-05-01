@@ -28,6 +28,17 @@ public class ElevatorLever : MonoBehaviour
         if (hintUI != null)
             hintUI.SetActive(false);
     }
+    
+    private void Start()
+    {
+        G.EventManager.Register<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+    
+    private void OnDestroy()
+    {
+        G.EventManager.Unregister<OnPlayerRespawn>(OnPlayerRespawn);
+    }
+    
     void Update()
     {   
         if (!isLocked && playerInRange && Input.GetKeyDown(KeyCode.S))
@@ -49,6 +60,14 @@ public class ElevatorLever : MonoBehaviour
 
             isDescending = !isDescending;
         }
+    }
+    
+    private void OnPlayerRespawn(OnPlayerRespawn _)
+    {
+        _spriteRenderer.sprite = leverUpSprite;
+        isLocked = false;
+        hintUI.SetActive(false);
+        isDescending = true;
     }
 
     public IEnumerator DescentAfterDelay(float seconds) //Задержка перед началом движения платформы для анимации рычага 
